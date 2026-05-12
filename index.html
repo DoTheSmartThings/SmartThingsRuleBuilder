@@ -327,7 +327,7 @@
                 <div class="glass-card overflow-hidden">
                     <!-- Fixed Header Background for Dark Mode -->
                     <div class="p-8 border-gray-100 dark:border-white/10 dark:bg-white/5 flex flex-col sm:flex-row justify-between items-center gap-6">
-                        <h3 class="text-xl font-bold tracking-tight text-center sm:text-left">SmartThings Rules 등록 가이드</h3>
+                        <h3 class="text-xl font-bold tracking-tight text-center sm:text-left">Rules API 루틴 추가 가이드</h3>
                         <a href="https://my.smartthings.com/advanced/rules" target="_blank" class="w-full sm:w-auto px-6 py-3 btn-primary text-white text-sm font-black rounded-xl shadow-md transition-transform hover:scale-105 text-center">Rules 탭으로 바로가기</a>
                     </div>
                     
@@ -457,7 +457,7 @@
             document.getElementById('progressPercentage').innerText = `${Math.round(progress)}%`;
             document.getElementById('stepIndicator').innerText = `STEP ${currentStep} OF ${steps}`;
             
-            const titles = ["루틴 프리셋 고르기", "기기 매핑", "코드 생성", "배포 가이드"];
+            const titles = ["루틴 프리셋 고르기", "기기 매핑", "코드 생성", "루틴 깔기"];
             document.getElementById('stepTitleDisplay').innerText = titles[currentStep-1];
 
             document.querySelectorAll('.step-content').forEach((el, idx) => el.classList.toggle('active', idx + 1 === currentStep));
