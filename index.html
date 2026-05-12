@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    
+    <!-- Primary Meta Tags -->
+    <title>SmartThings Rule Builder</title>
+    <meta name="title" content="SmartThings Rule Builder">
+    <meta name="description" content="Create complex SmartThings routines easily with the Rule Builder. Generate Rule API codes for advanced automation without coding knowledge.">
+    <meta name="description" lang="ko" content="스마트싱스 룰 빌더로 복합한 루틴을 간편하게 만드세요. 코딩 지식 없이도 고급 자동화를 위한 Rule API 코드를 생성하고 스마트홈의 잠재력을 끌어올리세요.">
+    <meta name="keywords" content="SmartHome, IoT, SmartThings, Routine, Rule API, Automation, SmartThings API, 스마트홈, 스마트싱스, 스싱, 지그비, 자동화, 룰빌더">
+    <meta name="author" content="PlusThings" />
+    <link rel="canonical" href="https://smartthingsrulebuilder.github.io/" />
+    
+    <!-- Favicon & App Icons (PWA) -->
+    <link rel="icon" href="icons/favicon.ico" sizes="any">
+    <link rel="icon" href="icons/logo.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="images/icons/apple-touch-icon.png">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#008DF7">
+
+    <!-- Search Engine Verification
+    //<meta name="google-site-verification" content="" />
+    //<meta name="naver-site-verification" content="" /> -->
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://smartthingsrulebuilder.github.io/">
+    <meta property="og:title" content="SmartThings Rule Builder — 스마트싱스 룰 빌더">
+    <meta property="og:description" content="코딩 없이 클릭만으로 스마트싱스 Rule API 코드를 생성하세요. 복잡한 IoT 자동화도 이제 누구나 가능합니다.">
+    <meta property="og:image" content="images/og-image.png">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+     <meta name="twitter:domain" content="smartthingsrulebuilder.github.io">
+    <meta name="twitter:url" content="https://smartthingsrulebuilder.github.io/">
+    <meta name="twitter:title" content="SmartThings Rule Builder">
+    <meta name="twitter:description" content="Generate advanced SmartThings Rule API codes in seconds. Build your perfect smart home routine today.">
+    <meta name="twitter:image" content="images/twitter-card.png">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom Fonts */
+        @font-face {
+          font-family: 'SamsungSharpSans';
+          src: url('fonts/SamsungSharpSans-Bold.TTF');
+          font-weight: bold;
+          font-style: normal;
+          font-display: swap;
+        }
+
+        :root {
+            --point-color: #008DF7;
+            --sub-color: #68AEFF;
+            --accent-gradient: linear-gradient(90deg, #008DF7 0%, #68AEFF 100%);
+            --error-color: #ff4d4f;
+            --bg-light: #f8fafc;
+            --bg-dark: #0B1121;
+            --card-bg-light: rgba(255, 255, 255, 0.7);
+            --card-bg-dark: rgba(15, 23, 42, 0.6);
+            /* Nav Backgrounds Fixed */
+            --nav-bg-light: rgba(255, 255, 255, 0.8);
+            --nav-bg-dark: rgba(11, 17, 33, 0.95);
+        }
+
+        body {
+            font-family: 'SamsungOne', 'Noto Sans KR', sans-serif;
+            background: var(--bg-light);
+            color: #1e293b;
+            transition: background-color 0.3s;
+            overflow-x: hidden;
+        }
+
+        .dark body {
+            background: var(--bg-dark);
+            color: #f1f5f9;
+        }
+
+        .bg-decoration {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1; overflow: hidden; pointer-events: none;
+        }
+        .orb {
+            position: absolute; border-radius: 50%; filter: blur(80px);
+            opacity: 0.2; animation: float 20s infinite alternate;
+        }
+        .dark .orb { opacity: 0.15; }
+        
+        @keyframes float {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(10%, 10%) scale(1.1); }
+        }
+
+        .display-font { font-family: 'SamsungSharpSans', sans-serif; }
+
+        /* Glass Cards */
+        .glass-card {
+            background: var(--card-bg-light);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05);
+            border-radius: 28px;
+        }
+
+        .dark .glass-card {
+            background: var(--card-bg-dark);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Step Transitions */
+        .step-content { display: none; }
+        .step-content.active {
+            display: block;
+            animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .input-error {
+            border: 1.5px solid var(--error-color) !important;
+            animation: shake 0.4s;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        /* Elements */
+        .code-container {
+            background-color: #050914;
+            color: #e2e8f0;
+            border-radius: 24px;
+        }
+
+        input[type="text"] {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1.5px solid transparent;
+        }
+        input[type="text"]:focus {
+            border-color: var(--point-color);
+            background: white;
+            box-shadow: 0 0 0 4px rgba(0, 141, 247, 0.15);
+        }
+        .dark input[type="text"] { background: rgba(255, 255, 255, 0.03); color: white; }
+        .dark input[type="text"]:focus { background: rgba(255, 255, 255, 0.07); }
+
+        .btn-primary {
+            background: var(--accent-gradient);
+            box-shadow: 0 10px 20px -5px rgba(0, 141, 247, 0.3);
+        }
+
+        .progress-fill {
+            background: var(--accent-gradient);
+        }
+
+        /* Nav & Footer Fixed Classes */
+        .nav-glass {
+            background: var(--nav-bg-light);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-color: #f1f5f9;
+        }
+        .dark .nav-glass {
+            background: var(--nav-bg-dark);
+            border-color: rgba(255, 255, 255, 0.08);
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(8px);
+            z-index: 1000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-overlay.active { display: flex; animation: fadeIn 0.3s; }
+
+        .btn-pill-compact {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: #008DF7;
+            color: white;
+            font-weight: 700;
+            border-radius: 9999px;
+            padding: 0.4rem 0.6rem;
+            font-size: 0.75rem;
+            box-shadow: 0 2px 4px rgba(0, 141, 247, 0.2);
+            line-height: 1;
+        }
+
+        .step-index-circle {
+            flex-shrink: 0;
+            width: 2.5rem;
+            height: 2.5rem;
+            background-color: #eff6ff; 
+            color: #1e40af; 
+            border-radius: 9999px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+            font-size: 1.125rem;
+            border: 1px solid #dbeafe;
+        }
+        .dark .step-index-circle {
+            background-color: rgba(0, 141, 247, 0.1);
+            color: #60a5fa;
+            border-color: rgba(0, 141, 247, 0.2);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+    <div class="bg-decoration">
+        <div class="orb w-[600px] h-[600px] bg-blue-500/20 top-[-150px] right-[-150px]"></div>
+        <div class="orb w-[500px] h-[500px] bg-sky-500/10 bottom-[-100px] left-[-100px]" style="animation-delay: -7s;"></div>
+    </div>
+
+    <!-- GNB -->
+    <nav class="nav-glass sticky top-0 z-50 border-b px-6 py-5">
+        <div class="max-w-4xl mx-auto flex justify-between items-center">
+            <div class="flex items-center gap-4">
+                <div class="w-11 h-11">
+                    <img src="/images/brandidentity/logo_rulebuilder.png" alt="logo" />
+                </div>
+                <h1 class="display-font text-2xl font-bold  dark:text-white">Rule Builder</h1>
+            </div>
+            <div class="flex items-center gap-3">
+                <button id="darkModeToggle" class="p-2.5 hover:bg-gray-100 dark:hover:bg-white/10 rounded-xl transition-all border border-gray-200 dark:border-white/20">
+                    <!-- Sun Icon (visible in Dark Mode) -->
+                    <svg id="sunIcon" class="w-5 h-5 hidden dark:block text-yellow-400" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"></path></svg>
+                    <!-- Moon Icon (visible in Light Mode) -->
+                    <svg id="moonIcon" class="w-5 h-5 block dark:hidden " fill="currentColor" viewBox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="flex-grow max-w-4xl w-full mx-auto p-6 md:p-12">
+        
+        <!-- Progress Bar -->
+        <div class="mb-16">
+            <div class="flex justify-between items-end mb-5">
+                <div>
+                    <span id="stepIndicator" class="text-[11px] font-black text-[#008DF7] uppercase tracking-[0.25em]">Step 1 of 4</span>
+                    <h2 id="stepTitleDisplay" class="text-3xl font-bold mt-2 tracking-tight">루틴 프리셋 고르기</h2>
+                </div>
+                <span id="progressPercentage" class="text-3xl font-bold mt-2 tracking-tight text-gray-300 dark:text-gray-600">25%</span>
+            </div>
+            <div class="h-2.5 w-full bg-gray-200 dark:bg-white/5 rounded-full overflow-hidden shadow-inner border border-transparent dark:border-white/5">
+                <div id="progressBar" class="h-full progress-fill transition-all duration-1000 ease-[cubic-bezier(0.23,1,0.32,1)]" style="width: 25%"></div>
+            </div>
+        </div>
+
+        <!-- STEP 1: PRESET SELECTION -->
+        <section id="step1" class="step-content active">
+            <div id="presetContainer" class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div onclick="selectPreset('dimmer-control')" class="group relative glass-card p-10 cursor-pointer hover:scale-[1.03] active:scale-[0.97] transition-all duration-300">
+                    <div class="flex items-start justify-content mb-8">
+                        <div class="w-16 h-16 bg-blue-50 dark:bg-blue-500/10 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform">
+                            <svg class="w-9 h-9 text-[#008DF7]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path></svg>
+                        </div>
+                        
+                    </div>
+                    <h3 class="text-2xl font-bold mb-4 tracking-tight">IoT 노브로 전구 밝기 제어</h3>
+                    <p class="text-base text-gray-500 dark:text-zinc-400 leading-relaxed">노브의 밝기와 색온도 값을 실시간으로 전구에 동기화합니다.</p>
+                    <div class="mt-8 flex items-center text-[#008DF7] text-sm font-black gap-2 opacity-0 group-hover:opacity-100 transition-all translate-x-[-10px] group-hover:translate-x-0">
+                        <span>선택하기</span>
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- STEP 2: DEVICE MAPPING -->
+        <section id="step2" class="step-content">
+            <div class="glass-card p-10 md:p-12 space-y-10">
+                <div class="p-6 bg-blue-50 dark:bg-blue-500/5 rounded-2xl border border-blue-100 dark:border-blue-500/20 flex flex-col sm:flex-row justify-between items-center gap-6">
+                    <p class="text-sm font-bold text-blue-800 dark:text-blue-300 text-center sm:text-left">SmartThings Advanced Web App에서 기기 ID를 가져오세요.</p>
+                    <a href="https://my.smartthings.com/advanced/devices" target="_blank" class="w-full sm:w-auto flex-shrink-0 px-6 py-3 btn-primary text-white text-sm font-black rounded-xl hover:opacity-90 transition-all shadow-md text-center">Devices 페이지 열기</a>
+                </div>
+
+                <div class="space-y-4">
+                    <label class="block text-sm font-black text-gray-600 dark:text-zinc-400 uppercase tracking-wider">노브(디머)의 ID</label>
+                    <input type="text" id="input_dimmer" oninput="validateField(this)" placeholder="e.g. 1a2b3c4d-..." class="w-full px-6 py-5 bg-gray-100 dark:bg-white/5 border-none rounded-2xl text-lg outline-none">
+                    <p class="text-xs text-gray-400 dark:text-gray-500 font-medium">※ 노브(디머)의 <span class="text-[#008DF7]">Device ID</span>를 복사해서 붙여넣으세요.</p>
+                </div>
+                <div class="space-y-4">
+                    <label class="block text-sm font-black text-gray-600 dark:text-zinc-400 uppercase tracking-wider">컨트롤할 전구의 ID</label>
+                    <input type="text" id="input_light" oninput="validateField(this)" placeholder="e.g. 5e6f7g8h-..." class="w-full px-6 py-5 bg-gray-100 dark:bg-white/5 border-none rounded-2xl text-lg outline-none">
+                    <p class="text-xs text-gray-400 dark:text-gray-500 font-medium">※ 전구의 <span class="text-[#008DF7]">Device ID</span>를 복사해서 붙여넣으세요.</p>
+                </div>
+                <p id="validationMsg" class="text-red-500 text-sm font-bold hidden">필수 정보를 모두 입력해야 다음으로 진행할 수 있습니다.</p>
+            </div>
+        </section>
+
+        <!-- STEP 3: CODE GENERATION -->
+        <section id="step3" class="step-content">
+            <div class="relative group">
+                <div class="absolute top-6 right-6 flex gap-2 z-10">
+                    <button onclick="copyToClipboard()" class="flex items-center gap-2 px-6 py-3 btn-primary text-white rounded-2xl active:scale-95 transition-all text-sm font-black">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
+                        <span>코드 복사</span>
+                    </button>
+                </div>
+                <pre class="code-container p-10 pt-24 font-mono text-[14px] leading-relaxed overflow-x-auto min-h-[480px] shadow-2xl border border-white/5">
+<code id="codeOutput"></code></pre>
+            </div>
+        </section>
+
+        <!-- STEP 4: DEPLOYMENT -->
+        <section id="step4" class="step-content">
+            <div class="space-y-6">
+                <div class="glass-card overflow-hidden">
+                    <!-- Fixed Header Background for Dark Mode -->
+                    <div class="p-8 border-gray-100 dark:border-white/10 dark:bg-white/5 flex flex-col sm:flex-row justify-between items-center gap-6">
+                        <h3 class="text-xl font-bold tracking-tight text-center sm:text-left">SmartThings Rules 등록 가이드</h3>
+                        <a href="https://my.smartthings.com/advanced/rules" target="_blank" class="w-full sm:w-auto px-6 py-3 btn-primary text-white text-sm font-black rounded-xl shadow-md transition-transform hover:scale-105 text-center">Rules 탭으로 바로가기</a>
+                    </div>
+                    
+                    <div class="p-8 md:p-10 space-y-12">
+                        <div class="flex gap-8">
+                            <div class="step-index-circle">1</div>
+                            <div class="space-y-3">
+                                <p class="font-bold text-lg">새로운 Rule 만들기</p>
+                                <p class="text-gray-500 dark:text-zinc-400 text-sm leading-relaxed">
+                                    위 링크를 통해 <span class="font-bold text-gray-800 dark:text-zinc-100 text-base">Rules</span> 탭에 접속한 뒤, 화면 우측 상단의 <span class="btn-pill-compact">+ Add Rule</span> 버튼을 클릭합니다.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="flex gap-8">
+                            <div class="step-index-circle">2</div>
+                            <div class="space-y-3">
+                                <p class="font-bold text-lg">루틴 이름 짓기 및 코드 붙여넣기</p>
+                                <div class="p-5 bg-gray-100 dark:bg-white/5 rounded-2xl space-y-4 border border-gray-200 dark:border-white/10">
+                                    <div>
+                                        <span class="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase">Input 1</span>
+                                        <p class="text-sm font-bold mt-1 text-gray-700 dark:text-gray-300"><span class="text-[#008DF7]">Rule Name</span>에 관리하기 편한 루틴 이름을 입력하세요.</p>
+                                    </div>
+                                    <div class="h-px bg-gray-200 dark:bg-white/10"></div>
+                                    <div>
+                                        <span class="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase">Input 2</span>
+                                        <p class="text-sm font-bold mt-1 text-gray-700 dark:text-gray-300"><span class="text-[#008DF7]">Action</span> 입력창에 Step 3에서 복사한 코드를 그대로 붙여넣습니다.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex gap-8">
+                            <div class="step-index-circle">3</div>
+                            <div class="space-y-3">
+                                <p class="font-bold text-lg">최종 추가 및 활성화</p>
+                                <p class="text-gray-500 dark:text-zinc-400 text-sm leading-relaxed">
+                                    설정이 완료되었다면 화면 오른쪽 하단의 <span class="btn-pill-compact">Add</span> 버튼을 눌러 루틴을 생성합니다. Enabled가 되어 있으면 Rule API 루틴이 정상적으로 돌아갑니다
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Footer Community Card -->
+                <div class="glass-card border-none bg-[#050914] p-10 flex flex-col md:flex-row justify-between items-center gap-8 shadow-2xl">
+                    <div class="text-center md:text-left space-y-2">
+                        <p class="text-white font-bold text-2xl tracking-tight">도움이 더 필요하신가요?</p>
+                        <p class="text-zinc-400 text-base">스마트싱스 갤러리에 문의하는 글을 써주세요.</p>
+                    </div>
+                    <a href="https://gall.dcinside.com/mgallery/board/lists/?id=smartthings" target="_blank" class="w-full md:w-auto px-8 py-4 bg-white text-[#0B1121] text-base font-black rounded-2xl text-center hover:scale-105 transition-all shadow-xl">스마트싱스 갤러리 가기</a>
+                </div>
+
+                <div class="py-12 text-center">
+                    <p class="font-bold text-[#008DF7] text-xl tracking-tight">이제 스마트싱스를 즐겨보세요. 모든 과정이 끝났습니다! </p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Navigation Footer -->
+    <footer id="navFooter" class="nav-glass sticky bottom-0 border-t p-8 hidden">
+        <div class="max-w-4xl mx-auto flex justify-between gap-6">
+            <button id="prevBtn" onclick="moveStep(-1)" class="flex-1 py-5 px-8 border border-gray-200 dark:border-white/10 rounded-2xl font-black text-sm dark:text-white hover:bg-gray-100 dark:hover:bg-white/10 transition-all">이전</button>
+            <button id="nextBtn" onclick="moveStep(1)" class="flex-[2] py-5 px-8 btn-primary text-white rounded-2xl font-black text-sm active:scale-[0.98] transition-all">다음 단계</button>
+        </div>
+    </footer>
+
+    <!-- Modal Popup -->
+    <div id="confirmModal" class="modal-overlay">
+        <div class="glass-card p-10 max-w-sm w-full mx-4 shadow-2xl bg-white dark:bg-[#0B1121] border-transparent dark:border-white/10">
+            <h3 class="text-2xl font-bold mb-4 tracking-tight">처음으로 돌아갈까요?</h3>
+            <p class="text-gray-500 dark:text-zinc-400 text-base leading-relaxed mb-10">작업 중인 모든 내용(입력한 ID, 생성된 코드)이 초기화됩니다. 계속하시겠습니까?</p>
+            <div class="flex gap-4">
+                <button onclick="closeModal()" class="flex-1 py-4 px-6 border border-gray-200 dark:border-white/10 rounded-2xl font-black text-sm text-gray-600 dark:text-white">취소</button>
+                <button onclick="resetApp()" class="flex-1 py-4 px-6 bg-red-500 text-white rounded-2xl font-black text-sm shadow-lg shadow-red-500/20">돌아가기</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Message -->
+    <div id="toast" class="fixed bottom-32 left-1/2 -translate-x-1/2 px-6 py-4 bg-zinc-900/90 dark:bg-white/95 text-white dark:text-[#0B1121] backdrop-blur-xl rounded-2xl text-sm font-black opacity-0 transition-all duration-500 transform translate-y-4 pointer-events-none z-[100] shadow-2xl">
+        복사되었습니다!
+    </div>
+
+    <script>
+        const TEMPLATE_RULE = [
+            {
+                "if": {
+                    "or": [
+                        { "changes": { "operand": { "device": { "devices": ["@device_dimmer"], "component": "main", "capability": "colorTemperature", "attribute": "colorTemperature" } } } },
+                        { "changes": { "operand": { "device": { "devices": ["@device_dimmer"], "component": "main", "capability": "switchLevel", "attribute": "level" } } } }
+                    ],
+                    "then": [
+                        {
+                            "if": {
+                                "equals": {
+                                    "left": { "device": { "devices": ["@device_light"], "component": "main", "capability": "switch", "attribute": "switch", "trigger": "Never" } },
+                                    "right": { "string": "on" }
+                                },
+                                "then": [
+                                    {
+                                        "command": {
+                                            "devices": ["@device_light"],
+                                            "commands": [
+                                                { "component": "main", "capability": "switchLevel", "command": "setLevel", "arguments": [{ "device": { "devices": ["@device_dimmer"], "component": "main", "capability": "switchLevel", "attribute": "level" } }] },
+                                                { "component": "main", "capability": "colorTemperature", "command": "setColorTemperature", "arguments": [{ "device": { "devices": ["@device_dimmer"], "component": "main", "capability": "colorTemperature", "attribute": "colorTemperature" } }] }
+                                            ]
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                }
+            }
+        ];
+
+        let currentStep = 1;
+        let isDarkMode = false;
+
+        function updateUI() {
+            const steps = 4;
+            const progress = (currentStep / steps) * 100;
+            document.getElementById('progressBar').style.width = `${progress}%`;
+            document.getElementById('progressPercentage').innerText = `${Math.round(progress)}%`;
+            document.getElementById('stepIndicator').innerText = `STEP ${currentStep} OF ${steps}`;
+            
+            const titles = ["루틴 프리셋 고르기", "기기 매핑", "코드 생성", "배포 가이드"];
+            document.getElementById('stepTitleDisplay').innerText = titles[currentStep-1];
+
+            document.querySelectorAll('.step-content').forEach((el, idx) => el.classList.toggle('active', idx + 1 === currentStep));
+
+            const footer = document.getElementById('navFooter');
+            footer.classList.toggle('hidden', currentStep === 1);
+
+            document.getElementById('nextBtn').innerText = currentStep === 4 ? '처음으로' : '다음 단계';
+
+            if (currentStep === 3) generateCode();
+        }
+
+        function validateStep2() {
+            const dInput = document.getElementById('input_dimmer');
+            const lInput = document.getElementById('input_light');
+            const msg = document.getElementById('validationMsg');
+            let isValid = true;
+
+            [dInput, lInput].forEach(input => {
+                if (!input.value.trim()) {
+                    input.classList.add('input-error');
+                    isValid = false;
+                } else {
+                    input.classList.remove('input-error');
+                }
+            });
+
+            if (!isValid) {
+                msg.classList.remove('hidden');
+                return false;
+            } else {
+                msg.classList.add('hidden');
+                return true;
+            }
+        }
+
+        function validateField(input) {
+            if (input.value.trim()) {
+                input.classList.remove('input-error');
+            }
+        }
+
+        function moveStep(dir) {
+            if (dir === 1 && currentStep === 2) {
+                if (!validateStep2()) return;
+            }
+
+            if (dir === 1 && currentStep === 4) {
+                document.getElementById('confirmModal').classList.add('active');
+                return;
+            }
+
+            const next = currentStep + dir;
+            if (next >= 1 && next <= 4) {
+                currentStep = next;
+                updateUI();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('confirmModal').classList.remove('active');
+        }
+
+        function resetApp() {
+            closeModal();
+            currentStep = 1;
+            document.getElementById('input_dimmer').value = "";
+            document.getElementById('input_light').value = "";
+            updateUI();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function selectPreset(id) {
+            currentStep = 2;
+            updateUI();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function generateCode() {
+            const dimmerId = document.getElementById('input_dimmer').value.trim();
+            const lightId = document.getElementById('input_light').value.trim();
+            let rawJson = JSON.stringify(TEMPLATE_RULE, null, 4);
+            let finalJson = rawJson.replace(/@device_dimmer/g, dimmerId).replace(/@device_light/g, lightId);
+            document.getElementById('codeOutput').innerText = finalJson;
+        }
+
+        function copyToClipboard() {
+            const code = document.getElementById('codeOutput').innerText;
+            const textArea = document.createElement("textarea");
+            textArea.value = code;
+            document.body.appendChild(textArea);
+            textArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textArea);
+            showToast('클립보드에 복사되었습니다!');
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            toast.innerText = msg;
+            toast.classList.remove('opacity-0', 'translate-y-4');
+            toast.classList.add('opacity-100', 'translate-y-0');
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-y-4');
+                toast.classList.remove('opacity-100', 'translate-y-0');
+            }, 2500);
+        }
+
+        document.getElementById('darkModeToggle').addEventListener('click', () => {
+            isDarkMode = !isDarkMode;
+            document.documentElement.classList.toggle('dark', isDarkMode);
+        });
+
+        window.onload = updateUI;
+    </script>
+</body>
+</html>
