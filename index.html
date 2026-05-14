@@ -535,7 +535,7 @@
         <div class="flex justify-between items-end mb-4">
             <div>
                 <span id="stepIndicator" class="text-[11px] font-black text-[#008DF7] uppercase tracking-[0.22em]">STEP 1 OF 4</span>
-                <h2 id="stepTitleDisplay" class="display-font text-2xl md:text-3xl font-bold mt-2">루틴 프리셋 고르기</h2>
+                <h2 id="stepTitleDisplay" class="display-font text-2xl md:text-3xl font-bold mt-2"></h2>
             </div>
             <span id="progressPercentage" class="text-2xl md:text-3xl font-bold tracking-tight text-gray-300 dark:text-gray-600 select-none">25%</span>
         </div>
@@ -824,7 +824,7 @@
                         <div class="step-index-circle">1</div>
                         <div class="space-y-2">
                             <p class="font-bold text-base" data-i18n="step5.s1Title">새로운 Rule 만들기</p>
-                            <p class="text-gray-500 dark:text-zinc-400 text-sm leading-relaxed" data-i18n="step5.s1Desc">위 링크를 통해 <span class="font-bold text-gray-800 dark:text-zinc-100">Rules</span> 탭에 접속한 뒤, 화면 우측 상단의 <span class="btn-pill-compact">+ Add Rule</span> 버튼을 클릭합니다.</p>
+                            <p class="text-gray-500 dark:text-zinc-400 text-sm leading-relaxed" data-i18n-html="step5.s1Desc"></p>
                         </div>
                     </div>
 
@@ -835,12 +835,12 @@
                             <div class="p-5 bg-gray-100 dark:bg-white/5 rounded-2xl space-y-4 border border-gray-200 dark:border-white/10">
                                 <div>
                                     <span class="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest">Input 1</span>
-                                    <p class="text-sm font-bold mt-1 text-gray-700 dark:text-gray-300" data-i18n="step5.s2Input1"><span class="text-[#008DF7]">Rule Name</span>에 관리하기 편한 루틴 이름을 입력하세요.</p>
+                                    <p class="text-sm font-bold mt-1 text-gray-700 dark:text-gray-300" data-i18n-html="step5.s2Input1"></p>
                                 </div>
                                 <div class="h-px bg-gray-200 dark:bg-white/10"></div>
                                 <div>
                                     <span class="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest">Input 2</span>
-                                    <p class="text-sm font-bold mt-1 text-gray-700 dark:text-gray-300" data-i18n="step5.s2Input2"><span class="text-[#008DF7]">Action</span> 입력창에 이전 단계에서 복사한 코드를 붙여넣습니다.</p>
+                                    <p class="text-sm font-bold mt-1 text-gray-700 dark:text-gray-300" data-i18n-html="step5.s2Input2"></p>
                                 </div>
                             </div>
                         </div>
@@ -850,7 +850,7 @@
                         <div class="step-index-circle">3</div>
                         <div class="space-y-2">
                             <p class="font-bold text-base" data-i18n="step5.s3Title">최종 추가 및 활성화</p>
-                            <p class="text-gray-500 dark:text-zinc-400 text-sm leading-relaxed" data-i18n="step5.s3Desc">설정이 완료되면 화면 오른쪽 하단의 <span class="btn-pill-compact">Add</span> 버튼을 눌러 루틴을 생성합니다. Enabled 상태면 Rule API 루틴이 정상적으로 동작합니다.</p>
+                            <p class="text-gray-500 dark:text-zinc-400 text-sm leading-relaxed" data-i18n-html="step5.s3Desc"></p>
                         </div>
                     </div>
                 </div>
@@ -978,12 +978,12 @@ const I18N = {
         "step5.guideTitle":    "Rules API 루틴 설치 가이드",
         "step5.rulesBtn":      "Rules 탭으로 바로가기",
         "step5.s1Title":       "새로운 Rule 만들기",
-        "step5.s1Desc":        "위 링크를 통해 Rules 탭에 접속한 뒤, 화면 우측 상단의 + Add Rule 버튼을 클릭합니다.",
+        "step5.s1Desc":        "위 링크를 통해 <strong class=\"font-bold text-gray-800 dark:text-zinc-100\">Rules</strong> 탭에 접속한 뒤, 화면 우측 상단의 <span class=\"btn-pill-compact\">+ Add Rule</span> 버튼을 클릭합니다.",
         "step5.s2Title":       "루틴 이름 짓기 및 코드 붙여넣기",
-        "step5.s2Input1":      "Rule Name에 관리하기 편한 루틴 이름을 입력하세요.",
-        "step5.s2Input2":      "Action 입력창에 이전 단계에서 복사한 코드를 붙여넣습니다.",
+        "step5.s2Input1":      "<span class=\"text-[#008DF7]\">Rule Name</span>에 관리하기 편한 루틴 이름을 입력하세요.",
+        "step5.s2Input2":      "<span class=\"text-[#008DF7]\">Action</span> 입력창에 이전 단계에서 복사한 코드를 붙여넣습니다.",
         "step5.s3Title":       "최종 추가 및 활성화",
-        "step5.s3Desc":        "설정이 완료되면 화면 오른쪽 하단의 Add 버튼을 눌러 루틴을 생성합니다. Enabled 상태면 정상 동작합니다.",
+        "step5.s3Desc":        "설정이 완료되면 화면 오른쪽 하단의 <span class=\"btn-pill-compact\">Add</span> 버튼을 눌러 루틴을 생성합니다. Enabled 상태면 Rule API 루틴이 정상적으로 동작합니다.",
         "step5.helpTitle":     "도움이 더 필요하신가요?",
         "step5.helpDesc":      "스마트싱스 갤러리에 문의하는 글을 써주세요.",
         "step5.galleryBtn":    "스마트싱스 갤러리 가기",
@@ -1061,15 +1061,15 @@ const I18N = {
         "step4.copyBtn":       "Copy Code",
         "step4.toast":         "Copied to clipboard!",
 
-        "step5.guideTitle":    "Rules API Routine installation Guide",
+        "step5.guideTitle":    "Rules API Routine Installation Guide",
         "step5.rulesBtn":      "Go to Rules Tab",
         "step5.s1Title":       "Create a New Rule",
-        "step5.s1Desc":        "Open the Rules tab via the link above, then click the + Add Rule button in the top-right corner.",
+        "step5.s1Desc":        "Open the <strong class=\"font-bold text-gray-800 dark:text-zinc-100\">Rules</strong> tab via the link above, then click the <span class=\"btn-pill-compact\">+ Add Rule</span> button in the top-right corner.",
         "step5.s2Title":       "Name Your Routine & Paste the Code",
-        "step5.s2Input1":      "Enter a memorable name in the Rule Name field.",
-        "step5.s2Input2":      "Paste the copied code from the previous step into the Action field.",
+        "step5.s2Input1":      "Enter a memorable name in the <span class=\"text-[#008DF7]\">Rule Name</span> field.",
+        "step5.s2Input2":      "Paste the copied code from the previous step into the <span class=\"text-[#008DF7]\">Action</span> field.",
         "step5.s3Title":       "Add and Activate",
-        "step5.s3Desc":        "Once set up, click the Add button in the bottom-right. When Enabled, your Rule API routine will run automatically.",
+        "step5.s3Desc":        "Once set up, click the <span class=\"btn-pill-compact\">Add</span> button in the bottom-right. When Enabled, your Rule API routine will run automatically.",
         "step5.helpTitle":     "Need more help?",
         "step5.helpDesc":      "Post a question in the SmartThings Gallery.",
         "step5.galleryBtn":    "Go to SmartThings Gallery",
@@ -1121,12 +1121,15 @@ function t(key, vars) {
 }
 
 function applyI18n() {
-    // text nodes
+    // text nodes (no child elements)
     document.querySelectorAll('[data-i18n]').forEach(el => {
         const key = el.getAttribute('data-i18n');
-        // preserve inner html with span elements (step5 guide)
         if (el.children.length > 0) return;
         el.innerText = t(key);
+    });
+    // innerHTML nodes (contains inline HTML like <span>, <strong>)
+    document.querySelectorAll('[data-i18n-html]').forEach(el => {
+        el.innerHTML = t(el.getAttribute('data-i18n-html'));
     });
     // placeholders
     document.querySelectorAll('[data-i18n-ph]').forEach(el => {
