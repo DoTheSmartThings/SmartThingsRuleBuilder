@@ -632,9 +632,18 @@
                         <div id="tip_device2" class="tooltip-box" data-i18n="step2.lightTip">Advanced Web App → Devices → 전구 클릭 → Device ID를 복사하세요.</div>
                     </div>
                 </div>
-                <input type="text" id="input_light" oninput="validateField(this)"
-                    class="w-full px-6 py-5 bg-gray-100 dark:bg-white/5 border-none rounded-2xl text-lg outline-none"
-                    data-i18n-ph="step2.lightPlaceholder" placeholder="e.g. 5e6f7g8h-9i0j-...">
+                <div id="targetDeviceInputs" class="space-y-3">
+                    <input type="text" id="input_light" oninput="validateField(this)"
+                        class="target-device-input w-full px-6 py-5 bg-gray-100 dark:bg-white/5 border-none rounded-2xl text-lg outline-none"
+                        data-i18n-ph="step2.lightPlaceholder" placeholder="e.g. 5e6f7g8h-9i0j-...">
+                </div>
+                <button type="button" onclick="addTargetDeviceInput()"
+                    class="w-full px-6 py-5 bg-gray-100 dark:bg-white/5 border border-dashed border-gray-300 dark:border-white/10 rounded-2xl flex items-center justify-center text-gray-400 hover:text-[#008DF7] hover:border-[#008DF7]/50 dark:hover:border-[#008DF7]/40 transition-all"
+                    aria-label="Add target device">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 5v14m7-7H5"/>
+                    </svg>
+                </button>
             </div>
 
             <!-- Caution notes -->
@@ -718,6 +727,7 @@
                     <div id="marker_max" class="ct-marker" style="left:85%"></div>
                 </div>
                 <p class="text-xs text-gray-400 dark:text-gray-500 leading-relaxed" data-i18n="step3.note">※ 입력하신 범위에 맞춰 20단계 제어 수치가 자동 계산됩니다. 전구의 기술 사양에 명시된 색온도 범위를 정확히 입력해야 루틴의 오작동을 막을 수 있습니다.</p>
+                <p id="ctValidationMsg" class="text-red-500 text-sm font-bold hidden" data-i18n="step3.validationMsg">색온도는 1,000K 이상 20,000K 이하로 입력하고, 최소값은 최대값보다 작아야 합니다.</p>
             </div>
         </div>
     </section>
@@ -971,6 +981,7 @@ const I18N = {
         "step3.preset3Name":   "표준 화이트형",
         "step3.previewLabel":  "색온도 미리보기",
         "step3.note":          "※ 입력하신 범위에 맞춰 20단계 제어 수치가 자동 계산됩니다. 전구의 기술 사양에 명시된 색온도 범위를 정확히 입력해야 루틴의 오작동을 막을 수 있습니다.",
+        "step3.validationMsg": "색온도는 1,000K 이상 20,000K 이하로 입력하고, 최소값은 최대값보다 작아야 합니다.",
 
         "step4.copyBtn":       "코드 복사",
         "step4.toast":         "클립보드에 복사되었습니다!",
@@ -1057,6 +1068,7 @@ const I18N = {
         "step3.preset3Name":   "Standard White",
         "step3.previewLabel":  "Preview",
         "step3.note":          "※ 20-step control values are auto-calculated from your range. Enter the exact color temperature range from your bulb's spec sheet to prevent rule malfunctions.",
+        "step3.validationMsg": "Enter color temperatures from 1,000K to 20,000K, and keep the minimum lower than the maximum.",
 
         "step4.copyBtn":       "Copy Code",
         "step4.toast":         "Copied to clipboard!",
@@ -1227,7 +1239,7 @@ function updateStep2Labels() {
     const isFan = selectedPreset === 'fan-control';
     const label = document.getElementById('label_device2');
     const tip   = document.getElementById('tip_device2');
-    const input = document.getElementById('input_light');
+    const inputs = getTargetDeviceInputs();
     if (!label) return;
 
     if (isFan) {
@@ -1235,8 +1247,10 @@ function updateStep2Labels() {
         label.innerText = t('step2.fanLabel');
         tip.setAttribute('data-i18n', 'step2.fanTip');
         tip.innerText = t('step2.fanTip');
-        input.setAttribute('data-i18n-ph', 'step2.fanPlaceholder');
-        input.placeholder = t('step2.fanPlaceholder');
+        inputs.forEach(input => {
+            input.setAttribute('data-i18n-ph', 'step2.fanPlaceholder');
+            input.placeholder = t('step2.fanPlaceholder');
+        });
         // Switch caution line 3 to fan caution
         const c3 = document.getElementById('caution_line3');
         if (c3) { c3.setAttribute('data-i18n','step2.cautionFan'); c3.innerText = t('step2.cautionFan'); }
@@ -1245,11 +1259,47 @@ function updateStep2Labels() {
         label.innerText = t('step2.lightLabel');
         tip.setAttribute('data-i18n', 'step2.lightTip');
         tip.innerText = t('step2.lightTip');
-        input.setAttribute('data-i18n-ph', 'step2.lightPlaceholder');
-        input.placeholder = t('step2.lightPlaceholder');
+        inputs.forEach(input => {
+            input.setAttribute('data-i18n-ph', 'step2.lightPlaceholder');
+            input.placeholder = t('step2.lightPlaceholder');
+        });
         const c3 = document.getElementById('caution_line3');
         if (c3) { c3.setAttribute('data-i18n','step2.caution3'); c3.innerText = t('step2.caution3'); }
     }
+}
+
+function getTargetDeviceInputs() {
+    return Array.from(document.querySelectorAll('.target-device-input'));
+}
+
+function getTargetDeviceIds(fallback = '@device_light') {
+    const ids = getTargetDeviceInputs().map(input => input.value.trim()).filter(Boolean);
+    return ids.length ? ids : [fallback];
+}
+
+function addTargetDeviceInput() {
+    const container = document.getElementById('targetDeviceInputs');
+    const wrapper = document.createElement('div');
+    wrapper.className = 'flex gap-3 items-center';
+    wrapper.innerHTML = `
+        <input type="text" oninput="validateField(this)"
+            class="target-device-input flex-1 min-w-0 px-6 py-5 bg-gray-100 dark:bg-white/5 border-none rounded-2xl text-lg outline-none"
+            data-i18n-ph="${selectedPreset === 'fan-control' ? 'step2.fanPlaceholder' : 'step2.lightPlaceholder'}"
+            placeholder="${selectedPreset === 'fan-control' ? t('step2.fanPlaceholder') : t('step2.lightPlaceholder')}">
+        <button type="button" onclick="removeTargetDeviceInput(this)"
+            class="w-[64px] h-[64px] rounded-2xl bg-gray-100 dark:bg-white/5 text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 flex items-center justify-center transition-all"
+            aria-label="Remove target device">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+        </button>
+    `;
+    container.appendChild(wrapper);
+    wrapper.querySelector('input').focus();
+}
+
+function removeTargetDeviceInput(button) {
+    button.closest('div').remove();
 }
 
 function selectFanMode(mode) {
@@ -1268,10 +1318,10 @@ function selectFanMode(mode) {
 
 function validateStep2() {
     const dInput = document.getElementById('input_dimmer');
-    const lInput = document.getElementById('input_light');
+    const targetInputs = getTargetDeviceInputs();
     const msg = document.getElementById('validationMsg');
     let valid = true;
-    [dInput, lInput].forEach(inp => {
+    [dInput, ...targetInputs].forEach(inp => {
         if (!inp.value.trim()) { inp.classList.add('input-error'); valid = false; }
         else inp.classList.remove('input-error');
     });
@@ -1285,6 +1335,7 @@ function validateField(input) {
 
 function moveStep(dir) {
     if (dir === 1 && currentStep === 2 && !validateStep2()) return;
+    if (dir === 1 && getStepMap(selectedPreset)[currentStep - 1] === 'step3' && !validateCTRange()) return;
     if (dir === 1 && currentStep === totalSteps) {
         document.getElementById('confirmModal').classList.add('active');
         return;
@@ -1313,6 +1364,7 @@ function resetApp() {
     currentStep = 1;
     document.getElementById('input_dimmer').value = '';
     document.getElementById('input_light').value = '';
+    document.querySelectorAll('#targetDeviceInputs .flex').forEach(el => el.remove());
     document.getElementById('codeOutput').innerHTML = '';
     selectedPreset = 'dimmer-control';
     selectedFanMode = 'fixed5';
@@ -1322,50 +1374,105 @@ function resetApp() {
 }
 
 // ========== CT Logic ==========
+const CT_MIN_LIMIT = 1000;
+const CT_MAX_LIMIT = 20000;
+
 function setCTRange(min, max) {
     document.getElementById('ct_min').value = min;
     document.getElementById('ct_max').value = max;
     updateCTPreview();
 }
 
+function getCTRange() {
+    return {
+        min: Number.parseInt(document.getElementById('ct_min').value, 10),
+        max: Number.parseInt(document.getElementById('ct_max').value, 10)
+    };
+}
+
+function validateCTRange(showMessage = true) {
+    const minInput = document.getElementById('ct_min');
+    const maxInput = document.getElementById('ct_max');
+    const msg = document.getElementById('ctValidationMsg');
+    const { min, max } = getCTRange();
+    const valid =
+        Number.isInteger(min) &&
+        Number.isInteger(max) &&
+        min >= CT_MIN_LIMIT &&
+        max <= CT_MAX_LIMIT &&
+        min < max;
+
+    [minInput, maxInput].forEach(input => input.classList.toggle('input-error', !valid && showMessage));
+    if (msg) msg.classList.toggle('hidden', valid || !showMessage);
+    return valid;
+}
+
 function updateCTPreview() {
-    const min = parseInt(document.getElementById('ct_min').value) || 2000;
-    const max = parseInt(document.getElementById('ct_max').value) || 7000;
-    const getPos = v => Math.max(0, Math.min(100, ((v - 2000) / (7000 - 2000)) * 100));
-    document.getElementById('marker_min').style.left = getPos(min) + '%';
-    document.getElementById('marker_max').style.left = getPos(max) + '%';
-    document.getElementById('ct_preview_text').innerText = `${min}K  →  ${max}K`;
+    const { min, max } = getCTRange();
+    const previewMin = Number.isInteger(min) ? min : 2700;
+    const previewMax = Number.isInteger(max) ? max : 6500;
+    const getPos = v => Math.max(0, Math.min(100, ((v - CT_MIN_LIMIT) / (CT_MAX_LIMIT - CT_MIN_LIMIT)) * 100));
+    document.getElementById('marker_min').style.left = getPos(previewMin) + '%';
+    document.getElementById('marker_max').style.left = getPos(previewMax) + '%';
+    document.getElementById('ct_preview_text').innerText = `${previewMin}K  →  ${previewMax}K`;
+    validateCTRange(false);
 }
 
 // ========== Code Generation ==========
+function cloneTemplate(template) {
+    return JSON.parse(JSON.stringify(template));
+}
+
+function replacePlaceholders(value, replacements) {
+    if (Array.isArray(value)) {
+        return value.flatMap(item => {
+            const next = replacePlaceholders(item, replacements);
+            return Array.isArray(next) ? next : [next];
+        });
+    }
+    if (value && typeof value === 'object') {
+        Object.keys(value).forEach(key => {
+            value[key] = replacePlaceholders(value[key], replacements);
+        });
+        return value;
+    }
+    return typeof value === 'string' && replacements[value] ? replacements[value] : value;
+}
+
 function generateCode() {
     const dimmerId = document.getElementById('input_dimmer').value.trim() || '@device_dimmer';
-    const lightId  = document.getElementById('input_light').value.trim()  || '@device_light';
+    const lightIds = getTargetDeviceIds('@device_light');
     let finalJsonString = '';
 
     if (selectedPreset === 'dimmer-control') {
-        let raw = JSON.stringify(TEMPLATE_DIMMER, null, 4);
-        finalJsonString = raw.replace(/@device_dimmer/g, dimmerId).replace(/@device_light/g, lightId);
+        const rule = replacePlaceholders(cloneTemplate(TEMPLATE_DIMMER), {
+            '@device_dimmer': dimmerId,
+            '@device_light': lightIds
+        });
+        finalJsonString = JSON.stringify(rule, null, 4);
 
     } else if (selectedPreset === 'ct-control') {
-        const minK = parseInt(document.getElementById('ct_min').value) || 2700;
-        const maxK = parseInt(document.getElementById('ct_max').value) || 6500;
+        const { min: minK, max: maxK } = getCTRange();
         const stepsArray = [];
         for (let i = 0; i < 20; i++) {
             const s = i * 5 + 1, e = (i + 1) * 5;
             const stepVal = Math.round(minK + (maxK - minK) * (i / 19));
-            stepsArray.push({"if":{"between":{"value":{"device":{"devices":[dimmerId],"component":"main","capability":"switchLevel","attribute":"level"}},"start":{"integer":s},"end":{"integer":e}},"then":[{"command":{"devices":[lightId],"commands":[{"component":"main","capability":"colorTemperature","command":"setColorTemperature","arguments":[{"integer":stepVal}]}]}}]}});
+            stepsArray.push({"if":{"between":{"value":{"device":{"devices":[dimmerId],"component":"main","capability":"switchLevel","attribute":"level"}},"start":{"integer":s},"end":{"integer":e}},"then":[{"command":{"devices":lightIds,"commands":[{"component":"main","capability":"colorTemperature","command":"setColorTemperature","arguments":[{"integer":stepVal}]}]}}]}});
         }
-        const master = JSON.parse(JSON.stringify(TEMPLATE_CT_MASTER));
-        master[0].if.changes.operand.device.devices = [dimmerId];
-        master[0].if.then[0].if.equals.left.device.devices = [lightId];
+        const master = replacePlaceholders(cloneTemplate(TEMPLATE_CT_MASTER), {
+            '@device_dimmer': dimmerId,
+            '@device_light': lightIds
+        });
         master[0].if.then[0].if.then = stepsArray;
         finalJsonString = JSON.stringify(master, null, 4);
 
     } else if (selectedPreset === 'fan-control') {
-        const fanId = lightId; // input_light is reused for fan ID
-        let raw = JSON.stringify(TEMPLATE_FAN, null, 4);
-        finalJsonString = raw.replace(/@device_dimmer/g, dimmerId).replace(/@device_fan/g, fanId);
+        const fanIds = getTargetDeviceIds('@device_fan'); // input_light is reused for fan IDs
+        const rule = replacePlaceholders(cloneTemplate(TEMPLATE_FAN), {
+            '@device_dimmer': dimmerId,
+            '@device_fan': fanIds
+        });
+        finalJsonString = JSON.stringify(rule, null, 4);
     }
 
     document.getElementById('codeOutput').innerHTML = syntaxHighlight(finalJsonString);
