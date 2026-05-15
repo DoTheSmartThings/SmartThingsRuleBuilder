@@ -370,6 +370,24 @@
             transition: left 0.3s ease;
         }
 
+        /* Volume gradient bar */
+        .vol-gradient-bar {
+            height: 18px;
+            border-radius: 9px;
+            background: linear-gradient(to right, #ddd6fe, #a78bfa, #7c3aed 40%, #f59e0b 65%, #ef4444 100%);
+            position: relative;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .vol-marker {
+            position: absolute;
+            top: -5px;
+            width: 4px; height: 28px;
+            background: white;
+            box-shadow: 0 0 6px rgba(0,0,0,0.35);
+            border-radius: 2px;
+            transition: left 0.3s ease;
+        }
+
         /* Preset card hover state */
         .preset-card {
             transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -596,6 +614,24 @@
                 </div>
             </div>
 
+            <!-- Preset: Volume Control -->
+            <div onclick="selectPreset('volume-control')"
+                class="preset-card glass-card p-8 md:p-10 border-2 border-transparent hover:border-violet-400/30 dark:hover:border-violet-500/20 group">
+                <div class="w-14 h-14 bg-violet-50 dark:bg-violet-500/10 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                    <svg class="w-8 h-8 text-violet-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5L6 9H2v6h4l5 4V5z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.54 8.46a5 5 0 010 7.07"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.07 4.93a10 10 0 010 14.14"/>
+                    </svg>
+                </div>
+                <h3 class="text-xl md:text-2xl font-bold mb-3 tracking-tight" data-i18n="preset.volume.title">IoT 노브로 볼륨 제어</h3>
+                <p class="text-sm md:text-base text-gray-500 dark:text-zinc-400 leading-relaxed" data-i18n="preset.volume.desc">노브를 돌려서 오디오 볼륨을 조절합니다.</p>
+                <div class="mt-6 flex items-center text-violet-500 text-sm font-black gap-2 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-x-[-8px] group-hover:translate-x-0">
+                    <span data-i18n="preset.select">선택하기</span>
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+                </div>
+            </div>
+
         </div>
     </section>
 
@@ -801,6 +837,77 @@
         </div>
     </section>
 
+    <!-- ===== STEP 3-VOLUME: VOLUME RANGE SETTING ===== -->
+    <section id="step3_volume" class="step-content">
+        <div class="glass-card p-8 md:p-12 space-y-10">
+            <div class="space-y-6">
+                <h4 class="text-lg font-bold tracking-tight" data-i18n="step3vol.rangeTitle">볼륨 범위 설정</h4>
+                <div class="flex flex-col sm:flex-row gap-6 items-end">
+                    <div class="flex-1 w-full space-y-2">
+                        <label class="text-xs font-black text-gray-400 uppercase tracking-widest" data-i18n="step3vol.minLabel">최소</label>
+                        <div class="relative">
+                            <input type="number" id="vol_min" oninput="updateVolPreview()" value="0" min="0" max="100"
+                                class="w-full px-5 py-4 bg-gray-100 dark:bg-white/5 rounded-2xl text-xl font-bold outline-none pr-12">
+                            <span class="absolute right-5 top-1/2 -translate-y-1/2 font-bold text-gray-400">%</span>
+                        </div>
+                    </div>
+                    <div class="hidden sm:block pb-5 text-gray-300 text-xl">—</div>
+                    <div class="flex-1 w-full space-y-2">
+                        <label class="text-xs font-black text-gray-400 uppercase tracking-widest" data-i18n="step3vol.maxLabel">최대</label>
+                        <div class="relative">
+                            <input type="number" id="vol_max" oninput="updateVolPreview()" value="20" min="0" max="100"
+                                class="w-full px-5 py-4 bg-gray-100 dark:bg-white/5 rounded-2xl text-xl font-bold outline-none pr-12">
+                            <span class="absolute right-5 top-1/2 -translate-y-1/2 font-bold text-gray-400">%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick range presets -->
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                    <button onclick="setVolRange(0,10)"
+                        class="p-4 rounded-2xl border border-gray-200 dark:border-white/10 hover:border-violet-400/50 dark:hover:border-violet-500/40 transition-all text-left hover:bg-violet-50/50 dark:hover:bg-violet-500/5">
+                        <span class="block text-[10px] font-black text-gray-400 mb-1.5 uppercase tracking-widest" data-i18n="step3vol.preset1Name">은은하게</span>
+                        <span class="block font-bold text-sm">0 – 10</span>
+                    </button>
+                    <button onclick="setVolRange(0,20)"
+                        class="p-4 rounded-2xl border border-gray-200 dark:border-white/10 hover:border-violet-400/50 dark:hover:border-violet-500/40 transition-all text-left hover:bg-violet-50/50 dark:hover:bg-violet-500/5">
+                        <span class="block text-[10px] font-black text-gray-400 mb-1.5 uppercase tracking-widest" data-i18n="step3vol.preset2Name">기본</span>
+                        <span class="block font-bold text-sm">0 – 20</span>
+                    </button>
+                    <button onclick="setVolRange(0,30)"
+                        class="p-4 rounded-2xl border border-gray-200 dark:border-white/10 hover:border-violet-400/50 dark:hover:border-violet-500/40 transition-all text-left hover:bg-violet-50/50 dark:hover:bg-violet-500/5">
+                        <span class="block text-[10px] font-black text-gray-400 mb-1.5 uppercase tracking-widest" data-i18n="step3vol.preset3Name">셋톱박스 & 콘솔</span>
+                        <span class="block font-bold text-sm">0 – 30</span>
+                    </button>
+                    <button onclick="setVolRange(0,40)"
+                        class="p-4 rounded-2xl border border-gray-200 dark:border-white/10 hover:border-orange-400/50 dark:hover:border-orange-500/40 transition-all text-left hover:bg-orange-50/50 dark:hover:bg-orange-500/5">
+                        <span class="block text-[10px] font-black text-orange-400 mb-1.5 uppercase tracking-widest" data-i18n="step3vol.preset4Name">시끄럽게</span>
+                        <span class="block font-bold text-sm text-orange-500">0 – 40</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Volume level bar -->
+            <div class="space-y-4">
+                <div class="flex justify-between items-center">
+                    <span class="text-xs font-black text-gray-400 uppercase tracking-widest" data-i18n="step3vol.previewLabel">볼륨 범위 미리보기</span>
+                    <span id="vol_preview_text" class="text-sm font-bold text-violet-500">0 → 20</span>
+                </div>
+                <div class="vol-gradient-bar">
+                    <div id="vol_marker_min" class="vol-marker" style="left:0%"></div>
+                    <div id="vol_marker_max" class="vol-marker" style="left:20%"></div>
+                </div>
+                <!-- Warning zone label -->
+                <div class="flex items-center justify-end gap-1.5">
+                    <div class="w-2 h-2 rounded-full bg-orange-400"></div>
+                    <span class="text-[11px] font-bold text-gray-400 dark:text-zinc-500" data-i18n="step3vol.warningLabel">40%를 넘으면 칼맞을 수도 있습니다.</span>
+                </div>
+                <p class="text-xs text-gray-400 dark:text-gray-500 leading-relaxed" data-i18n="step3vol.note">※ 0~100 사이의 값만 입력 가능하며, 최소값은 최대값보다 작아야 합니다.</p>
+                <p id="volValidationMsg" class="text-red-500 text-sm font-bold hidden" data-i18n="step3vol.validationMsg">볼륨은 0 이상 100 이하로 입력하고, 최소값은 최대값보다 작아야 합니다.</p>
+            </div>
+        </div>
+    </section>
+
     <!-- ===== STEP 4: CODE GENERATION ===== -->
     <section id="step4" class="step-content">
         <div class="relative group">
@@ -940,6 +1047,8 @@ const I18N = {
         "preset.ct.desc":      "노브를 돌려서 색온도를 부드럽게 바꿉니다.",
         "preset.fan.title":    "IoT 노브로 선풍기 바람세기 제어",
         "preset.fan.desc":     "노브를 돌려서 선풍기의 바람세기를 조절합니다.",
+        "preset.volume.title": "IoT 노브로 볼륨 제어",
+        "preset.volume.desc":  "노브를 돌려서 오디오 볼륨을 조절합니다.",
 
         "step2.banner":          "SmartThings Advanced Web App에서 기기 ID를 가져오세요.",
         "step2.cautionTitle":    "주의사항",
@@ -953,10 +1062,28 @@ const I18N = {
         "step2.fanLabel":        "컨트롤할 선풍기의 ID",
         "step2.fanPlaceholder":  "e.g. 5e6f7g8h-9i0j-...",
         "step2.fanTip":          "Advanced Web App → Devices → 해당 기기의 Device ID를 복사하세요.",
+        "step2.volumeLabel":     "컨트롤할 오디오의 ID",
+        "step2.volumePlaceholder": "e.g. 5e6f7g8h-9i0j-...",
+        "step2.volumeTip":       "Advanced Web App → Devices → 해당 기기의 Device ID를 복사하세요.",
         "step2.caution1":        "반드시 SmartThings Advanced Web App에서 복사하세요.",
         "step2.caution3":        "전구가 Switch Level 및 Color Temperature 기능을 지원하는지 확인하세요.",
         "step2.cautionFan":      "선풍기가 Fan Speed 기능을 지원하는지 확인하세요. (SmartThings 앱 → 기기 상세에서 확인 가능)",
+        "step2.cautionVolume":   "오디오 기기가 Audio Volume 기능을 지원하는지 확인하세요. (SmartThings 앱 → 기기 상세에서 확인 가능)",
         "step2.validationMsg":   "필수 정보를 모두 입력해야 다음으로 진행할 수 있습니다.",
+
+        "step3vol.rangeTitle":   "볼륨 범위 설정",
+        "step3vol.minLabel":     "최소",
+        "step3vol.maxLabel":     "최대",
+        "step3vol.preset1Name":  "은은하게",
+        "step3vol.preset2Name":  "기본",
+        "step3vol.preset3Name":  "셋톱박스 & 콘솔",
+        "step3vol.preset4Name":  "시끄럽게",
+        "step3vol.previewLabel": "볼륨 범위 미리보기",
+        "step3vol.warningLabel": "40%를 넘으면 칼맞을 수도 있습니다.",
+        "step3vol.note":         "※ 0~100 사이의 값만 입력 가능하며, 최소값은 최대값보다 작아야 합니다.",
+        "step3vol.validationMsg":"볼륨은 0 이상 100 이하로 입력하고, 최소값은 최대값보다 작아야 합니다.",
+
+        "step.3vol.title":       "볼륨 범위 설정",
 
         "step3fan.title":        "바람세기 범위",
         "step3fan.desc":         "선풍기 사양에 맞는 제어 방식을 선택하세요.",
@@ -1026,7 +1153,9 @@ const I18N = {
         "preset.ct.title":     "Control Bulb Color Temp via IoT Knob",
         "preset.ct.desc":      "Turn the knob to smoothly change the color temperature.",
         "preset.fan.title":    "Control Fan Speed via IoT Knob",
-        "preset.fan.desc":     "Turn the knob to change the fan's speed.",
+        "preset.fan.desc":     "Turn the knob to smoothly change the fan's speed.",
+        "preset.volume.title": "Control Volume via IoT Knob",
+        "preset.volume.desc":  "Turn the knob to smoothly change the audio volume",
 
         "step2.banner":          "Get your device IDs from SmartThings Advanced Web App.",
         "step2.cautionTitle":    "Caution",
@@ -1040,10 +1169,28 @@ const I18N = {
         "step2.fanLabel":        "Target Fan ID",
         "step2.fanPlaceholder":  "e.g. 5e6f7g8h-9i0j-...",
         "step2.fanTip":          "Advanced Web App → Devices → Copy the Device ID.",
+        "step2.volumeLabel":     "Target Audio Device ID",
+        "step2.volumePlaceholder": "e.g. 5e6f7g8h-9i0j-...",
+        "step2.volumeTip":       "Advanced Web App → Devices → Copy the Device ID.",
         "step2.caution1":        "Always copy from SmartThings Advanced Web App.",
         "step2.caution3":        "Make sure your bulb supports Switch Level and Color Temperature capabilities.",
         "step2.cautionFan":      "Make sure your fan supports the Fan Speed capability. (Check in SmartThings app → Device details)",
+        "step2.cautionVolume":   "Make sure your speaker supports the Audio Volume capability. (Check in SmartThings app → Device details)",
         "step2.validationMsg":   "Please fill in all required fields to continue.",
+
+        "step3vol.rangeTitle":   "Volume Range",
+        "step3vol.minLabel":     "Minimum",
+        "step3vol.maxLabel":     "Maximum",
+        "step3vol.preset1Name":  "Subtle",
+        "step3vol.preset2Name":  "Default",
+        "step3vol.preset3Name":  "Set-top & Console",
+        "step3vol.preset4Name":  "Loud",
+        "step3vol.previewLabel": "Volume Range Preview",
+        "step3vol.warningLabel": "Over 40%? Prepare for a neighbor war.",
+        "step3vol.note":         "※ Values must be between 0 and 100, with the minimum lower than the maximum.",
+        "step3vol.validationMsg":"Volume must be between 0 and 100, and minimum must be less than maximum.",
+
+        "step.3vol.title":       "Volume Range",
 
         "step3fan.title":        "Fan speed Range",
         "step3fan.desc":         "Choose the control method that matches your fan's specification.",
@@ -1101,6 +1248,9 @@ const TEMPLATE_CT_MASTER = [{"if":{"changes":{"operand":{"device":{"devices":["@
 
 const TEMPLATE_FAN = [{"if":{"changes":{"operand":{"device":{"devices":["@device_dimmer"],"component":"main","capability":"switchLevel","attribute":"level"}}},"then":[{"if":{"equals":{"left":{"device":{"devices":["@device_fan"],"component":"main","capability":"switch","attribute":"switch","trigger":"Never"}},"right":{"string":"on"}},"then":[{"if":{"between":{"value":{"device":{"devices":["@device_dimmer"],"component":"main","capability":"switchLevel","attribute":"level"}},"start":{"integer":1},"end":{"integer":20}},"then":[{"command":{"devices":["@device_fan"],"commands":[{"component":"main","capability":"fanSpeed","command":"setFanSpeed","arguments":[{"integer":0}]}]}}]}},{"if":{"between":{"value":{"device":{"devices":["@device_dimmer"],"component":"main","capability":"switchLevel","attribute":"level"}},"start":{"integer":21},"end":{"integer":40}},"then":[{"command":{"devices":["@device_fan"],"commands":[{"component":"main","capability":"fanSpeed","command":"setFanSpeed","arguments":[{"integer":1}]}]}}]}},{"if":{"between":{"value":{"device":{"devices":["@device_dimmer"],"component":"main","capability":"switchLevel","attribute":"level"}},"start":{"integer":41},"end":{"integer":60}},"then":[{"command":{"devices":["@device_fan"],"commands":[{"component":"main","capability":"fanSpeed","command":"setFanSpeed","arguments":[{"integer":2}]}]}}]}},{"if":{"between":{"value":{"device":{"devices":["@device_dimmer"],"component":"main","capability":"switchLevel","attribute":"level"}},"start":{"integer":61},"end":{"integer":80}},"then":[{"command":{"devices":["@device_fan"],"commands":[{"component":"main","capability":"fanSpeed","command":"setFanSpeed","arguments":[{"integer":3}]}]}}]}},{"if":{"between":{"value":{"device":{"devices":["@device_dimmer"],"component":"main","capability":"switchLevel","attribute":"level"}},"start":{"integer":81},"end":{"integer":100}},"then":[{"command":{"devices":["@device_fan"],"commands":[{"component":"main","capability":"fanSpeed","command":"setFanSpeed","arguments":[{"integer":4}]}]}}]}}]}}]}}];
 
+// Volume template: level 1 → vol 0, levels 2~10 → vol 1, 11~20 → vol 2 … 91~100 → vol 10 (structure, values injected at runtime)
+const TEMPLATE_VOLUME_MASTER = [{"if":{"changes":{"operand":{"device":{"devices":["@device_dimmer"],"component":"main","capability":"switchLevel","attribute":"level"}}},"then":"@interpolated_steps"}}];
+
 // ========== STATE ==========
 let currentStep = 1;
 let isDarkMode = false;
@@ -1113,15 +1263,17 @@ let moreMenuOpen = false;
 // ========== PRESET STEP MAP ==========
 // Returns the ordered list of DOM section IDs for a given preset
 function getStepMap(preset) {
-    if (preset === 'ct-control')   return ['step1','step2','step3','step4','step5'];
-    if (preset === 'fan-control')  return ['step1','step2','step3_fan','step4','step5'];
+    if (preset === 'ct-control')     return ['step1','step2','step3','step4','step5'];
+    if (preset === 'fan-control')    return ['step1','step2','step3_fan','step4','step5'];
+    if (preset === 'volume-control') return ['step1','step2','step3_volume','step4','step5'];
     return ['step1','step2','step4','step5']; // dimmer-control (no step3)
 }
 
 function getStepTitles(preset) {
     const base = [t('step.1.title'), t('step.2.title')];
-    if (preset === 'ct-control')  return [...base, t('step.3.title'), t('step.4.title'), t('step.5.title')];
-    if (preset === 'fan-control') return [...base, t('step.3fan.title') || t('step.3.title'), t('step.4.title'), t('step.5.title')];
+    if (preset === 'ct-control')     return [...base, t('step.3.title'),       t('step.4.title'), t('step.5.title')];
+    if (preset === 'fan-control')    return [...base, t('step.3fan.title'),     t('step.4.title'), t('step.5.title')];
+    if (preset === 'volume-control') return [...base, t('step.3vol.title'),     t('step.4.title'), t('step.5.title')];
     return [...base, t('step.4.title'), t('step.5.title')];
 }
 
@@ -1233,12 +1385,15 @@ function updateUI() {
 
     // CT preview when on step3
     if (selectedPreset === 'ct-control' && targetId === 'step3') updateCTPreview();
+    // Volume preview when on step3_volume
+    if (selectedPreset === 'volume-control' && targetId === 'step3_volume') updateVolPreview();
 }
 
 function updateStep2Labels() {
-    const isFan = selectedPreset === 'fan-control';
-    const label = document.getElementById('label_device2');
-    const tip   = document.getElementById('tip_device2');
+    const isFan    = selectedPreset === 'fan-control';
+    const isVolume = selectedPreset === 'volume-control';
+    const label  = document.getElementById('label_device2');
+    const tip    = document.getElementById('tip_device2');
     const inputs = getTargetDeviceInputs();
     if (!label) return;
 
@@ -1251,9 +1406,19 @@ function updateStep2Labels() {
             input.setAttribute('data-i18n-ph', 'step2.fanPlaceholder');
             input.placeholder = t('step2.fanPlaceholder');
         });
-        // Switch caution line 3 to fan caution
         const c3 = document.getElementById('caution_line3');
         if (c3) { c3.setAttribute('data-i18n','step2.cautionFan'); c3.innerText = t('step2.cautionFan'); }
+    } else if (isVolume) {
+        label.setAttribute('data-i18n', 'step2.volumeLabel');
+        label.innerText = t('step2.volumeLabel');
+        tip.setAttribute('data-i18n', 'step2.volumeTip');
+        tip.innerText = t('step2.volumeTip');
+        inputs.forEach(input => {
+            input.setAttribute('data-i18n-ph', 'step2.volumePlaceholder');
+            input.placeholder = t('step2.volumePlaceholder');
+        });
+        const c3 = document.getElementById('caution_line3');
+        if (c3) { c3.setAttribute('data-i18n','step2.cautionVolume'); c3.innerText = t('step2.cautionVolume'); }
     } else {
         label.setAttribute('data-i18n', 'step2.lightLabel');
         label.innerText = t('step2.lightLabel');
@@ -1280,12 +1445,17 @@ function getTargetDeviceIds(fallback = '@device_light') {
 function addTargetDeviceInput() {
     const container = document.getElementById('targetDeviceInputs');
     const wrapper = document.createElement('div');
-    wrapper.className = 'flex gap-3 items-center';
+    wrapper.className = 'added-device-row flex gap-3 items-center';
+    const placeholderKey = selectedPreset === 'fan-control'
+        ? 'step2.fanPlaceholder'
+        : selectedPreset === 'volume-control'
+            ? 'step2.volumePlaceholder'
+            : 'step2.lightPlaceholder';
     wrapper.innerHTML = `
         <input type="text" oninput="validateField(this)"
             class="target-device-input flex-1 min-w-0 px-6 py-5 bg-gray-100 dark:bg-white/5 border-none rounded-2xl text-lg outline-none"
-            data-i18n-ph="${selectedPreset === 'fan-control' ? 'step2.fanPlaceholder' : 'step2.lightPlaceholder'}"
-            placeholder="${selectedPreset === 'fan-control' ? t('step2.fanPlaceholder') : t('step2.lightPlaceholder')}">
+            data-i18n-ph="${placeholderKey}"
+            placeholder="${t(placeholderKey)}">
         <button type="button" onclick="removeTargetDeviceInput(this)"
             class="w-[64px] h-[64px] rounded-2xl bg-gray-100 dark:bg-white/5 text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 flex items-center justify-center transition-all"
             aria-label="Remove target device">
@@ -1336,6 +1506,7 @@ function validateField(input) {
 function moveStep(dir) {
     if (dir === 1 && currentStep === 2 && !validateStep2()) return;
     if (dir === 1 && getStepMap(selectedPreset)[currentStep - 1] === 'step3' && !validateCTRange()) return;
+    if (dir === 1 && getStepMap(selectedPreset)[currentStep - 1] === 'step3_volume' && !validateVolRange()) return;
     if (dir === 1 && currentStep === totalSteps) {
         document.getElementById('confirmModal').classList.add('active');
         return;
@@ -1364,7 +1535,9 @@ function resetApp() {
     currentStep = 1;
     document.getElementById('input_dimmer').value = '';
     document.getElementById('input_light').value = '';
-    document.querySelectorAll('#targetDeviceInputs .flex').forEach(el => el.remove());
+    document.getElementById('vol_min').value = '0';
+    document.getElementById('vol_max').value = '20';
+    document.querySelectorAll('#targetDeviceInputs .added-device-row').forEach(el => el.remove());
     document.getElementById('codeOutput').innerHTML = '';
     selectedPreset = 'dimmer-control';
     selectedFanMode = 'fixed5';
@@ -1418,6 +1591,63 @@ function updateCTPreview() {
     validateCTRange(false);
 }
 
+// ========== Volume Logic ==========
+const VOL_MIN_LIMIT = 0;
+const VOL_MAX_LIMIT = 100;
+
+function setVolRange(min, max) {
+    document.getElementById('vol_min').value = min;
+    document.getElementById('vol_max').value = max;
+    updateVolPreview();
+}
+
+function getVolRange() {
+    return {
+        min: Number.parseInt(document.getElementById('vol_min').value, 10),
+        max: Number.parseInt(document.getElementById('vol_max').value, 10)
+    };
+}
+
+function validateVolRange(showMessage = true) {
+    const minInput = document.getElementById('vol_min');
+    const maxInput = document.getElementById('vol_max');
+    const msg      = document.getElementById('volValidationMsg');
+    const { min, max } = getVolRange();
+    const valid =
+        Number.isInteger(min) &&
+        Number.isInteger(max) &&
+        min >= VOL_MIN_LIMIT &&
+        max <= VOL_MAX_LIMIT &&
+        min < max;
+
+    [minInput, maxInput].forEach(input => input.classList.toggle('input-error', !valid && showMessage));
+    if (msg) msg.classList.toggle('hidden', valid || !showMessage);
+    return valid;
+}
+
+function updateVolPreview() {
+    const { min, max } = getVolRange();
+    const safeMin = Number.isInteger(min) ? Math.max(0, Math.min(min, 100)) : 0;
+    const safeMax = Number.isInteger(max) ? Math.max(0, Math.min(max, 100)) : 20;
+    // 0~100 maps directly to 0~100% on the bar
+    const getPos = v => Math.max(0, Math.min(100, v));
+
+    const markerMin = document.getElementById('vol_marker_min');
+    const markerMax = document.getElementById('vol_marker_max');
+    const text      = document.getElementById('vol_preview_text');
+
+    if (markerMin) markerMin.style.left = getPos(safeMin) + '%';
+    if (markerMax) markerMax.style.left = getPos(safeMax) + '%';
+    if (text) {
+        text.innerText = `${safeMin}  →  ${safeMax}`;
+        text.className = safeMax > 40
+            ? 'text-sm font-bold text-orange-500'
+            : 'text-sm font-bold text-violet-500';
+    }
+
+    validateVolRange(false);
+}
+
 // ========== Code Generation ==========
 function cloneTemplate(template) {
     return JSON.parse(JSON.stringify(template));
@@ -1430,13 +1660,14 @@ function replacePlaceholders(value, replacements) {
             return Array.isArray(next) ? next : [next];
         });
     }
-    if (value && typeof value === 'object') {
-        Object.keys(value).forEach(key => {
-            value[key] = replacePlaceholders(value[key], replacements);
-        });
-        return value;
+    if (value !== null && typeof value === 'object') {
+        return Object.fromEntries(
+            Object.keys(value).map(key => [key, replacePlaceholders(value[key], replacements)])
+        );
     }
-    return typeof value === 'string' && replacements[value] ? replacements[value] : value;
+    return typeof value === 'string' && Object.prototype.hasOwnProperty.call(replacements, value)
+        ? replacements[value]
+        : value;
 }
 
 function generateCode() {
@@ -1457,20 +1688,68 @@ function generateCode() {
         for (let i = 0; i < 20; i++) {
             const s = i * 5 + 1, e = (i + 1) * 5;
             const stepVal = Math.round(minK + (maxK - minK) * (i / 19));
-            stepsArray.push({"if":{"between":{"value":{"device":{"devices":[dimmerId],"component":"main","capability":"switchLevel","attribute":"level"}},"start":{"integer":s},"end":{"integer":e}},"then":[{"command":{"devices":lightIds,"commands":[{"component":"main","capability":"colorTemperature","command":"setColorTemperature","arguments":[{"integer":stepVal}]}]}}]}});
+            stepsArray.push({"if":{"between":{"value":{"device":{"devices":["@device_dimmer"],"component":"main","capability":"switchLevel","attribute":"level"}},"start":{"integer":s},"end":{"integer":e}},"then":[{"command":{"devices":["@device_light"],"commands":[{"component":"main","capability":"colorTemperature","command":"setColorTemperature","arguments":[{"integer":stepVal}]}]}}]}});
         }
-        const master = replacePlaceholders(cloneTemplate(TEMPLATE_CT_MASTER), {
+        const master = cloneTemplate(TEMPLATE_CT_MASTER);
+        master[0].if.then[0].if.then = stepsArray;
+        const rule = replacePlaceholders(master, {
             '@device_dimmer': dimmerId,
             '@device_light': lightIds
         });
-        master[0].if.then[0].if.then = stepsArray;
-        finalJsonString = JSON.stringify(master, null, 4);
+        finalJsonString = JSON.stringify(rule, null, 4);
 
     } else if (selectedPreset === 'fan-control') {
-        const fanIds = getTargetDeviceIds('@device_fan'); // input_light is reused for fan IDs
+        const fanIds = getTargetDeviceIds('@device_fan');
         const rule = replacePlaceholders(cloneTemplate(TEMPLATE_FAN), {
             '@device_dimmer': dimmerId,
             '@device_fan': fanIds
+        });
+        finalJsonString = JSON.stringify(rule, null, 4);
+
+    } else if (selectedPreset === 'volume-control') {
+        const volumeIds = getTargetDeviceIds('@device_volume');
+        const { min: minVol, max: maxVol } = getVolRange();
+
+        // Total 20 steps:
+        //   Band 0   : level 1       → volume 0  (fixed silent zone)
+        //   Bands 1~19: level 2~100 split into 19 equal bands; volume 0 is never repeated.
+        const stepsArray = [];
+
+        // Band 0: level 1 → vol 0
+        stepsArray.push({
+            "if": {
+                "between": {
+                    "value": {"device": {"devices": ["@device_dimmer"], "component": "main", "capability": "switchLevel", "attribute": "level"}},
+                    "start": {"integer": 1}, "end": {"integer": 1}
+                },
+                "then": [{"command": {"devices": ["@device_volume"], "commands": [{"component": "main", "capability": "audioVolume", "command": "setVolume", "arguments": [{"integer": 0}]}]}}]
+            }
+        });
+
+        // Bands 1~19: levels 2~100 divided as evenly as possible
+        const effectiveMinVol = Math.max(1, minVol);
+        for (let i = 0; i < 19; i++) {
+            // Distribute 99 levels (2~100) into 19 bands as evenly as possible
+            const totalLevels = 99; // 100 - 2 + 1
+            const bandStart = 2 + Math.round(i * totalLevels / 19);
+            const bandEnd   = 2 + Math.round((i + 1) * totalLevels / 19) - 1;
+            const stepVal   = Math.round(effectiveMinVol + (maxVol - effectiveMinVol) * (i / 18));
+            stepsArray.push({
+                "if": {
+                    "between": {
+                        "value": {"device": {"devices": ["@device_dimmer"], "component": "main", "capability": "switchLevel", "attribute": "level"}},
+                        "start": {"integer": bandStart}, "end": {"integer": bandEnd}
+                    },
+                    "then": [{"command": {"devices": ["@device_volume"], "commands": [{"component": "main", "capability": "audioVolume", "command": "setVolume", "arguments": [{"integer": stepVal}]}]}}]
+                }
+            });
+        }
+
+        const master = cloneTemplate(TEMPLATE_VOLUME_MASTER);
+        master[0].if.then = stepsArray;
+        const rule = replacePlaceholders(master, {
+            '@device_dimmer': dimmerId,
+            '@device_volume': volumeIds
         });
         finalJsonString = JSON.stringify(rule, null, 4);
     }
