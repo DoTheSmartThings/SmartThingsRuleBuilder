@@ -476,6 +476,42 @@
         /* But don't slow down animations */
         [class*="animate"], [class*="transition-"] { transition: unset; }
         input, button { transition: all 0.2s ease !important; }
+
+        .bridge-check-card {
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .bridge-check-card.active {
+            border-color: var(--point-color);
+            background: rgba(0, 141, 247, 0.08);
+            box-shadow: 0 10px 28px rgba(0, 141, 247, 0.14);
+        }
+        .bridge-check {
+            appearance: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 8px;
+            border: 2px solid #cbd5e1;
+            background: rgba(255,255,255,0.7);
+            display: grid;
+            place-items: center;
+            flex-shrink: 0;
+        }
+        .bridge-check::after {
+            content: '';
+            width: 6px;
+            height: 11px;
+            border: solid white;
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg) scale(0);
+            transition: transform 0.15s ease;
+        }
+        .bridge-check:checked {
+            background: var(--point-color);
+            border-color: var(--point-color);
+        }
+        .bridge-check:checked::after { transform: rotate(45deg) scale(1); }
+        html.dark .bridge-check { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.2); }
     </style>
 </head>
 <body class="min-h-screen flex flex-col">
@@ -648,10 +684,10 @@
             <!-- Dimmer input -->
             <div class="space-y-4">
                 <div class="flex items-center gap-2">
-                    <label class="block text-sm font-black text-gray-600 dark:text-zinc-400 uppercase tracking-wider" data-i18n="step2.dimmerLabel">노브(디머)의 ID</label>
+                    <label id="label_dimmer" class="block text-sm font-black text-gray-600 dark:text-zinc-400 uppercase tracking-wider" data-i18n="step2.dimmerLabel">노브(디머)의 ID</label>
                     <div class="tooltip-wrap">
                         <button class="w-5 h-5 rounded-full bg-gray-200 dark:bg-white/10 flex items-center justify-center text-gray-400 flex-shrink-0 text-[11px] font-black">?</button>
-                        <div class="tooltip-box" data-i18n="step2.dimmerTip">Advanced Web App → Devices → 해당 기기 클릭 → Device ID를 복사하세요.</div>
+                        <div id="tip_dimmer" class="tooltip-box" data-i18n="step2.dimmerTip">Advanced Web App → Devices → 해당 기기 클릭 → Device ID를 복사하세요.</div>
                     </div>
                 </div>
                 <input type="text" id="input_dimmer" oninput="validateField(this)"
@@ -908,6 +944,211 @@
         </div>
     </section>
 
+    <!-- ===== BRIDGE SETUP 1: DRIVER INSTALL ===== -->
+    <section id="bridge_setup1" class="step-content">
+        <div class="glass-card p-8 md:p-12 space-y-8">
+            <div class="md:border-b border-gray-100 dark:border-white/5 flex flex-col sm:flex-row justify-between items-center gap-4">
+                <div>
+                    <h3 class="text-xl md:text-2xl font-bold tracking-tight mb-2" data-i18n="bridge.s1.title">엣지 드라이버 설치</h3>
+                <p class="text-sm text-gray-500 dark:text-zinc-400 leading-relaxed" data-i18n="bridge.s1.desc">상대값 노브를 0~100 값으로 바꿔줄 가상 전구 드라이버를 먼저 설치합니다.</p>
+                </div>
+                <a href="https://bestow-regional.api.smartthings.com/invite/QLMOwQ1EkaM3" target="_blank"
+                        class="w-full sm:w-auto px-5 py-3 btn-primary text-white text-sm font-black rounded-xl text-center hover:scale-105 transition-transform" data-i18n="step5.rulesBtn">드라이버 채널 열기</a>
+            </div>
+            <div class="space-y-3">
+                <label class="bridge-check-card flex items-start gap-3 p-4 bg-gray-100 dark:bg-white/5 rounded-2xl border-2 border-gray-200 dark:border-white/10">
+                    <input type="checkbox" class="bridge-check mt-0.5" onchange="updateBridgeCheckCards()" data-bridge-group="driver">
+                    <span class="text-sm font-bold text-gray-700 dark:text-gray-300" data-i18n="bridge.s1.check1">삼성계정으로 로그인한 뒤 Enroll 버튼을 눌렀습니다.</span>
+                </label>
+                <label class="bridge-check-card flex items-start gap-3 p-4 bg-gray-100 dark:bg-white/5 rounded-2xl border-2 border-gray-200 dark:border-white/10">
+                    <input type="checkbox" class="bridge-check mt-0.5" onchange="updateBridgeCheckCards()" data-bridge-group="driver">
+                    <span class="text-sm font-bold text-gray-700 dark:text-gray-300" data-i18n="bridge.s1.check2">Available Drivers에서 Virtual Dimmer StatelessSwitchLevelStep Tx 드라이버를 설치했습니다.</span>
+                </label>
+            </div>
+            <p id="bridgeChecklistMsg" class="text-red-500 text-sm font-bold hidden" data-i18n="bridge.checklistMsg">체크리스트를 모두 완료해야 다음으로 진행할 수 있습니다.</p>
+        </div>
+    </section>
+
+    <!-- ===== BRIDGE SETUP 2: CREATE VIRTUAL DEVICE ===== -->
+    <section id="bridge_setup2" class="step-content">
+        <div class="glass-card p-8 md:p-12 space-y-8">
+            <div class="md:border-b border-gray-100 dark:border-white/5 flex flex-col sm:flex-row justify-between items-center gap-4">
+                <div>
+                    <h3 class="text-xl md:text-2xl font-bold tracking-tight mb-2" data-i18n="bridge.s2.title">가상 전구 생성</h3>
+                    <p class="text-sm text-gray-500 dark:text-zinc-400 leading-relaxed" data-i18n="bridge.s2.desc">SmartThings 앱에서 주변 검색을 실행해 virtual-dimmer-levelstep 가상 전구를 생성합니다.</p>
+                </div>
+                <a href="https://www.smartthings.com/applink" target="_blank"
+                class="inline-flex w-full sm:w-auto justify-center px-6 py-3 btn-primary text-white text-sm font-black rounded-xl shadow-md" data-i18n="bridge.s2.link">SmartThings 앱 열기</a>
+            </div>
+            
+            <div class="space-y-3">
+                <label class="bridge-check-card flex items-start gap-3 p-4 bg-gray-100 dark:bg-white/5 rounded-2xl border-2 border-gray-200 dark:border-white/10">
+                    <input type="checkbox" class="bridge-check mt-0.5" onchange="updateBridgeCheckCards()" data-bridge-group="create">
+                    <span class="text-sm font-bold text-gray-700 dark:text-gray-300" data-i18n="bridge.s2.check1">SmartThings 앱에서 + → 기기 추가 → 주변 검색을 실행했습니다.</span>
+                </label>
+                <label class="bridge-check-card flex items-start gap-3 p-4 bg-gray-100 dark:bg-white/5 rounded-2xl border-2 border-gray-200 dark:border-white/10">
+                    <input type="checkbox" class="bridge-check mt-0.5" onchange="updateBridgeCheckCards()" data-bridge-group="create">
+                    <span class="text-sm font-bold text-gray-700 dark:text-gray-300" data-i18n="bridge.s2.check2">virtual-dimmer-levelstep 가상 전구가 생성된 것을 확인했습니다.</span>
+                </label>
+            </div>
+            <p id="bridgeCreateMsg" class="text-red-500 text-sm font-bold hidden" data-i18n="bridge.checklistMsg">체크리스트를 모두 완료해야 다음으로 진행할 수 있습니다.</p>
+        </div>
+    </section>
+
+    <!-- ===== BRIDGE SETUP 2 FAST: CREATE EXTRA VIRTUAL DEVICE ===== -->
+    <section id="bridge_setup2_fast" class="step-content">
+        <div class="glass-card p-8 md:p-12 space-y-8">
+            <div>
+                <h3 class="text-xl md:text-2xl font-bold tracking-tight mb-2" data-i18n="bridge.fast.title">가상 전구 빠르게 추가</h3>
+                <p class="text-sm text-gray-500 dark:text-zinc-400 leading-relaxed" data-i18n="bridge.fast.desc">이미 브릿지 드라이버를 써 본 적이 있다면 기존 가상 전구에서 새 기기를 바로 만들 수 있습니다.</p>
+            </div>
+            <div class="space-y-3">
+                <label class="bridge-check-card flex items-start gap-3 p-4 bg-gray-100 dark:bg-white/5 rounded-2xl border-2 border-gray-200 dark:border-white/10">
+                    <input type="checkbox" class="bridge-check mt-0.5" onchange="updateBridgeCheckCards()" data-bridge-group="fast">
+                    <span class="text-sm font-bold text-gray-700 dark:text-gray-300" data-i18n="bridge.fast.check1">기존 virtual-dimmer-levelstep 기기 상세 화면을 열었습니다.</span>
+                </label>
+                <label class="bridge-check-card flex items-start gap-3 p-4 bg-gray-100 dark:bg-white/5 rounded-2xl border-2 border-gray-200 dark:border-white/10">
+                    <input type="checkbox" class="bridge-check mt-0.5" onchange="updateBridgeCheckCards()" data-bridge-group="fast">
+                    <span class="text-sm font-bold text-gray-700 dark:text-gray-300" data-i18n="bridge.fast.check2">Create New Device 버튼으로 새 가상 전구를 만들었습니다.</span>
+                </label>
+            </div>
+            <p id="bridgeFastMsg" class="text-red-500 text-sm font-bold hidden" data-i18n="bridge.checklistMsg">체크리스트를 모두 완료해야 다음으로 진행할 수 있습니다.</p>
+        </div>
+    </section>
+
+    <!-- ===== BRIDGE SETUP 3: DEVICE MAPPING ===== -->
+    <section id="bridge_setup3" class="step-content">
+        <div class="glass-card p-8 md:p-12 space-y-10">
+            <div class="p-6 bg-blue-50 dark:bg-blue-500/5 rounded-2xl border border-blue-100 dark:border-blue-500/20 flex flex-col sm:flex-row justify-between items-center gap-5">
+                <p class="text-sm font-bold text-blue-800 dark:text-blue-300 text-center sm:text-left" data-i18n="bridge.s3.banner">브릿지 루틴에 사용할 상대값 노브와 가상 전구의 Device ID를 입력하세요.</p>
+                <a href="https://my.smartthings.com/advanced/devices" target="_blank"
+                    class="w-full sm:w-auto flex-shrink-0 px-6 py-3 btn-primary text-white text-sm font-black rounded-xl text-center hover:opacity-90 transition-all shadow-md" data-i18n="step2.devicesBtn">Devices 페이지 열기</a>
+            </div>
+            <div class="space-y-4">
+                <div class="flex items-center gap-2">
+                    <label class="block text-sm font-black text-gray-600 dark:text-zinc-400 uppercase tracking-wider" data-i18n="bridge.s3.knobLabel">상대값 노브의 ID</label>
+                    <div class="tooltip-wrap">
+                        <button class="w-5 h-5 rounded-full bg-gray-200 dark:bg-white/10 flex items-center justify-center text-gray-400 flex-shrink-0 text-[11px] font-black">?</button>
+                        <div class="tooltip-box" data-i18n="bridge.s3.knobTip">Advanced Web App → Devices → 상대값 노브 기기의 Device ID를 복사하세요.</div>
+                    </div>
+                </div>
+                <input type="text" id="bridge_input_dimmer" oninput="validateField(this)"
+                    class="w-full px-6 py-5 bg-gray-100 dark:bg-white/5 border-none rounded-2xl text-lg outline-none"
+                    placeholder="e.g. 1a2b3c4d-5e6f-...">
+            </div>
+            <div class="space-y-4">
+                <div class="flex items-center gap-2">
+                    <label class="block text-sm font-black text-gray-600 dark:text-zinc-400 uppercase tracking-wider" data-i18n="bridge.s3.virtualLabel">브릿지용 가상 전구의 ID</label>
+                    <div class="tooltip-wrap">
+                        <button class="w-5 h-5 rounded-full bg-gray-200 dark:bg-white/10 flex items-center justify-center text-gray-400 flex-shrink-0 text-[11px] font-black">?</button>
+                        <div class="tooltip-box" data-i18n="bridge.s3.virtualTip">방금 만든 virtual-dimmer-levelstep 가상 전구의 Device ID를 복사하세요.</div>
+                    </div>
+                </div>
+                <input type="text" id="bridge_input_virtual" oninput="validateField(this)"
+                    class="w-full px-6 py-5 bg-gray-100 dark:bg-white/5 border-none rounded-2xl text-lg outline-none"
+                    placeholder="e.g. 5e6f7g8h-9i0j-...">
+            </div>
+            <div class="p-6 bg-amber-50 dark:bg-amber-500/5 rounded-2xl border border-amber-200 dark:border-amber-500/15 space-y-3">
+                <div class="flex items-center gap-2 mb-1">
+                    <svg class="w-4 h-4 text-amber-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                    </svg>
+                    <span class="text-xs font-black text-amber-700 dark:text-amber-400 uppercase tracking-widest" data-i18n="step2.cautionTitle">주의사항</span>
+                </div>
+                <ul class="space-y-2.5">
+                    <li class="flex items-start gap-2.5">
+                        <span class="mt-1.5 w-1.5 h-1.5 rounded-full bg-amber-400 flex-shrink-0"></span>
+                        <p class="text-sm text-amber-800 dark:text-amber-300 leading-relaxed" data-i18n="bridge.s3.caution1">상대값 노브는 knob capability의 rotateAmount 값을 지원해야 합니다.</p>
+                    </li>
+                    <li class="flex items-start gap-2.5">
+                        <span class="mt-1.5 w-1.5 h-1.5 rounded-full bg-amber-400 flex-shrink-0"></span>
+                        <p class="text-sm text-amber-800 dark:text-amber-300 leading-relaxed" data-i18n="bridge.s3.caution2">가상 전구는 virtual-dimmer-levelstep 기기를 선택해야 합니다.</p>
+                    </li>
+                </ul>
+            </div>
+            <p id="bridgeMappingMsg" class="text-red-500 text-sm font-bold hidden" data-i18n="step2.validationMsg">필수 정보를 모두 입력해야 다음으로 진행할 수 있습니다.</p>
+        </div>
+    </section>
+
+    <!-- ===== BRIDGE SETUP 4: CODE GENERATION ===== -->
+    <section id="bridge_setup4" class="step-content">
+        <div class="relative group">
+            <div class="absolute top-6 right-6 flex gap-2 z-10">
+                <button onclick="copyBridgeToClipboard()" id="bridgeCopyBtn"
+                    class="flex items-center gap-2 px-6 py-3 btn-primary text-white rounded-2xl active:scale-95 transition-all text-sm font-black shadow-lg">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                    </svg>
+                    <span data-i18n="step4.copyBtn">코드 복사</span>
+                </button>
+            </div>
+            <pre class="code-container p-10 pt-24 font-mono text-[14px] leading-relaxed overflow-x-auto min-h-[480px] shadow-2xl border border-white/5"><code id="bridgeCodeOutput" class="whitespace-pre"></code></pre>
+        </div>
+    </section>
+
+    <!-- ===== BRIDGE SETUP 5: DEPLOYMENT GUIDE ===== -->
+    <section id="bridge_setup5" class="step-content">
+        <div class="space-y-6">
+            <div class="glass-card overflow-hidden">
+                <div class="p-7 md:p-8 border-b border-gray-100 dark:border-white/5 flex flex-col sm:flex-row justify-between items-center gap-4">
+                    <h3 class="text-xl font-bold tracking-tight text-center sm:text-left" data-i18n="bridge.s5.title">브릿지 루틴 설치 가이드</h3>
+                    <a href="https://my.smartthings.com/advanced/rules" target="_blank"
+                        class="w-full sm:w-auto px-5 py-3 btn-primary text-white text-sm font-black rounded-xl text-center hover:scale-105 transition-transform" data-i18n="step5.rulesBtn">Rules 탭으로 바로가기</a>
+                </div>
+                <div class="p-7 md:p-10 space-y-10">
+                    <div class="flex gap-6">
+                        <div class="step-index-circle">1</div>
+                        <div class="space-y-2">
+                            <p class="font-bold text-base" data-i18n="step5.s1Title">새로운 Rule 만들기</p>
+                            <p class="text-gray-500 dark:text-zinc-400 text-sm leading-relaxed" data-i18n-html="step5.s1Desc"></p>
+                        </div>
+                    </div>
+                    <div class="flex gap-6">
+                        <div class="step-index-circle">2</div>
+                        <div class="space-y-3 w-full">
+                            <p class="font-bold text-base" data-i18n="step5.s2Title">루틴 이름 짓기 및 코드 붙여넣기</p>
+                            <div class="p-5 bg-gray-100 dark:bg-white/5 rounded-2xl space-y-4 border border-gray-200 dark:border-white/10">
+                                <div>
+                                    <span class="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest">Input 1</span>
+                                    <p class="text-sm font-bold mt-1 text-gray-700 dark:text-gray-300" data-i18n-html="step5.s2Input1"></p>
+                                </div>
+                                <div class="h-px bg-gray-200 dark:bg-white/10"></div>
+                                <div>
+                                    <span class="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest">Input 2</span>
+                                    <p class="text-sm font-bold mt-1 text-gray-700 dark:text-gray-300" data-i18n-html="step5.s2Input2"></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex gap-6">
+                        <div class="step-index-circle">3</div>
+                        <div class="space-y-2">
+                            <p class="font-bold text-base" data-i18n="step5.s3Title">최종 추가 및 활성화</p>
+                            <p class="text-gray-500 dark:text-zinc-400 text-sm leading-relaxed" data-i18n-html="step5.s3Desc"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== BRIDGE SETUP 6: CONFIRMATION ===== -->
+    <section id="bridge_setup6" class="step-content">
+        <div class="glass-card p-8 md:p-12 space-y-8 text-center">
+            <div class="mx-auto w-16 h-16 rounded-2xl bg-emerald-50 dark:bg-emerald-500/10 flex items-center justify-center">
+                <svg class="w-8 h-8 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+                </svg>
+            </div>
+            <div>
+                <h3 class="text-xl md:text-2xl font-bold tracking-tight mb-3" data-i18n="bridge.s6.title">브릿지 연결 확인</h3>
+                <p class="text-sm text-gray-500 dark:text-zinc-400 leading-relaxed" data-i18n="bridge.s6.desc">브릿지 루틴 등록을 마쳤다면 노브를 돌렸을 때 가상 전구의 값이 0~100으로 움직여야 합니다.</p>
+            </div>
+            <button onclick="finishBridgeSetup()"
+                class="w-full sm:w-auto px-7 py-4 btn-primary text-white font-black rounded-2xl text-sm shadow-xl" data-i18n="bridge.s6.cta">확인 및 메인 루틴 만들기</button>
+        </div>
+    </section>
+
     <!-- ===== STEP 4: CODE GENERATION ===== -->
     <section id="step4" class="step-content">
         <div class="relative group">
@@ -1016,6 +1257,46 @@
     </div>
 </div>
 
+<!-- ==================== KNOB TYPE MODAL ==================== -->
+<div id="knobTypeModal" class="modal-overlay">
+    <div class="glass-card p-8 md:p-10 max-w-2xl w-full mx-5 shadow-2xl bg-white dark:bg-[#0c1424] border-transparent">
+        <h3 class="text-xl font-bold mb-3 tracking-tight" data-i18n="knobModal.title">어떤 종류의 노브를 가지고 계신가요?</h3>
+        <p class="text-gray-500 dark:text-zinc-400 text-sm leading-relaxed mb-6" data-i18n="knobModal.desc">노브가 내보내는 값에 따라 필요한 셋업 코스가 달라집니다.</p>
+        <div id="knobTypeChoices" class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+            <button type="button" onclick="selectKnobChoice('absolute')" id="knobChoiceAbsolute"
+                class="p-5 rounded-2xl border-2 border-gray-200 dark:border-white/10 text-left hover:border-[#008DF7]/50 dark:hover:border-[#008DF7]/40 transition-all">
+                <span class="block font-black text-base mb-2" data-i18n="knobModal.absoluteTitle">절대값 노브</span>
+                <span class="block text-sm text-gray-500 dark:text-zinc-400 leading-relaxed" data-i18n="knobModal.absoluteDesc">밝기 수치가 표시되거나 슬라이더처럼 0~100 값을 직접 내보냅니다.</span>
+            </button>
+            <button type="button" onclick="selectKnobChoice('relative')" id="knobChoiceRelative"
+                class="p-5 rounded-2xl border-2 border-gray-200 dark:border-white/10 text-left hover:border-[#008DF7]/50 dark:hover:border-[#008DF7]/40 transition-all">
+                <span class="block font-black text-base mb-2" data-i18n="knobModal.relativeTitle">상대값 노브</span>
+                <span class="block text-sm text-gray-500 dark:text-zinc-400 leading-relaxed" data-i18n="knobModal.relativeDesc">끝없이 돌아가는 다이얼 방식이며 회전량을 상대값으로 내보냅니다.</span>
+            </button>
+        </div>
+        <div id="bridgeExperienceChoices" class="hidden space-y-4 mb-6">
+            <p class="text-sm font-bold text-gray-600 dark:text-zinc-300" data-i18n="knobModal.bridgeQuestion">브릿지 드라이버를 설치하거나 가상 전구를 만들어 본 적이 있나요?</p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <button type="button" onclick="selectBridgeExperience('new')" id="bridgeExpNew"
+                    class="p-4 rounded-2xl border-2 border-gray-200 dark:border-white/10 text-left hover:border-[#008DF7]/50 transition-all">
+                    <span class="block font-black text-sm mb-1" data-i18n="knobModal.bridgeNew">처음입니다</span>
+                    <span class="block text-xs text-gray-500 dark:text-zinc-400" data-i18n="knobModal.bridgeNewDesc">드라이버 설치부터 차근차근 진행합니다.</span>
+                </button>
+                <button type="button" onclick="selectBridgeExperience('existing')" id="bridgeExpExisting"
+                    class="p-4 rounded-2xl border-2 border-gray-200 dark:border-white/10 text-left hover:border-[#008DF7]/50 transition-all">
+                    <span class="block font-black text-sm mb-1" data-i18n="knobModal.bridgeExisting">사용해 본 적이 있습니다</span>
+                    <span class="block text-xs text-gray-500 dark:text-zinc-400" data-i18n="knobModal.bridgeExistingDesc">새 가상 전구 생성부터 빠르게 시작합니다.</span>
+                </button>
+            </div>
+        </div>
+        <div class="flex gap-3">
+            <button onclick="closeKnobTypeModal()" class="flex-1 py-3.5 px-5 border border-gray-200 dark:border-white/10 rounded-2xl font-black text-sm text-gray-600 dark:text-white" data-i18n="modal.cancel">취소</button>
+            <button onclick="confirmKnobType()" id="knobTypeCta" disabled
+                class="flex-[1.5] py-3.5 px-5 btn-primary text-white rounded-2xl font-black text-sm disabled:opacity-40 disabled:cursor-not-allowed" data-i18n="knobModal.choose">노브 타입을 고르세요</button>
+        </div>
+    </div>
+</div>
+
 <!-- ==================== TOAST ==================== -->
 <div id="toast" class="fixed bottom-28 left-1/2 -translate-x-1/2 px-5 py-3 bg-zinc-900/95 dark:bg-white/95 text-white dark:text-[#0B1121] backdrop-blur-xl rounded-2xl text-sm font-black opacity-0 translate-y-4 pointer-events-none z-[300] shadow-2xl whitespace-nowrap">
     복사되었습니다!
@@ -1056,6 +1337,8 @@ const I18N = {
         "step2.dimmerLabel":     "노브(디머)의 ID",
         "step2.dimmerPlaceholder": "e.g. 1a2b3c4d-5e6f-...",
         "step2.dimmerTip":       "Advanced Web App → Devices → 해당 기기의 Device ID를 복사하세요.",
+        "step2.bridgeLabel":      "브릿지 루틴의 가상 전구 ID",
+        "step2.bridgeTip":        "상대값 노브 사용자는 브릿지용 가상 전구가 메인 루틴의 노브 역할을 합니다.",
         "step2.lightLabel":      "컨트롤할 전구의 ID",
         "step2.lightPlaceholder": "e.g. 5e6f7g8h-9i0j-...",
         "step2.lightTip":        "Advanced Web App → Devices → 해당 기기의 Device ID를 복사하세요.",
@@ -1131,6 +1414,54 @@ const I18N = {
         "modal.desc":    "작업 중인 모든 내용(입력한 ID, 생성된 코드)이 초기화됩니다. 계속하시겠습니까?",
         "modal.cancel":  "취소",
         "modal.confirm": "돌아가기",
+
+        "knobModal.title": "어떤 종류의 노브를 가지고 계신가요?",
+        "knobModal.desc": "노브가 내보내는 값에 따라 필요한 셋업 코스가 달라집니다.",
+        "knobModal.absoluteTitle": "절대값 노브",
+        "knobModal.absoluteDesc": "밝기 수치가 표시되거나 슬라이더처럼 0~100 값을 직접 내보냅니다.",
+        "knobModal.relativeTitle": "상대값 노브",
+        "knobModal.relativeDesc": "끝없이 돌아가는 다이얼 방식이며 회전량을 상대값으로 내보냅니다.",
+        "knobModal.bridgeQuestion": "브릿지 드라이버를 설치하거나 가상 전구를 만들어 본 적이 있나요?",
+        "knobModal.bridgeNew": "처음입니다",
+        "knobModal.bridgeNewDesc": "드라이버 설치부터 차근차근 진행합니다.",
+        "knobModal.bridgeExisting": "사용해 본 적이 있습니다",
+        "knobModal.bridgeExistingDesc": "새 가상 전구 생성부터 빠르게 시작합니다.",
+        "knobModal.choose": "노브 타입을 고르세요",
+        "knobModal.mainCta": "루틴 만들기",
+        "knobModal.bridgeCta": "브릿지 셋업",
+
+        "bridge.indicator": "BRIDGE {cur} OF {total}",
+        "bridge.s1.title": "엣지 드라이버 설치",
+        "bridge.s1.desc": "상대값 노브를 0~100 값으로 바꿔줄 가상 전구 드라이버를 먼저 설치합니다.",
+        "bridge.s1.link": "드라이버 채널 열기",
+        "bridge.s1.check1": "삼성계정으로 로그인한 뒤 Enroll 버튼을 눌렀습니다.",
+        "bridge.s1.check2": "Available Drivers에서 Virtual Dimmer StatelessSwitchLevelStep Tx 드라이버를 설치했습니다.",
+        "bridge.s2.title": "가상 전구 생성",
+        "bridge.s2.desc": "SmartThings 앱에서 주변 검색을 실행해 virtual-dimmer-levelstep 가상 전구를 생성합니다.",
+        "bridge.s2.link": "SmartThings 앱 열기",
+        "bridge.s2.check1": "SmartThings 앱에서 + → 기기 추가 → 주변 검색을 실행했습니다.",
+        "bridge.s2.check2": "virtual-dimmer-levelstep 가상 전구가 생성된 것을 확인했습니다.",
+        "bridge.fast.title": "가상 전구 빠르게 추가",
+        "bridge.fast.desc": "이미 브릿지 드라이버를 써 본 적이 있다면 기존 가상 전구에서 새 기기를 바로 만들 수 있습니다.",
+        "bridge.fast.check1": "기존 virtual-dimmer-levelstep 기기 상세 화면을 열었습니다.",
+        "bridge.fast.check2": "Create New Device 버튼으로 새 가상 전구를 만들었습니다.",
+        "bridge.s3.banner": "브릿지 루틴에 사용할 상대값 노브와 가상 전구의 Device ID를 입력하세요.",
+        "bridge.s3.knobLabel": "상대값 노브의 ID",
+        "bridge.s3.knobTip": "Advanced Web App → Devices → 상대값 노브 기기의 Device ID를 복사하세요.",
+        "bridge.s3.virtualLabel": "브릿지용 가상 전구의 ID",
+        "bridge.s3.virtualTip": "방금 만든 virtual-dimmer-levelstep 가상 전구의 Device ID를 복사하세요.",
+        "bridge.s3.caution1": "상대값 노브는 knob capability의 rotateAmount 값을 지원해야 합니다.",
+        "bridge.s3.caution2": "가상 전구는 virtual-dimmer-levelstep 기기를 선택해야 합니다.",
+        "bridge.s4.title": "브릿지 코드 생성",
+        "bridge.s5.title": "브릿지 루틴 설치 가이드",
+        "bridge.s5.step1": "Rules 탭에서 + Add Rule을 눌러 새 Rule을 만듭니다.",
+        "bridge.s5.step2": "이전 단계에서 복사한 브릿지 코드를 Action 입력창에 붙여넣습니다.",
+        "bridge.s5.step3": "Add 버튼을 눌러 Enabled 상태로 등록합니다.",
+        "bridge.s6.title": "브릿지 연결 확인",
+        "bridge.s6.desc": "브릿지 루틴 등록을 마쳤다면 노브를 돌렸을 때 가상 전구의 값이 0~100으로 움직여야 합니다.",
+        "bridge.s6.cta": "확인 및 메인 루틴 만들기",
+        "bridge.checklistMsg": "체크리스트를 모두 완료해야 다음으로 진행할 수 있습니다.",
+        "bridge.prefillToast": "가상 전구의 Device ID가 자동으로 추가되었어요.",
     },
     en: {
         "nav.more":       "More",
@@ -1163,6 +1494,8 @@ const I18N = {
         "step2.dimmerLabel":     "Knob (Dimmer) ID",
         "step2.dimmerPlaceholder": "e.g. 1a2b3c4d-5e6f-...",
         "step2.dimmerTip":       "Advanced Web App → Devices → Copy the Device ID.",
+        "step2.bridgeLabel":      "Bridge virtual bulb ID",
+        "step2.bridgeTip":        "For relative knobs, the bridge virtual bulb acts as the knob in the main routine.",
         "step2.lightLabel":      "Target Bulb ID",
         "step2.lightPlaceholder": "e.g. 5e6f7g8h-9i0j-...",
         "step2.lightTip":        "Advanced Web App → Devices → Copy the Device ID.",
@@ -1238,6 +1571,54 @@ const I18N = {
         "modal.desc":    "All current work (entered IDs, generated code) will be reset. Continue?",
         "modal.cancel":  "Cancel",
         "modal.confirm": "Reset",
+
+        "knobModal.title": "What kind of knob do you have?",
+        "knobModal.desc": "The setup path changes depending on the value your knob reports.",
+        "knobModal.absoluteTitle": "Absolute knob",
+        "knobModal.absoluteDesc": "It reports a direct 0-100 value, like a visible level or slider.",
+        "knobModal.relativeTitle": "Relative knob",
+        "knobModal.relativeDesc": "It spins endlessly and reports relative rotation amounts.",
+        "knobModal.bridgeQuestion": "Have you installed the bridge driver or created a virtual bulb before?",
+        "knobModal.bridgeNew": "First time",
+        "knobModal.bridgeNewDesc": "Start from driver installation.",
+        "knobModal.bridgeExisting": "I've used it before",
+        "knobModal.bridgeExistingDesc": "Fast-track from creating another virtual bulb.",
+        "knobModal.choose": "Choose knob type",
+        "knobModal.mainCta": "Build routine",
+        "knobModal.bridgeCta": "Bridge setup",
+
+        "bridge.indicator": "BRIDGE {cur} OF {total}",
+        "bridge.s1.title": "Install Edge Driver",
+        "bridge.s1.desc": "Install the virtual bulb driver that converts a relative knob into a 0-100 value.",
+        "bridge.s1.link": "Open Driver Channel",
+        "bridge.s1.check1": "I signed in with my Samsung account and clicked Enroll.",
+        "bridge.s1.check2": "I installed Virtual Dimmer StatelessSwitchLevelStep Tx from Available Drivers.",
+        "bridge.s2.title": "Create Virtual Bulb",
+        "bridge.s2.desc": "Run nearby device search in the SmartThings app to create virtual-dimmer-levelstep.",
+        "bridge.s2.link": "Open SmartThings App",
+        "bridge.s2.check1": "I opened SmartThings app → + → Add device → Scan nearby.",
+        "bridge.s2.check2": "I confirmed that virtual-dimmer-levelstep was created.",
+        "bridge.fast.title": "Quickly Add Virtual Bulb",
+        "bridge.fast.desc": "If you already use the bridge driver, create a new device from an existing virtual bulb.",
+        "bridge.fast.check1": "I opened an existing virtual-dimmer-levelstep device detail page.",
+        "bridge.fast.check2": "I created a new virtual bulb with Create New Device.",
+        "bridge.s3.banner": "Enter the relative knob ID and bridge virtual bulb Device ID.",
+        "bridge.s3.knobLabel": "Relative knob ID",
+        "bridge.s3.knobTip": "Advanced Web App → Devices → Copy the Device ID of your relative knob.",
+        "bridge.s3.virtualLabel": "Bridge virtual bulb ID",
+        "bridge.s3.virtualTip": "Copy the Device ID of the virtual-dimmer-levelstep virtual bulb you just created.",
+        "bridge.s3.caution1": "The relative knob must support the knob capability's rotateAmount attribute.",
+        "bridge.s3.caution2": "Choose the virtual-dimmer-levelstep device as the bridge virtual bulb.",
+        "bridge.s4.title": "Generated Bridge Code",
+        "bridge.s5.title": "Bridge Routine Installation Guide",
+        "bridge.s5.step1": "In the Rules tab, click + Add Rule to create a new rule.",
+        "bridge.s5.step2": "Paste the bridge code copied from the previous step into the Action field.",
+        "bridge.s5.step3": "Click Add and keep it Enabled.",
+        "bridge.s6.title": "Confirm Bridge Connection",
+        "bridge.s6.desc": "After registering the bridge routine, turning the knob should move the virtual bulb between 0 and 100.",
+        "bridge.s6.cta": "Confirm and Build Main Routine",
+        "bridge.checklistMsg": "Complete every checklist item before continuing.",
+        "bridge.prefillToast": "The virtual bulb Device ID was added automatically.",
     }
 };
 
@@ -1251,6 +1632,8 @@ const TEMPLATE_FAN = [{"if":{"changes":{"operand":{"device":{"devices":["@device
 // Volume template: level 1 → vol 0, levels 2~10 → vol 1, 11~20 → vol 2 … 91~100 → vol 10 (structure, values injected at runtime)
 const TEMPLATE_VOLUME_MASTER = [{"if":{"changes":{"operand":{"device":{"devices":["@device_dimmer"],"component":"main","capability":"switchLevel","attribute":"level"}}},"then":"@interpolated_steps"}}];
 
+const TEMPLATE_BRIDGE = [{"if":{"greaterThanOrEquals":{"left":{"device":{"devices":["@device_dimmer"],"component":"main","capability":"knob","attribute":"rotateAmount","trigger":"Always"}},"right":{"integer":-100},"changesOnly":false},"then":[{"command":{"devices":["@device_bridge"],"commands":[{"component":"main","capability":"statelessSwitchLevelStep","command":"stepLevel","arguments":[{"device":{"devices":["@device_dimmer"],"component":"main","capability":"knob","attribute":"rotateAmount"}}]}]}}]}}];
+
 // ========== STATE ==========
 let currentStep = 1;
 let isDarkMode = false;
@@ -1259,10 +1642,18 @@ let selectedPreset = 'dimmer-control';
 let selectedFanMode = 'fixed5';
 let totalSteps = 4;
 let moreMenuOpen = false;
+let appPhase = 'main';
+let knobType = 'absolute';
+let pendingPreset = null;
+let knobChoice = null;
+let bridgeExperience = null;
+let bridgePath = 'new';
+let bridgeVirtualId = '';
 
 // ========== PRESET STEP MAP ==========
 // Returns the ordered list of DOM section IDs for a given preset
 function getStepMap(preset) {
+    if (appPhase === 'bridge') return getBridgeStepMap();
     if (preset === 'ct-control')     return ['step1','step2','step3','step4','step5'];
     if (preset === 'fan-control')    return ['step1','step2','step3_fan','step4','step5'];
     if (preset === 'volume-control') return ['step1','step2','step3_volume','step4','step5'];
@@ -1270,11 +1661,24 @@ function getStepMap(preset) {
 }
 
 function getStepTitles(preset) {
+    if (appPhase === 'bridge') return getBridgeStepTitles();
     const base = [t('step.1.title'), t('step.2.title')];
     if (preset === 'ct-control')     return [...base, t('step.3.title'),       t('step.4.title'), t('step.5.title')];
     if (preset === 'fan-control')    return [...base, t('step.3fan.title'),     t('step.4.title'), t('step.5.title')];
     if (preset === 'volume-control') return [...base, t('step.3vol.title'),     t('step.4.title'), t('step.5.title')];
     return [...base, t('step.4.title'), t('step.5.title')];
+}
+
+function getBridgeStepMap() {
+    return bridgePath === 'existing'
+        ? ['bridge_setup2_fast','bridge_setup3','bridge_setup4','bridge_setup5','bridge_setup6']
+        : ['bridge_setup1','bridge_setup2','bridge_setup3','bridge_setup4','bridge_setup5','bridge_setup6'];
+}
+
+function getBridgeStepTitles() {
+    return bridgePath === 'existing'
+        ? [t('bridge.fast.title'), t('step.2.title'), t('bridge.s4.title'), t('bridge.s5.title'), t('bridge.s6.title')]
+        : [t('bridge.s1.title'), t('bridge.s2.title'), t('step.2.title'), t('bridge.s4.title'), t('bridge.s5.title'), t('bridge.s6.title')];
 }
 
 // ========== i18n ==========
@@ -1306,13 +1710,16 @@ function applyI18n() {
     document.documentElement.lang = currentLang;
     // dynamic UI texts
     updateDynamicTexts();
+    updateKnobModalUI();
 }
 
 function updateDynamicTexts() {
     const titles = getStepTitles(selectedPreset);
-    document.getElementById('stepIndicator').innerText = t('step.indicator', { cur: currentStep, total: getStepMap(selectedPreset).length });
+    const stepMap = getStepMap(selectedPreset);
+    const indicatorKey = appPhase === 'bridge' ? 'bridge.indicator' : 'step.indicator';
+    document.getElementById('stepIndicator').innerText = t(indicatorKey, { cur: currentStep, total: stepMap.length });
     document.getElementById('stepTitleDisplay').innerText = titles[currentStep - 1] || '';
-    document.getElementById('nextBtn').innerText = currentStep === getStepMap(selectedPreset).length ? t('nav.finish') : t('nav.next');
+    document.getElementById('nextBtn').innerText = currentStep === stepMap.length ? t('nav.finish') : t('nav.next');
     document.getElementById('prevBtn').innerText = t('nav.prev');
 }
 
@@ -1363,7 +1770,7 @@ function updateUI() {
     const pct = Math.round((currentStep / totalSteps) * 100);
     document.getElementById('progressBar').style.width = `${pct}%`;
     document.getElementById('progressPercentage').innerText = `${pct}%`;
-    document.getElementById('stepIndicator').innerText = t('step.indicator', { cur: currentStep, total: totalSteps });
+    document.getElementById('stepIndicator').innerText = t(appPhase === 'bridge' ? 'bridge.indicator' : 'step.indicator', { cur: currentStep, total: totalSteps });
     document.getElementById('stepTitleDisplay').innerText = stepTitles[currentStep - 1] || '';
 
     // Show correct section
@@ -1372,7 +1779,7 @@ function updateUI() {
     document.getElementById(targetId).classList.add('active');
 
     // Footer
-    document.getElementById('navFooter').classList.toggle('hidden', currentStep === 1);
+    document.getElementById('navFooter').classList.toggle('hidden', (appPhase === 'main' && currentStep === 1) || targetId === 'bridge_setup6');
     document.getElementById('nextBtn').innerText = currentStep === totalSteps ? t('nav.finish') : t('nav.next');
     document.getElementById('prevBtn').innerText = t('nav.prev');
 
@@ -1382,6 +1789,8 @@ function updateUI() {
     // Generate code when on code step (step4)
     const codeStepIndex = stepMap.indexOf('step4');
     if (currentStep === codeStepIndex + 1) generateCode();
+    const bridgeCodeStepIndex = stepMap.indexOf('bridge_setup4');
+    if (currentStep === bridgeCodeStepIndex + 1) generateBridgeCode();
 
     // CT preview when on step3
     if (selectedPreset === 'ct-control' && targetId === 'step3') updateCTPreview();
@@ -1392,10 +1801,27 @@ function updateUI() {
 function updateStep2Labels() {
     const isFan    = selectedPreset === 'fan-control';
     const isVolume = selectedPreset === 'volume-control';
+    const dimmerLabel = document.getElementById('label_dimmer');
+    const dimmerTip = document.getElementById('tip_dimmer');
     const label  = document.getElementById('label_device2');
     const tip    = document.getElementById('tip_device2');
     const inputs = getTargetDeviceInputs();
     if (!label) return;
+
+    if (dimmerLabel && dimmerTip) {
+        const labelKey = knobType === 'relative' ? 'step2.bridgeLabel' : 'step2.dimmerLabel';
+        const tipKey = knobType === 'relative' ? 'step2.bridgeTip' : 'step2.dimmerTip';
+        dimmerLabel.style.opacity = '0.45';
+        dimmerTip.style.opacity = '0.45';
+        setTimeout(() => {
+            dimmerLabel.setAttribute('data-i18n', labelKey);
+            dimmerLabel.innerText = t(labelKey);
+            dimmerTip.setAttribute('data-i18n', tipKey);
+            dimmerTip.innerText = t(tipKey);
+            dimmerLabel.style.opacity = '1';
+            dimmerTip.style.opacity = '1';
+        }, 80);
+    }
 
     if (isFan) {
         label.setAttribute('data-i18n', 'step2.fanLabel');
@@ -1472,6 +1898,73 @@ function removeTargetDeviceInput(button) {
     button.closest('div').remove();
 }
 
+function openKnobTypeModal() {
+    knobChoice = null;
+    bridgeExperience = null;
+    document.getElementById('knobTypeModal').classList.add('active');
+    document.getElementById('bridgeExperienceChoices').classList.add('hidden');
+    updateKnobModalUI();
+}
+
+function closeKnobTypeModal() {
+    document.getElementById('knobTypeModal').classList.remove('active');
+}
+
+function selectKnobChoice(type) {
+    knobChoice = type;
+    if (type === 'absolute') bridgeExperience = null;
+    document.getElementById('bridgeExperienceChoices').classList.toggle('hidden', type !== 'relative');
+    updateKnobModalUI();
+}
+
+function selectBridgeExperience(value) {
+    bridgeExperience = value;
+    updateKnobModalUI();
+}
+
+function updateKnobModalUI() {
+    const abs = document.getElementById('knobChoiceAbsolute');
+    const rel = document.getElementById('knobChoiceRelative');
+    const expNew = document.getElementById('bridgeExpNew');
+    const expExisting = document.getElementById('bridgeExpExisting');
+    const cta = document.getElementById('knobTypeCta');
+    [abs, rel, expNew, expExisting].forEach(el => {
+        if (!el) return;
+        el.classList.remove('border-[#008DF7]', 'bg-blue-50', 'dark:bg-blue-500/10');
+    });
+    if (knobChoice === 'absolute') abs.classList.add('border-[#008DF7]', 'bg-blue-50', 'dark:bg-blue-500/10');
+    if (knobChoice === 'relative') rel.classList.add('border-[#008DF7]', 'bg-blue-50', 'dark:bg-blue-500/10');
+    if (bridgeExperience === 'new') expNew.classList.add('border-[#008DF7]', 'bg-blue-50', 'dark:bg-blue-500/10');
+    if (bridgeExperience === 'existing') expExisting.classList.add('border-[#008DF7]', 'bg-blue-50', 'dark:bg-blue-500/10');
+
+    const ready = knobChoice === 'absolute' || (knobChoice === 'relative' && bridgeExperience);
+    cta.disabled = !ready;
+    cta.innerText = knobChoice === 'relative' ? t('knobModal.bridgeCta') : knobChoice === 'absolute' ? t('knobModal.mainCta') : t('knobModal.choose');
+}
+
+function confirmKnobType() {
+    if (!pendingPreset || !knobChoice) return;
+    if (knobChoice === 'absolute') {
+        knobType = 'absolute';
+        closeKnobTypeModal();
+        startMainPreset(pendingPreset);
+        return;
+    }
+    if (!bridgeExperience) return;
+    knobType = 'relative';
+    bridgePath = bridgeExperience === 'existing' ? 'existing' : 'new';
+    closeKnobTypeModal();
+    startBridgeSetup();
+}
+
+function startBridgeSetup() {
+    appPhase = 'bridge';
+    selectedPreset = pendingPreset || selectedPreset;
+    currentStep = 1;
+    updateUI();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
 function selectFanMode(mode) {
     selectedFanMode = mode;
     // visual feedback — only fixed5 is selectable
@@ -1503,7 +1996,64 @@ function validateField(input) {
     if (input.value.trim()) input.classList.remove('input-error');
 }
 
+function validateBridgeChecklist(group, msgId) {
+    updateBridgeCheckCards();
+    const checks = Array.from(document.querySelectorAll(`.bridge-check[data-bridge-group="${group}"]`));
+    const valid = checks.length > 0 && checks.every(check => check.checked);
+    const msg = document.getElementById(msgId);
+    if (msg) msg.classList.toggle('hidden', valid);
+    return valid;
+}
+
+function updateBridgeCheckCards() {
+    document.querySelectorAll('.bridge-check-card').forEach(card => {
+        const check = card.querySelector('.bridge-check');
+        card.classList.toggle('active', Boolean(check && check.checked));
+    });
+}
+
+function validateBridgeMapping() {
+    const dInput = document.getElementById('bridge_input_dimmer');
+    const vInput = document.getElementById('bridge_input_virtual');
+    const msg = document.getElementById('bridgeMappingMsg');
+    let valid = true;
+    [dInput, vInput].forEach(input => {
+        if (!input.value.trim()) { input.classList.add('input-error'); valid = false; }
+        else input.classList.remove('input-error');
+    });
+    msg.classList.toggle('hidden', valid);
+    return valid;
+}
+
+function validateBridgeStep() {
+    const targetId = getStepMap(selectedPreset)[currentStep - 1];
+    if (targetId === 'bridge_setup1') return validateBridgeChecklist('driver', 'bridgeChecklistMsg');
+    if (targetId === 'bridge_setup2') return validateBridgeChecklist('create', 'bridgeCreateMsg');
+    if (targetId === 'bridge_setup2_fast') return validateBridgeChecklist('fast', 'bridgeFastMsg');
+    if (targetId === 'bridge_setup3') return validateBridgeMapping();
+    return true;
+}
+
 function moveStep(dir) {
+    if (appPhase === 'bridge') {
+        if (dir === -1 && currentStep === 1) {
+            document.getElementById('confirmModal').classList.add('active');
+            return;
+        }
+        if (dir === 1 && !validateBridgeStep()) return;
+        const next = currentStep + dir;
+        const stepMap = getStepMap(selectedPreset);
+        if (next >= 1 && next <= stepMap.length) {
+            currentStep = next;
+            updateUI();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        return;
+    }
+    if (dir === -1 && currentStep === 2) {
+        document.getElementById('confirmModal').classList.add('active');
+        return;
+    }
     if (dir === 1 && currentStep === 2 && !validateStep2()) return;
     if (dir === 1 && getStepMap(selectedPreset)[currentStep - 1] === 'step3' && !validateCTRange()) return;
     if (dir === 1 && getStepMap(selectedPreset)[currentStep - 1] === 'step3_volume' && !validateVolRange()) return;
@@ -1520,8 +2070,14 @@ function moveStep(dir) {
 }
 
 function selectPreset(id) {
+    pendingPreset = id;
+    openKnobTypeModal();
+}
+
+function startMainPreset(id) {
     selectedPreset = id;
     selectedFanMode = 'fixed5';
+    appPhase = 'main';
     totalSteps = getStepMap(id).length;
     currentStep = 2;
     updateUI();
@@ -1532,15 +2088,28 @@ function closeModal() { document.getElementById('confirmModal').classList.remove
 
 function resetApp() {
     closeModal();
+    closeKnobTypeModal();
     currentStep = 1;
     document.getElementById('input_dimmer').value = '';
     document.getElementById('input_light').value = '';
+    document.getElementById('bridge_input_dimmer').value = '';
+    document.getElementById('bridge_input_virtual').value = '';
     document.getElementById('vol_min').value = '0';
     document.getElementById('vol_max').value = '20';
+    document.querySelectorAll('.bridge-check').forEach(check => { check.checked = false; });
+    updateBridgeCheckCards();
     document.querySelectorAll('#targetDeviceInputs .added-device-row').forEach(el => el.remove());
     document.getElementById('codeOutput').innerHTML = '';
+    document.getElementById('bridgeCodeOutput').innerHTML = '';
     selectedPreset = 'dimmer-control';
     selectedFanMode = 'fixed5';
+    appPhase = 'main';
+    knobType = 'absolute';
+    pendingPreset = null;
+    knobChoice = null;
+    bridgeExperience = null;
+    bridgePath = 'new';
+    bridgeVirtualId = '';
     totalSteps = 4;
     updateUI();
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -1757,6 +2326,16 @@ function generateCode() {
     document.getElementById('codeOutput').innerHTML = syntaxHighlight(finalJsonString);
 }
 
+function generateBridgeCode() {
+    const dimmerId = document.getElementById('bridge_input_dimmer').value.trim() || '@device_dimmer';
+    const virtualId = document.getElementById('bridge_input_virtual').value.trim() || '@device_bridge';
+    const rule = replacePlaceholders(cloneTemplate(TEMPLATE_BRIDGE), {
+        '@device_dimmer': dimmerId,
+        '@device_bridge': virtualId
+    });
+    document.getElementById('bridgeCodeOutput').innerHTML = syntaxHighlight(JSON.stringify(rule, null, 4));
+}
+
 function syntaxHighlight(json) {
     json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
     return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function(match) {
@@ -1797,6 +2376,35 @@ async function copyToClipboard() {
     }, 2000);
 }
 
+async function copyBridgeToClipboard() {
+    const code = document.getElementById('bridgeCodeOutput').innerText;
+    try {
+        await navigator.clipboard.writeText(code);
+    } catch {
+        const ta = document.createElement('textarea');
+        ta.value = code;
+        ta.style.position = 'fixed'; ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+    }
+    showToast(t('step4.toast'));
+}
+
+function finishBridgeSetup() {
+    bridgeVirtualId = document.getElementById('bridge_input_virtual').value.trim();
+    if (bridgeVirtualId) {
+        try { localStorage.setItem('stRuleBuilderBridgeVirtualId', bridgeVirtualId); } catch {}
+    }
+    appPhase = 'main';
+    currentStep = 2;
+    document.getElementById('input_dimmer').value = bridgeVirtualId;
+    updateUI();
+    if (bridgeVirtualId) showToast(t('bridge.prefillToast'));
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
 function showToast(msg) {
     const toast = document.getElementById('toast');
     toast.innerText = msg;
@@ -1816,3 +2424,4 @@ window.onload = function() {
 </script>
 </body>
 </html>
+
