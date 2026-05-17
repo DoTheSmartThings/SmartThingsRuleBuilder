@@ -614,7 +614,7 @@
             content: '';
             position: absolute;
             top: 100%;
-            left: 50%;
+            left: var(--arrow-left, 50%);
             transform: translateX(-50%);
             border: 6px solid transparent;
             border-top-color: #0f172a;
@@ -628,25 +628,6 @@
             opacity: 1;
         }
 
-        /* Tooltip: clamp to viewport on mobile */
-        .tooltip-box.tooltip-align-right {
-            left: auto;
-            right: 0;
-            transform: translateX(0);
-        }
-        .tooltip-box.tooltip-align-right::after {
-            left: auto;
-            right: 10px;
-            transform: translateX(0);
-        }
-        .tooltip-box.tooltip-align-left {
-            left: 0;
-            transform: translateX(0);
-        }
-        .tooltip-box.tooltip-align-left::after {
-            left: 10px;
-            transform: translateX(0);
-        }
 
         /* Responsive code block fix */
         @media (max-width: 640px) {
@@ -3228,23 +3209,50 @@
         }
 
         // ========== TOOLTIP VIEWPORT CLAMP ==========
+        function clampOneTooltip(box) {
+            const wrap = box.closest('.tooltip-wrap');
+            if (!wrap) return;
+            const wrapRect = wrap.getBoundingClientRect();
+            const tipW = box.offsetWidth;
+            const vpW = window.innerWidth;
+            const margin = 16;
+
+            // Where the tooltip center would naturally sit (centered on wrap)
+            const wrapCenterX = wrapRect.left + wrapRect.width / 2;
+            const naturalLeft = wrapCenterX - tipW / 2;
+
+            // Clamp so the box stays within [margin, vpW - tipW - margin]
+            const clampedLeft = Math.max(margin, Math.min(naturalLeft, vpW - tipW - margin));
+            const shift = clampedLeft - naturalLeft; // px to move box right
+
+            // Apply shifted transform (default is translateX(-50%))
+            box.style.transform = `translateX(calc(-50% + ${shift}px))`;
+
+            // Compensate arrow: arrow must point back at wrapCenterX
+            // Arrow natural position inside box = 50%. We shift the box by `shift` px,
+            // so we need to move the arrow left by the same `shift` to re-center it on wrap.
+            const arrowPx = tipW / 2 - shift; // px from left of box
+            const arrowPct = Math.max(12, Math.min(88, (arrowPx / tipW) * 100));
+            box.style.setProperty('--arrow-left', arrowPct + '%');
+        }
+
         function clampTooltips() {
             document.querySelectorAll('.tooltip-wrap').forEach(function(wrap) {
                 wrap.addEventListener('mouseenter', function() {
                     const box = wrap.querySelector('.tooltip-box');
                     if (!box) return;
-                    // Reset previous alignment
-                    box.classList.remove('tooltip-align-left', 'tooltip-align-right');
-                    // Let browser lay it out first
+                    // Reset inline styles first, then measure
+                    box.style.transform = '';
+                    box.style.removeProperty('--arrow-left');
                     requestAnimationFrame(function() {
-                        const rect = box.getBoundingClientRect();
-                        const margin = 16;
-                        if (rect.right > window.innerWidth - margin) {
-                            box.classList.add('tooltip-align-right');
-                        } else if (rect.left < margin) {
-                            box.classList.add('tooltip-align-left');
-                        }
+                        clampOneTooltip(box);
                     });
+                });
+                wrap.addEventListener('mouseleave', function() {
+                    const box = wrap.querySelector('.tooltip-box');
+                    if (!box) return;
+                    box.style.transform = '';
+                    box.style.removeProperty('--arrow-left');
                 });
             });
         }
