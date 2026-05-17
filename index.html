@@ -722,7 +722,7 @@
             <!-- Dimmer input -->
             <div class="space-y-4">
                 <div class="flex items-center gap-2">
-                    <label id="label_dimmer" class="block text-sm font-black text-gray-600 dark:text-zinc-400 uppercase tracking-wider" data-i18n="step2.dimmerLabel">노브(디머)의 ID</label>
+                    <label id="label_dimmer" class="block text-sm font-black text-gray-600 dark:text-zinc-400 uppercase tracking-wider" data-i18n="step2.dimmerLabel">노브(디머)의 Device ID</label>
                     <div class="tooltip-wrap">
                         <button class="w-5 h-5 rounded-full bg-gray-200 dark:bg-white/10 flex items-center justify-center text-gray-400 flex-shrink-0 text-[11px] font-black">?</button>
                         <div id="tip_dimmer" class="tooltip-box" data-i18n="step2.dimmerTip">Advanced Web App → Devices → 해당 기기 클릭 → Device ID를 복사하세요.</div>
@@ -771,7 +771,7 @@
             <!-- Second device input (light or fan depending on preset) -->
             <div class="space-y-4">
                 <div class="flex items-center gap-2">
-                    <label id="label_device2" class="block text-sm font-black text-gray-600 dark:text-zinc-400 uppercase tracking-wider" data-i18n="step2.lightLabel">컨트롤할 전구의 ID</label>
+                    <label id="label_device2" class="block text-sm font-black text-gray-600 dark:text-zinc-400 uppercase tracking-wider" data-i18n="step2.lightLabel">컨트롤할 전구의 Device ID</label>
                     <div class="tooltip-wrap">
                         <button class="w-5 h-5 rounded-full bg-gray-200 dark:bg-white/10 flex items-center justify-center text-gray-400 flex-shrink-0 text-[11px] font-black">?</button>
                         <div id="tip_device2" class="tooltip-box" data-i18n="step2.lightTip">Advanced Web App → Devices → 전구 클릭 → Device ID를 복사하세요.</div>
@@ -1104,7 +1104,7 @@
             </div>
             <div class="space-y-4">
                 <div class="flex items-center gap-2">
-                    <label class="block text-sm font-black text-gray-600 dark:text-zinc-400 uppercase tracking-wider" data-i18n="bridge.s3.knobLabel">상대값 노브의 ID</label>
+                    <label class="block text-sm font-black text-gray-600 dark:text-zinc-400 uppercase tracking-wider" data-i18n="bridge.s3.knobLabel">상대값 노브의 Device ID</label>
                     <div class="tooltip-wrap">
                         <button class="w-5 h-5 rounded-full bg-gray-200 dark:bg-white/10 flex items-center justify-center text-gray-400 flex-shrink-0 text-[11px] font-black">?</button>
                         <div class="tooltip-box" data-i18n="bridge.s3.knobTip">Advanced Web App → Devices → 상대값 노브 기기의 Device ID를 복사하세요.</div>
@@ -1151,7 +1151,7 @@
             </div>
             <div class="space-y-4">
                 <div class="flex items-center gap-2">
-                    <label class="block text-sm font-black text-gray-600 dark:text-zinc-400 uppercase tracking-wider" data-i18n="bridge.s3.virtualLabel">브릿지용 가상 전구의 ID</label>
+                    <label class="block text-sm font-black text-gray-600 dark:text-zinc-400 uppercase tracking-wider" data-i18n="bridge.s3.virtualLabel">브릿지용 가상 전구의 Device ID</label>
                     <div class="tooltip-wrap">
                         <button class="w-5 h-5 rounded-full bg-gray-200 dark:bg-white/10 flex items-center justify-center text-gray-400 flex-shrink-0 text-[11px] font-black">?</button>
                         <div class="tooltip-box" data-i18n="bridge.s3.virtualTip">방금 만든 virtual-dimmer-levelstep 가상 전구의 Device ID를 복사하세요.</div>
@@ -1512,21 +1512,21 @@ const I18N = {
         "step2.banner":          "SmartThings Advanced Web App에서 기기 ID를 가져오세요.",
         "step2.cautionTitle":    "주의사항",
         "step2.devicesBtn":      "Devices 페이지 열기",
-        "step2.dimmerLabel":     "노브(디머)의 ID",
+        "step2.dimmerLabel":     "노브(디머)의 Device ID",
         "step2.dimmerPlaceholder": "e.g. 1a2b3c4d-5e6f-...",
         "step2.dimmerTip":       "Advanced Web App → Devices → 해당 기기의 Device ID를 복사하세요.",
-        "step2.bridgeLabel":      "브릿지 루틴의 가상 전구 ID",
+        "step2.bridgeLabel":      "브릿지 루틴의 가상 전구 Device ID",
         "step2.bridgeTip":        "상대값 노브 사용자는 브릿지용 가상 전구가 메인 루틴의 노브 역할을 합니다.",
-        "step2.lightLabel":      "컨트롤할 전구의 ID",
+        "step2.lightLabel":      "컨트롤할 전구의 Device ID",
         "step2.lightPlaceholder": "e.g. 5e6f7g8h-9i0j-...",
         "step2.lightTip":        "Advanced Web App → Devices → 해당 기기의 Device ID를 복사하세요.",
-        "step2.fanLabel":        "컨트롤할 선풍기의 ID",
+        "step2.fanLabel":        "컨트롤할 선풍기의 Device ID",
         "step2.fanPlaceholder":  "e.g. 5e6f7g8h-9i0j-...",
         "step2.fanTip":          "Advanced Web App → Devices → 해당 기기의 Device ID를 복사하세요.",
-        "step2.volumeLabel":     "컨트롤할 오디오의 ID",
+        "step2.volumeLabel":     "컨트롤할 오디오의 Device ID",
         "step2.volumePlaceholder": "e.g. 5e6f7g8h-9i0j-...",
         "step2.volumeTip":       "Advanced Web App → Devices → 해당 기기의 Device ID를 복사하세요.",
-        "step2.blindLabel":      "컨트롤할 블라인드/커튼의 ID",
+        "step2.blindLabel":      "컨트롤할 블라인드/커튼의 Device ID",
         "step2.blindPlaceholder": "e.g. 5e6f7g8h-9i0j-...",
         "step2.blindTip":        "Advanced Web App → Devices → 해당 기기의 Device ID를 복사하세요.",
         "step2.caution1":        "반드시 SmartThings Advanced Web App에서 복사하세요.",
@@ -1630,9 +1630,9 @@ const I18N = {
         "bridge.fast.check1": "기존 virtual-dimmer-levelstep 기기 상세 화면을 열었습니다.",
         "bridge.fast.check2": "Create New Device 버튼으로 새 가상 전구를 만들었습니다.",
         "bridge.s3.banner": "브릿지 루틴에 사용할 상대값 노브와 가상 전구의 Device ID를 입력하세요.",
-        "bridge.s3.knobLabel": "상대값 노브의 ID",
+        "bridge.s3.knobLabel": "상대값 노브의 Device ID",
         "bridge.s3.knobTip": "Advanced Web App → Devices → 상대값 노브 기기의 Device ID를 복사하세요.",
-        "bridge.s3.virtualLabel": "브릿지용 가상 전구의 ID",
+        "bridge.s3.virtualLabel": "브릿지용 가상 전구의 Device ID",
         "bridge.s3.virtualTip": "방금 만든 virtual-dimmer-levelstep 가상 전구의 Device ID를 복사하세요.",
         "bridge.s3.caution1": "상대값 노브는 knob capability의 rotateAmount 값을 지원해야 합니다.",
         "bridge.s3.caution2": "가상 전구는 virtual-dimmer-levelstep 기기를 선택해야 합니다.",
@@ -1693,21 +1693,21 @@ const I18N = {
         "step2.banner":          "Get your device IDs from SmartThings Advanced Web App.",
         "step2.cautionTitle":    "Caution",
         "step2.devicesBtn":      "Open Devices Page",
-        "step2.dimmerLabel":     "Knob (Dimmer) ID",
+        "step2.dimmerLabel":     "Knob (Dimmer) Device ID",
         "step2.dimmerPlaceholder": "e.g. 1a2b3c4d-5e6f-...",
         "step2.dimmerTip":       "Advanced Web App → Devices → Copy the Device ID.",
-        "step2.bridgeLabel":      "Bridge virtual bulb ID",
+        "step2.bridgeLabel":      "Bridge virtual bulb Device ID",
         "step2.bridgeTip":        "For relative knobs, the bridge virtual bulb acts as the knob in the main routine.",
-        "step2.lightLabel":      "Target Bulb ID",
+        "step2.lightLabel":      "Target Bulb Device ID",
         "step2.lightPlaceholder": "e.g. 5e6f7g8h-9i0j-...",
         "step2.lightTip":        "Advanced Web App → Devices → Copy the Device ID.",
-        "step2.fanLabel":        "Target Fan ID",
+        "step2.fanLabel":        "Target Fan Device ID",
         "step2.fanPlaceholder":  "e.g. 5e6f7g8h-9i0j-...",
         "step2.fanTip":          "Advanced Web App → Devices → Copy the Device ID.",
         "step2.volumeLabel":     "Target Audio Device ID",
         "step2.volumePlaceholder": "e.g. 5e6f7g8h-9i0j-...",
         "step2.volumeTip":       "Advanced Web App → Devices → Copy the Device ID.",
-        "step2.blindLabel":      "Target Blind/Curtain ID",
+        "step2.blindLabel":      "Target Blind/Curtain Device ID",
         "step2.blindPlaceholder": "e.g. 5e6f7g8h-9i0j-...",
         "step2.blindTip":        "Advanced Web App → Devices → Copy the Device ID.",
         "step2.caution1":        "Always copy from SmartThings Advanced Web App.",
