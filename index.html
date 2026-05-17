@@ -722,30 +722,70 @@
             <!-- Dimmer input -->
             <div class="space-y-4">
                 <div class="flex items-center gap-2">
-                    <label id="label_dimmer" class="block text-sm font-black text-gray-600 dark:text-zinc-400 uppercase tracking-wider" data-i18n="step2.dimmerLabel">노브(디머)의 Device ID</label>
+                    <label id="label_dimmer" class="block text-sm font-black text-gray-600 dark:text-zinc-400 uppercase tracking-wider" data-i18n="step2.dimmerLabel">노브(디머)의 ID</label>
                     <div class="tooltip-wrap">
                         <button class="w-5 h-5 rounded-full bg-gray-200 dark:bg-white/10 flex items-center justify-center text-gray-400 flex-shrink-0 text-[11px] font-black">?</button>
                         <div id="tip_dimmer" class="tooltip-box" data-i18n="step2.dimmerTip">Advanced Web App → Devices → 해당 기기 클릭 → Device ID를 복사하세요.</div>
                     </div>
                 </div>
-                <input type="text" id="input_dimmer" oninput="validateField(this)"
-                    class="w-full px-6 py-5 bg-gray-100 dark:bg-white/5 border-none rounded-2xl text-lg outline-none"
-                    data-i18n-ph="step2.dimmerPlaceholder" placeholder="e.g. 1a2b3c4d-5e6f-...">
+                <div class="relative">
+                    <input type="text" id="input_dimmer" oninput="validateField(this)"
+                        class="w-full px-6 py-5 bg-gray-100 dark:bg-white/5 border-none rounded-2xl text-lg outline-none pr-12"
+                        data-i18n-ph="step2.dimmerPlaceholder" placeholder="e.g. 1a2b3c4d-5e6f-...">
+                    <button type="button" onclick="clearInput('input_dimmer')" class="absolute right-4 top-1/2 -translate-y-1/2 w-6 h-6 flex items-center justify-center rounded-full hover:bg-gray-200 dark:hover:bg-white/10 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors" title="Clear">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                    </button>
+                </div>
+
+                <!-- Component ID Setup -->
+                <div id="component_setup_container" class="mt-2">
+                    <button type="button" id="btn_show_component" onclick="showComponentInput()" class="text-sm text-[#008DF7] font-bold hover:underline" data-i18n="step2.componentLink">이 디머에 노브가 여러 개 있거나 그룹 지정 기능이 있나요?</button>
+                    <div id="component_input_wrap" class="hidden animate-[fadeIn_0.3s_ease]">
+                        <div class="flex items-center gap-2 mb-2">
+                            <label class="block text-sm font-black text-gray-600 dark:text-zinc-400 uppercase tracking-wider">Component ID</label>
+                            <div class="tooltip-wrap">
+                                <button type="button" class="w-4 h-4 rounded-full bg-amber-100 text-amber-500 dark:bg-amber-500/20 dark:text-amber-400 flex items-center justify-center flex-shrink-0 text-[10px] font-black">!</button>
+                                <div class="tooltip-box text-left" style="width: 280px;" data-i18n-html="step2.componentTip">⚠️ <strong>주의:</strong> SmartThings Advanced Web App에서 해당 기기의 정확한 <strong>Component ID</strong>를 확인 후 입력하세요. 대소문자를 엄격히 구분합니다. (잘못 입력 시 루틴이 등록되지 않습니다.)</div>
+                            </div>
+                        </div>
+                        <div class="flex gap-3 items-center">
+                            <div class="relative flex-1 min-w-0">
+                                <input type="text" id="input_component" value="main" oninput="validateField(this)"
+                                    class="w-full px-6 py-5 bg-gray-100 dark:bg-white/5 border-none rounded-2xl text-base outline-none pr-12">
+                                <button type="button" onclick="clearInput('input_component')" class="absolute right-4 top-1/2 -translate-y-1/2 w-6 h-6 flex items-center justify-center rounded-full hover:bg-gray-200 dark:hover:bg-white/10 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors" title="Clear">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                                </button>
+                            </div>
+                            <button type="button" onclick="hideComponentInput()"
+                                class="w-[64px] h-[64px] rounded-2xl bg-gray-100 dark:bg-white/5 text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 flex items-center justify-center transition-all flex-shrink-0"
+                                aria-label="Close component ID input">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <!-- Second device input (light or fan depending on preset) -->
             <div class="space-y-4">
                 <div class="flex items-center gap-2">
-                    <label id="label_device2" class="block text-sm font-black text-gray-600 dark:text-zinc-400 uppercase tracking-wider" data-i18n="step2.lightLabel">컨트롤할 전구의 Device ID</label>
+                    <label id="label_device2" class="block text-sm font-black text-gray-600 dark:text-zinc-400 uppercase tracking-wider" data-i18n="step2.lightLabel">컨트롤할 전구의 ID</label>
                     <div class="tooltip-wrap">
                         <button class="w-5 h-5 rounded-full bg-gray-200 dark:bg-white/10 flex items-center justify-center text-gray-400 flex-shrink-0 text-[11px] font-black">?</button>
                         <div id="tip_device2" class="tooltip-box" data-i18n="step2.lightTip">Advanced Web App → Devices → 전구 클릭 → Device ID를 복사하세요.</div>
                     </div>
                 </div>
                 <div id="targetDeviceInputs" class="space-y-3">
-                    <input type="text" id="input_light" oninput="validateField(this)"
-                        class="target-device-input w-full px-6 py-5 bg-gray-100 dark:bg-white/5 border-none rounded-2xl text-lg outline-none"
-                        data-i18n-ph="step2.lightPlaceholder" placeholder="e.g. 5e6f7g8h-9i0j-...">
+                    <div class="relative">
+                        <input type="text" id="input_light" oninput="validateField(this)"
+                            class="target-device-input w-full px-6 py-5 bg-gray-100 dark:bg-white/5 border-none rounded-2xl text-lg outline-none pr-12"
+                            data-i18n-ph="step2.lightPlaceholder" placeholder="e.g. 5e6f7g8h-9i0j-...">
+                        <button type="button" onclick="clearInput('input_light')" class="absolute right-4 top-1/2 -translate-y-1/2 w-6 h-6 flex items-center justify-center rounded-full hover:bg-gray-200 dark:hover:bg-white/10 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors" title="Clear">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                        </button>
+                    </div>
                 </div>
                 <button type="button" onclick="addTargetDeviceInput()"
                     class="w-full px-6 py-5 bg-gray-100 dark:bg-white/5 border border-dashed border-gray-300 dark:border-white/10 rounded-2xl flex items-center justify-center text-gray-400 hover:text-[#008DF7] hover:border-[#008DF7]/50 dark:hover:border-[#008DF7]/40 transition-all"
@@ -1064,27 +1104,67 @@
             </div>
             <div class="space-y-4">
                 <div class="flex items-center gap-2">
-                    <label class="block text-sm font-black text-gray-600 dark:text-zinc-400 uppercase tracking-wider" data-i18n="bridge.s3.knobLabel">상대값 노브의 Device ID</label>
+                    <label class="block text-sm font-black text-gray-600 dark:text-zinc-400 uppercase tracking-wider" data-i18n="bridge.s3.knobLabel">상대값 노브의 ID</label>
                     <div class="tooltip-wrap">
                         <button class="w-5 h-5 rounded-full bg-gray-200 dark:bg-white/10 flex items-center justify-center text-gray-400 flex-shrink-0 text-[11px] font-black">?</button>
                         <div class="tooltip-box" data-i18n="bridge.s3.knobTip">Advanced Web App → Devices → 상대값 노브 기기의 Device ID를 복사하세요.</div>
                     </div>
                 </div>
-                <input type="text" id="bridge_input_dimmer" oninput="validateField(this)"
-                    class="w-full px-6 py-5 bg-gray-100 dark:bg-white/5 border-none rounded-2xl text-lg outline-none"
-                    placeholder="e.g. 1a2b3c4d-5e6f-...">
+                <div class="relative">
+                    <input type="text" id="bridge_input_dimmer" oninput="validateField(this)"
+                        class="w-full px-6 py-5 bg-gray-100 dark:bg-white/5 border-none rounded-2xl text-lg outline-none pr-12"
+                        placeholder="e.g. 1a2b3c4d-5e6f-...">
+                    <button type="button" onclick="clearInput('bridge_input_dimmer')" class="absolute right-4 top-1/2 -translate-y-1/2 w-6 h-6 flex items-center justify-center rounded-full hover:bg-gray-200 dark:hover:bg-white/10 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors" title="Clear">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                    </button>
+                </div>
+                    
+                <!-- Component ID Setup for Bridge -->
+                <div id="bridge_component_setup_container" class="mt-2">
+                    <button type="button" id="bridge_btn_show_component" onclick="showBridgeComponentInput()" class="text-sm text-[#008DF7] font-bold hover:underline" data-i18n="step2.componentLink">이 디머에 노브가 여러 개 있거나 그룹 지정 기능이 있나요?</button>
+                    <div id="bridge_component_input_wrap" class="hidden animate-[fadeIn_0.3s_ease]">
+                        <div class="flex items-center gap-2 mb-2">
+                            <label class="block text-sm font-black text-gray-600 dark:text-zinc-400 uppercase tracking-wider">Component ID</label>
+                            <div class="tooltip-wrap">
+                                <button type="button" class="w-4 h-4 rounded-full bg-amber-100 text-amber-500 dark:bg-amber-500/20 dark:text-amber-400 flex items-center justify-center flex-shrink-0 text-[10px] font-black">!</button>
+                                <div class="tooltip-box text-left" style="width: 280px;" data-i18n-html="step2.componentTip">⚠️ <strong>주의:</strong> SmartThings Advanced Web App에서 해당 기기의 정확한 <strong>Component ID</strong>를 확인 후 입력하세요. 대소문자를 엄격히 구분합니다. (잘못 입력 시 루틴이 등록되지 않습니다.)</div>
+                            </div>
+                        </div>
+                        <div class="flex gap-3 items-center">
+                            <div class="relative flex-1 min-w-0">
+                                <input type="text" id="bridge_input_component" value="main" oninput="validateField(this)"
+                                    class="w-full px-5 py-4 bg-gray-100 dark:bg-white/5 border-none rounded-2xl text-base outline-none pr-12">
+                                <button type="button" onclick="clearInput('bridge_input_component')" class="absolute right-4 top-1/2 -translate-y-1/2 w-6 h-6 flex items-center justify-center rounded-full hover:bg-gray-200 dark:hover:bg-white/10 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors" title="Clear">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                                </button>
+                            </div>
+                            <button type="button" onclick="hideBridgeComponentInput()"
+                                class="w-[56px] h-[56px] rounded-2xl bg-gray-100 dark:bg-white/5 text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 flex items-center justify-center transition-all flex-shrink-0"
+                                aria-label="Close component ID input">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="space-y-4">
                 <div class="flex items-center gap-2">
-                    <label class="block text-sm font-black text-gray-600 dark:text-zinc-400 uppercase tracking-wider" data-i18n="bridge.s3.virtualLabel">브릿지용 가상 전구의 Device ID</label>
+                    <label class="block text-sm font-black text-gray-600 dark:text-zinc-400 uppercase tracking-wider" data-i18n="bridge.s3.virtualLabel">브릿지용 가상 전구의 ID</label>
                     <div class="tooltip-wrap">
                         <button class="w-5 h-5 rounded-full bg-gray-200 dark:bg-white/10 flex items-center justify-center text-gray-400 flex-shrink-0 text-[11px] font-black">?</button>
                         <div class="tooltip-box" data-i18n="bridge.s3.virtualTip">방금 만든 virtual-dimmer-levelstep 가상 전구의 Device ID를 복사하세요.</div>
                     </div>
                 </div>
-                <input type="text" id="bridge_input_virtual" oninput="validateField(this)"
-                    class="w-full px-6 py-5 bg-gray-100 dark:bg-white/5 border-none rounded-2xl text-lg outline-none"
-                    placeholder="e.g. 5e6f7g8h-9i0j-...">
+                <div class="relative">
+                    <input type="text" id="bridge_input_virtual" oninput="validateField(this)"
+                        class="w-full px-6 py-5 bg-gray-100 dark:bg-white/5 border-none rounded-2xl text-lg outline-none pr-12"
+                        placeholder="e.g. 5e6f7g8h-9i0j-...">
+                    <button type="button" onclick="clearInput('bridge_input_virtual')" class="absolute right-4 top-1/2 -translate-y-1/2 w-6 h-6 flex items-center justify-center rounded-full hover:bg-gray-200 dark:hover:bg-white/10 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors" title="Clear">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                    </button>
+                </div>
             </div>
             <div class="p-6 bg-amber-50 dark:bg-amber-500/5 rounded-2xl border border-amber-200 dark:border-amber-500/15 space-y-3">
                 <div class="flex items-center gap-2 mb-1">
@@ -1432,21 +1512,21 @@ const I18N = {
         "step2.banner":          "SmartThings Advanced Web App에서 기기 ID를 가져오세요.",
         "step2.cautionTitle":    "주의사항",
         "step2.devicesBtn":      "Devices 페이지 열기",
-        "step2.dimmerLabel":     "노브(디머)의 Device ID",
+        "step2.dimmerLabel":     "노브(디머)의 ID",
         "step2.dimmerPlaceholder": "e.g. 1a2b3c4d-5e6f-...",
         "step2.dimmerTip":       "Advanced Web App → Devices → 해당 기기의 Device ID를 복사하세요.",
         "step2.bridgeLabel":      "브릿지 루틴의 가상 전구 ID",
         "step2.bridgeTip":        "상대값 노브 사용자는 브릿지용 가상 전구가 메인 루틴의 노브 역할을 합니다.",
-        "step2.lightLabel":      "컨트롤할 전구의 Device ID",
+        "step2.lightLabel":      "컨트롤할 전구의 ID",
         "step2.lightPlaceholder": "e.g. 5e6f7g8h-9i0j-...",
         "step2.lightTip":        "Advanced Web App → Devices → 해당 기기의 Device ID를 복사하세요.",
-        "step2.fanLabel":        "컨트롤할 선풍기의 Device ID",
+        "step2.fanLabel":        "컨트롤할 선풍기의 ID",
         "step2.fanPlaceholder":  "e.g. 5e6f7g8h-9i0j-...",
         "step2.fanTip":          "Advanced Web App → Devices → 해당 기기의 Device ID를 복사하세요.",
-        "step2.volumeLabel":     "컨트롤할 오디오의 Device ID",
+        "step2.volumeLabel":     "컨트롤할 오디오의 ID",
         "step2.volumePlaceholder": "e.g. 5e6f7g8h-9i0j-...",
         "step2.volumeTip":       "Advanced Web App → Devices → 해당 기기의 Device ID를 복사하세요.",
-        "step2.blindLabel":      "컨트롤할 블라인드/커튼의 Device ID",
+        "step2.blindLabel":      "컨트롤할 블라인드/커튼의 ID",
         "step2.blindPlaceholder": "e.g. 5e6f7g8h-9i0j-...",
         "step2.blindTip":        "Advanced Web App → Devices → 해당 기기의 Device ID를 복사하세요.",
         "step2.caution1":        "반드시 SmartThings Advanced Web App에서 복사하세요.",
@@ -1455,6 +1535,8 @@ const I18N = {
         "step2.cautionVolume":   "오디오 기기가 Audio Volume 기능을 지원하는지 확인하세요. (SmartThings 앱 → 기기 상세에서 확인 가능)",
         "step2.cautionBlind":    "기기가 Window Shade Level 기능을 지원하는지 확인하세요. (SmartThings 앱 → 기기 상세에서 확인 가능)",
         "step2.validationMsg":   "필수 정보를 모두 입력해야 다음으로 진행할 수 있습니다.",
+        "step2.componentLink":   "이 디머에 노브가 여러 개 있거나 그룹 지정 기능이 있나요?",
+        "step2.componentTip":    "⚠️ <strong>주의:</strong> SmartThings Advanced Web App에서 해당 기기의 정확한 <strong>Component ID</strong>를 확인 후 입력하세요. 대소문자를 엄격히 구분합니다. (잘못 입력 시 루틴이 등록되지 않습니다.)",
 
         "step3vol.rangeTitle":   "볼륨 범위 설정",
         "step3vol.minLabel":     "최소",
@@ -1548,9 +1630,9 @@ const I18N = {
         "bridge.fast.check1": "기존 virtual-dimmer-levelstep 기기 상세 화면을 열었습니다.",
         "bridge.fast.check2": "Create New Device 버튼으로 새 가상 전구를 만들었습니다.",
         "bridge.s3.banner": "브릿지 루틴에 사용할 상대값 노브와 가상 전구의 Device ID를 입력하세요.",
-        "bridge.s3.knobLabel": "상대값 노브의 Device ID",
+        "bridge.s3.knobLabel": "상대값 노브의 ID",
         "bridge.s3.knobTip": "Advanced Web App → Devices → 상대값 노브 기기의 Device ID를 복사하세요.",
-        "bridge.s3.virtualLabel": "브릿지용 가상 전구의 Device ID",
+        "bridge.s3.virtualLabel": "브릿지용 가상 전구의 ID",
         "bridge.s3.virtualTip": "방금 만든 virtual-dimmer-levelstep 가상 전구의 Device ID를 복사하세요.",
         "bridge.s3.caution1": "상대값 노브는 knob capability의 rotateAmount 값을 지원해야 합니다.",
         "bridge.s3.caution2": "가상 전구는 virtual-dimmer-levelstep 기기를 선택해야 합니다.",
@@ -1611,21 +1693,21 @@ const I18N = {
         "step2.banner":          "Get your device IDs from SmartThings Advanced Web App.",
         "step2.cautionTitle":    "Caution",
         "step2.devicesBtn":      "Open Devices Page",
-        "step2.dimmerLabel":     "Device ID for Knob (Dimmer)",
+        "step2.dimmerLabel":     "Knob (Dimmer) ID",
         "step2.dimmerPlaceholder": "e.g. 1a2b3c4d-5e6f-...",
         "step2.dimmerTip":       "Advanced Web App → Devices → Copy the Device ID.",
-        "step2.bridgeLabel":      "Device ID for Bridge virtual bulb",
+        "step2.bridgeLabel":      "Bridge virtual bulb ID",
         "step2.bridgeTip":        "For relative knobs, the bridge virtual bulb acts as the knob in the main routine.",
-        "step2.lightLabel":      "Device ID for Target Bulb",
+        "step2.lightLabel":      "Target Bulb ID",
         "step2.lightPlaceholder": "e.g. 5e6f7g8h-9i0j-...",
         "step2.lightTip":        "Advanced Web App → Devices → Copy the Device ID.",
-        "step2.fanLabel":        "Device ID for Target Fan",
+        "step2.fanLabel":        "Target Fan ID",
         "step2.fanPlaceholder":  "e.g. 5e6f7g8h-9i0j-...",
         "step2.fanTip":          "Advanced Web App → Devices → Copy the Device ID.",
-        "step2.volumeLabel":     "Device ID for Target Audio Device",
+        "step2.volumeLabel":     "Target Audio Device ID",
         "step2.volumePlaceholder": "e.g. 5e6f7g8h-9i0j-...",
         "step2.volumeTip":       "Advanced Web App → Devices → Copy the Device ID.",
-        "step2.blindLabel":      "Device ID for Target Blind/Curtain",
+        "step2.blindLabel":      "Target Blind/Curtain ID",
         "step2.blindPlaceholder": "e.g. 5e6f7g8h-9i0j-...",
         "step2.blindTip":        "Advanced Web App → Devices → Copy the Device ID.",
         "step2.caution1":        "Always copy from SmartThings Advanced Web App.",
@@ -1634,6 +1716,8 @@ const I18N = {
         "step2.cautionVolume":   "Make sure your speaker supports the Audio Volume capability. (Check in SmartThings app → Device details)",
         "step2.cautionBlind":    "Make sure your device supports the Window Shade Level capability. (Check in SmartThings app → Device details)",
         "step2.validationMsg":   "Please fill in all required fields to continue.",
+        "step2.componentLink":   "Does this dimmer have multiple knobs or grouping features?",
+        "step2.componentTip":    "⚠️ <strong>Caution:</strong> Check the exact <strong>Component ID</strong> of the device in the SmartThings Advanced Web App. It is strictly case-sensitive. (If entered incorrectly, the routine will not be registered.)",
 
         "step3vol.rangeTitle":   "Volume Range",
         "step3vol.minLabel":     "Minimum",
@@ -1747,18 +1831,18 @@ const I18N = {
 };
 
 // ========== TEMPLATES ==========
-const TEMPLATE_DIMMER = [{"if":{"changes":{"operand":{"device":{"devices":["@device_dimmer"],"component":"main","capability":"switchLevel","attribute":"level"}}},"then":[{"if":{"equals":{"left":{"device":{"devices":["@device_light"],"component":"main","capability":"switch","attribute":"switch","trigger":"Never"}},"right":{"string":"on"}},"then":[{"command":{"devices":["@device_light"],"commands":[{"component":"main","capability":"switchLevel","command":"setLevel","arguments":[{"device":{"devices":["@device_dimmer"],"component":"main","capability":"switchLevel","attribute":"level"}}]}]}}]}}]}}];
+const TEMPLATE_DIMMER = [{"if":{"changes":{"operand":{"device":{"devices":["@device_dimmer"],"component":"@component_dimmer","capability":"switchLevel","attribute":"level"}}},"then":[{"if":{"equals":{"left":{"device":{"devices":["@device_light"],"component":"main","capability":"switch","attribute":"switch","trigger":"Never"}},"right":{"string":"on"}},"then":[{"command":{"devices":["@device_light"],"commands":[{"component":"main","capability":"switchLevel","command":"setLevel","arguments":[{"device":{"devices":["@device_dimmer"],"component":"@component_dimmer","capability":"switchLevel","attribute":"level"}}]}]}}]}}]}}];
 
-const TEMPLATE_CT_MASTER = [{"if":{"changes":{"operand":{"device":{"devices":["@device_dimmer"],"component":"main","capability":"switchLevel","attribute":"level"}}},"then":[{"if":{"equals":{"left":{"device":{"devices":["@device_light"],"component":"main","capability":"switch","attribute":"switch","trigger":"Never"}},"right":{"string":"on"}},"then":"@interpolated_steps"}}]}}];
+const TEMPLATE_CT_MASTER = [{"if":{"changes":{"operand":{"device":{"devices":["@device_dimmer"],"component":"@component_dimmer","capability":"switchLevel","attribute":"level"}}},"then":[{"if":{"equals":{"left":{"device":{"devices":["@device_light"],"component":"main","capability":"switch","attribute":"switch","trigger":"Never"}},"right":{"string":"on"}},"then":"@interpolated_steps"}}]}}];
 
-const TEMPLATE_FAN = [{"if":{"changes":{"operand":{"device":{"devices":["@device_dimmer"],"component":"main","capability":"switchLevel","attribute":"level"}}},"then":[{"if":{"equals":{"left":{"device":{"devices":["@device_fan"],"component":"main","capability":"switch","attribute":"switch","trigger":"Never"}},"right":{"string":"on"}},"then":[{"if":{"between":{"value":{"device":{"devices":["@device_dimmer"],"component":"main","capability":"switchLevel","attribute":"level"}},"start":{"integer":1},"end":{"integer":20}},"then":[{"command":{"devices":["@device_fan"],"commands":[{"component":"main","capability":"fanSpeed","command":"setFanSpeed","arguments":[{"integer":0}]}]}}]}},{"if":{"between":{"value":{"device":{"devices":["@device_dimmer"],"component":"main","capability":"switchLevel","attribute":"level"}},"start":{"integer":21},"end":{"integer":40}},"then":[{"command":{"devices":["@device_fan"],"commands":[{"component":"main","capability":"fanSpeed","command":"setFanSpeed","arguments":[{"integer":1}]}]}}]}},{"if":{"between":{"value":{"device":{"devices":["@device_dimmer"],"component":"main","capability":"switchLevel","attribute":"level"}},"start":{"integer":41},"end":{"integer":60}},"then":[{"command":{"devices":["@device_fan"],"commands":[{"component":"main","capability":"fanSpeed","command":"setFanSpeed","arguments":[{"integer":2}]}]}}]}},{"if":{"between":{"value":{"device":{"devices":["@device_dimmer"],"component":"main","capability":"switchLevel","attribute":"level"}},"start":{"integer":61},"end":{"integer":80}},"then":[{"command":{"devices":["@device_fan"],"commands":[{"component":"main","capability":"fanSpeed","command":"setFanSpeed","arguments":[{"integer":3}]}]}}]}},{"if":{"between":{"value":{"device":{"devices":["@device_dimmer"],"component":"main","capability":"switchLevel","attribute":"level"}},"start":{"integer":81},"end":{"integer":100}},"then":[{"command":{"devices":["@device_fan"],"commands":[{"component":"main","capability":"fanSpeed","command":"setFanSpeed","arguments":[{"integer":4}]}]}}]}}]}}]}}];
+const TEMPLATE_FAN = [{"if":{"changes":{"operand":{"device":{"devices":["@device_dimmer"],"component":"@component_dimmer","capability":"switchLevel","attribute":"level"}}},"then":[{"if":{"equals":{"left":{"device":{"devices":["@device_fan"],"component":"main","capability":"switch","attribute":"switch","trigger":"Never"}},"right":{"string":"on"}},"then":[{"if":{"between":{"value":{"device":{"devices":["@device_dimmer"],"component":"@component_dimmer","capability":"switchLevel","attribute":"level"}},"start":{"integer":1},"end":{"integer":20}},"then":[{"command":{"devices":["@device_fan"],"commands":[{"component":"main","capability":"fanSpeed","command":"setFanSpeed","arguments":[{"integer":0}]}]}}]}},{"if":{"between":{"value":{"device":{"devices":["@device_dimmer"],"component":"@component_dimmer","capability":"switchLevel","attribute":"level"}},"start":{"integer":21},"end":{"integer":40}},"then":[{"command":{"devices":["@device_fan"],"commands":[{"component":"main","capability":"fanSpeed","command":"setFanSpeed","arguments":[{"integer":1}]}]}}]}},{"if":{"between":{"value":{"device":{"devices":["@device_dimmer"],"component":"@component_dimmer","capability":"switchLevel","attribute":"level"}},"start":{"integer":41},"end":{"integer":60}},"then":[{"command":{"devices":["@device_fan"],"commands":[{"component":"main","capability":"fanSpeed","command":"setFanSpeed","arguments":[{"integer":2}]}]}}]}},{"if":{"between":{"value":{"device":{"devices":["@device_dimmer"],"component":"@component_dimmer","capability":"switchLevel","attribute":"level"}},"start":{"integer":61},"end":{"integer":80}},"then":[{"command":{"devices":["@device_fan"],"commands":[{"component":"main","capability":"fanSpeed","command":"setFanSpeed","arguments":[{"integer":3}]}]}}]}},{"if":{"between":{"value":{"device":{"devices":["@device_dimmer"],"component":"@component_dimmer","capability":"switchLevel","attribute":"level"}},"start":{"integer":81},"end":{"integer":100}},"then":[{"command":{"devices":["@device_fan"],"commands":[{"component":"main","capability":"fanSpeed","command":"setFanSpeed","arguments":[{"integer":4}]}]}}]}}]}}]}}];
 
 // Volume template: level 1 → vol 0, levels 2~10 → vol 1, 11~20 → vol 2 … 91~100 → vol 10 (structure, values injected at runtime)
-const TEMPLATE_VOLUME_MASTER = [{"if":{"changes":{"operand":{"device":{"devices":["@device_dimmer"],"component":"main","capability":"switchLevel","attribute":"level"}}},"then":"@interpolated_steps"}}];
+const TEMPLATE_VOLUME_MASTER = [{"if":{"changes":{"operand":{"device":{"devices":["@device_dimmer"],"component":"@component_dimmer","capability":"switchLevel","attribute":"level"}}},"then":"@interpolated_steps"}}];
 
-const TEMPLATE_BLIND = [{"if":{"changes":{"operand":{"device":{"devices":["@device_dimmer"],"component":"main","capability":"switchLevel","attribute":"level"}}},"then":[{"if":{"equals":{"left":{"device":{"devices":["@device_dimmer"],"component":"main","capability":"switchLevel","attribute":"level"}},"right":{"integer":1}},"then":[{"command":{"devices":["@device_shade"],"commands":[{"component":"main","capability":"windowShadeLevel","command":"setShadeLevel","arguments":[{"integer":0}]}]}}],"else":[{"command":{"devices":["@device_shade"],"commands":[{"component":"main","capability":"windowShadeLevel","command":"setShadeLevel","arguments":[{"device":{"devices":["@device_dimmer"],"component":"main","capability":"switchLevel","attribute":"level"}}]}]}}]}}]}}];
+const TEMPLATE_BLIND = [{"if":{"changes":{"operand":{"device":{"devices":["@device_dimmer"],"component":"@component_dimmer","capability":"switchLevel","attribute":"level"}}},"then":[{"if":{"equals":{"left":{"device":{"devices":["@device_dimmer"],"component":"@component_dimmer","capability":"switchLevel","attribute":"level"}},"right":{"integer":1}},"then":[{"command":{"devices":["@device_shade"],"commands":[{"component":"main","capability":"windowShadeLevel","command":"setShadeLevel","arguments":[{"integer":0}]}]}}],"else":[{"command":{"devices":["@device_shade"],"commands":[{"component":"main","capability":"windowShadeLevel","command":"setShadeLevel","arguments":[{"device":{"devices":["@device_dimmer"],"component":"@component_dimmer","capability":"switchLevel","attribute":"level"}}]}]}}]}}]}}];
 
-const TEMPLATE_BRIDGE = [{"if":{"greaterThanOrEquals":{"left":{"device":{"devices":["@device_dimmer"],"component":"main","capability":"knob","attribute":"rotateAmount","trigger":"Always"}},"right":{"integer":-100},"changesOnly":false},"then":[{"command":{"devices":["@device_bridge"],"commands":[{"component":"main","capability":"statelessSwitchLevelStep","command":"stepLevel","arguments":[{"device":{"devices":["@device_dimmer"],"component":"main","capability":"knob","attribute":"rotateAmount"}}]}]}}]}}];
+const TEMPLATE_BRIDGE = [{"if":{"greaterThanOrEquals":{"left":{"device":{"devices":["@device_dimmer"],"component":"@component_dimmer","capability":"knob","attribute":"rotateAmount","trigger":"Always"}},"right":{"integer":-100},"changesOnly":false},"then":[{"command":{"devices":["@device_bridge"],"commands":[{"component":"main","capability":"statelessSwitchLevelStep","command":"stepLevel","arguments":[{"device":{"devices":["@device_dimmer"],"component":"@component_dimmer","capability":"knob","attribute":"rotateAmount"}}]}]}}]}}];
 
 // ========== STATE ==========
 let currentStep = 1;
@@ -1925,6 +2009,32 @@ function updateUI() {
     if (selectedPreset === 'volume-control' && targetId === 'step3_volume') updateVolPreview();
 }
 
+// ========== COMPONENT SETUP LOGIC ==========
+function showComponentInput() {
+    document.getElementById('btn_show_component').classList.add('hidden');
+    document.getElementById('component_input_wrap').classList.remove('hidden');
+}
+function hideComponentInput() {
+    const input = document.getElementById('input_component');
+    if (input) input.value = 'main';
+    const wrap = document.getElementById('component_input_wrap');
+    if (wrap) wrap.classList.add('hidden');
+    const btn = document.getElementById('btn_show_component');
+    if (btn) btn.classList.remove('hidden');
+}
+function showBridgeComponentInput() {
+    document.getElementById('bridge_btn_show_component').classList.add('hidden');
+    document.getElementById('bridge_component_input_wrap').classList.remove('hidden');
+}
+function hideBridgeComponentInput() {
+    const input = document.getElementById('bridge_input_component');
+    if (input) input.value = 'main';
+    const wrap = document.getElementById('bridge_component_input_wrap');
+    if (wrap) wrap.classList.add('hidden');
+    const btn = document.getElementById('bridge_btn_show_component');
+    if (btn) btn.classList.remove('hidden');
+}
+
 function updateStep2Labels() {
     const isFan    = selectedPreset === 'fan-control';
     const isVolume = selectedPreset === 'volume-control';
@@ -1935,6 +2045,16 @@ function updateStep2Labels() {
     const tip    = document.getElementById('tip_device2');
     const inputs = getTargetDeviceInputs();
     if (!label) return;
+
+    const componentSetupContainer = document.getElementById('component_setup_container');
+    if (componentSetupContainer) {
+        if (knobType === 'relative') {
+            componentSetupContainer.classList.add('hidden');
+            hideComponentInput();
+        } else {
+            componentSetupContainer.classList.remove('hidden');
+        }
+    }
 
     if (dimmerLabel && dimmerTip) {
         const labelKey = knobType === 'relative' ? 'step2.bridgeLabel' : 'step2.dimmerLabel';
@@ -2019,10 +2139,15 @@ function addTargetDeviceInput() {
                 ? 'step2.blindPlaceholder'
                 : 'step2.lightPlaceholder';
     wrapper.innerHTML = `
-        <input type="text" oninput="validateField(this)"
-            class="target-device-input flex-1 min-w-0 px-6 py-5 bg-gray-100 dark:bg-white/5 border-none rounded-2xl text-lg outline-none"
-            data-i18n-ph="${placeholderKey}"
-            placeholder="${t(placeholderKey)}">
+        <div class="relative flex-1 min-w-0">
+            <input type="text" oninput="validateField(this)"
+                class="target-device-input w-full px-6 py-5 bg-gray-100 dark:bg-white/5 border-none rounded-2xl text-lg outline-none pr-12"
+                data-i18n-ph="${placeholderKey}"
+                placeholder="${t(placeholderKey)}">
+            <button type="button" onclick="clearInput(this.previousElementSibling)" class="absolute right-4 top-1/2 -translate-y-1/2 w-6 h-6 flex items-center justify-center rounded-full hover:bg-gray-200 dark:hover:bg-white/10 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors" title="Clear">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>
+        </div>
         <button type="button" onclick="removeTargetDeviceInput(this)"
             class="w-[64px] h-[64px] rounded-2xl bg-gray-100 dark:bg-white/5 text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 flex items-center justify-center transition-all"
             aria-label="Remove target device">
@@ -2137,6 +2262,15 @@ function validateField(input) {
     if (input.value.trim()) input.classList.remove('input-error');
 }
 
+function clearInput(target) {
+    let el = typeof target === 'string' ? document.getElementById(target) : target;
+    if (el) {
+        el.value = '';
+        el.focus();
+        validateField(el);
+    }
+}
+
 function validateBridgeChecklist(group, msgId) {
     updateBridgeCheckCards();
     const checks = Array.from(document.querySelectorAll(`.bridge-check[data-bridge-group="${group}"]`));
@@ -2247,6 +2381,8 @@ function resetApp() {
     document.getElementById('input_light').value = '';
     document.getElementById('bridge_input_dimmer').value = '';
     document.getElementById('bridge_input_virtual').value = '';
+    hideComponentInput();
+    hideBridgeComponentInput();
     document.getElementById('vol_min').value = '0';
     document.getElementById('vol_max').value = '20';
     document.querySelectorAll('.bridge-check').forEach(check => { check.checked = false; });
@@ -2395,11 +2531,19 @@ function replacePlaceholders(value, replacements) {
 function generateCode() {
     const dimmerId = document.getElementById('input_dimmer').value.trim() || '@device_dimmer';
     const lightIds = getTargetDeviceIds('@device_light');
+    
+    // Determine Component ID
+    const componentWrap = document.getElementById('component_input_wrap');
+    const isComponentHidden = componentWrap && componentWrap.classList.contains('hidden');
+    const rawComponentVal = document.getElementById('input_component')?.value.trim();
+    const componentId = (!isComponentHidden && rawComponentVal) ? rawComponentVal : 'main';
+
     let finalJsonString = '';
 
     if (selectedPreset === 'dimmer-control') {
         const rule = replacePlaceholders(cloneTemplate(TEMPLATE_DIMMER), {
             '@device_dimmer': dimmerId,
+            '@component_dimmer': componentId,
             '@device_light': lightIds
         });
         finalJsonString = JSON.stringify(rule, null, 4);
@@ -2408,6 +2552,7 @@ function generateCode() {
         const shadeIds = getTargetDeviceIds('@device_shade');
         const rule = replacePlaceholders(cloneTemplate(TEMPLATE_BLIND), {
             '@device_dimmer': dimmerId,
+            '@component_dimmer': componentId,
             '@device_shade': shadeIds
         });
         finalJsonString = JSON.stringify(rule, null, 4);
@@ -2418,12 +2563,13 @@ function generateCode() {
         for (let i = 0; i < 20; i++) {
             const s = i * 5 + 1, e = (i + 1) * 5;
             const stepVal = Math.round(minK + (maxK - minK) * (i / 19));
-            stepsArray.push({"if":{"between":{"value":{"device":{"devices":["@device_dimmer"],"component":"main","capability":"switchLevel","attribute":"level"}},"start":{"integer":s},"end":{"integer":e}},"then":[{"command":{"devices":["@device_light"],"commands":[{"component":"main","capability":"colorTemperature","command":"setColorTemperature","arguments":[{"integer":stepVal}]}]}}]}});
+            stepsArray.push({"if":{"between":{"value":{"device":{"devices":["@device_dimmer"],"component":"@component_dimmer","capability":"switchLevel","attribute":"level"}},"start":{"integer":s},"end":{"integer":e}},"then":[{"command":{"devices":["@device_light"],"commands":[{"component":"main","capability":"colorTemperature","command":"setColorTemperature","arguments":[{"integer":stepVal}]}]}}]}});
         }
         const master = cloneTemplate(TEMPLATE_CT_MASTER);
         master[0].if.then[0].if.then = stepsArray;
         const rule = replacePlaceholders(master, {
             '@device_dimmer': dimmerId,
+            '@component_dimmer': componentId,
             '@device_light': lightIds
         });
         finalJsonString = JSON.stringify(rule, null, 4);
@@ -2432,6 +2578,7 @@ function generateCode() {
         const fanIds = getTargetDeviceIds('@device_fan');
         const rule = replacePlaceholders(cloneTemplate(TEMPLATE_FAN), {
             '@device_dimmer': dimmerId,
+            '@component_dimmer': componentId,
             '@device_fan': fanIds
         });
         finalJsonString = JSON.stringify(rule, null, 4);
@@ -2449,7 +2596,7 @@ function generateCode() {
         stepsArray.push({
             "if": {
                 "between": {
-                    "value": {"device": {"devices": ["@device_dimmer"], "component": "main", "capability": "switchLevel", "attribute": "level"}},
+                    "value": {"device": {"devices": ["@device_dimmer"], "component": "@component_dimmer", "capability": "switchLevel", "attribute": "level"}},
                     "start": {"integer": 1}, "end": {"integer": 1}
                 },
                 "then": [{"command": {"devices": ["@device_volume"], "commands": [{"component": "main", "capability": "audioVolume", "command": "setVolume", "arguments": [{"integer": 0}]}]}}]
@@ -2467,7 +2614,7 @@ function generateCode() {
             stepsArray.push({
                 "if": {
                     "between": {
-                        "value": {"device": {"devices": ["@device_dimmer"], "component": "main", "capability": "switchLevel", "attribute": "level"}},
+                        "value": {"device": {"devices": ["@device_dimmer"], "component": "@component_dimmer", "capability": "switchLevel", "attribute": "level"}},
                         "start": {"integer": bandStart}, "end": {"integer": bandEnd}
                     },
                     "then": [{"command": {"devices": ["@device_volume"], "commands": [{"component": "main", "capability": "audioVolume", "command": "setVolume", "arguments": [{"integer": stepVal}]}]}}]
@@ -2479,6 +2626,7 @@ function generateCode() {
         master[0].if.then = stepsArray;
         const rule = replacePlaceholders(master, {
             '@device_dimmer': dimmerId,
+            '@component_dimmer': componentId,
             '@device_volume': volumeIds
         });
         finalJsonString = JSON.stringify(rule, null, 4);
@@ -2490,8 +2638,16 @@ function generateCode() {
 function generateBridgeCode() {
     const dimmerId = document.getElementById('bridge_input_dimmer').value.trim() || '@device_dimmer';
     const virtualId = document.getElementById('bridge_input_virtual').value.trim() || '@device_bridge';
+    
+    // Determine Component ID
+    const componentWrap = document.getElementById('bridge_component_input_wrap');
+    const isComponentHidden = componentWrap && componentWrap.classList.contains('hidden');
+    const rawComponentVal = document.getElementById('bridge_input_component')?.value.trim();
+    const componentId = (!isComponentHidden && rawComponentVal) ? rawComponentVal : 'main';
+
     const rule = replacePlaceholders(cloneTemplate(TEMPLATE_BRIDGE), {
         '@device_dimmer': dimmerId,
+        '@component_dimmer': componentId,
         '@device_bridge': virtualId
     });
     document.getElementById('bridgeCodeOutput').innerHTML = syntaxHighlight(JSON.stringify(rule, null, 4));
