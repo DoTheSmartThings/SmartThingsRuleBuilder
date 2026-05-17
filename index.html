@@ -3237,22 +3237,26 @@
         }
 
         function clampTooltips() {
+            // Pre-calculate positions for all tooltips so they're correct before first hover
+            requestAnimationFrame(function() {
+                document.querySelectorAll('.tooltip-wrap .tooltip-box').forEach(function(box) {
+                    clampOneTooltip(box);
+                });
+            });
+
+            // Re-clamp on hover in case viewport size changed
             document.querySelectorAll('.tooltip-wrap').forEach(function(wrap) {
                 wrap.addEventListener('mouseenter', function() {
                     const box = wrap.querySelector('.tooltip-box');
                     if (!box) return;
-                    // Reset inline styles first, then measure
-                    box.style.transform = '';
-                    box.style.removeProperty('--arrow-left');
-                    requestAnimationFrame(function() {
-                        clampOneTooltip(box);
-                    });
+                    clampOneTooltip(box);
                 });
-                wrap.addEventListener('mouseleave', function() {
-                    const box = wrap.querySelector('.tooltip-box');
-                    if (!box) return;
-                    box.style.transform = '';
-                    box.style.removeProperty('--arrow-left');
+            });
+
+            // Re-clamp all on resize
+            window.addEventListener('resize', function() {
+                document.querySelectorAll('.tooltip-wrap .tooltip-box').forEach(function(box) {
+                    clampOneTooltip(box);
                 });
             });
         }
