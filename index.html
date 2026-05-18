@@ -740,7 +740,7 @@
     <nav class="nav-glass sticky top-0 z-[100] border-b px-5 md:px-8 py-4">
         <div class="max-w-4xl mx-auto flex justify-between items-center">
             <!-- Logo -->
-            <div class="flex items-center gap-4">
+            <div class="flex items-center gap-4 cursor-pointer" onclick="handleLogoClick()">
                 <div class="w-11 h-11 justify-center flex-shrink-0">
                     <img src="images/brandidentity/logo_rulebuilder.png" alt="logo" />
                 </div>
@@ -3010,6 +3010,14 @@
         }
 
         function closeModal() { document.getElementById('confirmModal').classList.remove('active'); }
+
+        function handleLogoClick() {
+            if (appPhase === 'main' && currentStep === 1) {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                return;
+            }
+            document.getElementById('confirmModal').classList.add('active');
+        }
 
         function openThanksModal() {
             moreMenuOpen = false; document.getElementById('moreMenu').classList.remove('active');
