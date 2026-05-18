@@ -520,6 +520,26 @@
             transition: left 0.3s ease;
         }
 
+        /* AC gradient bar */
+        .ac-gradient-bar {
+            height: 18px;
+            border-radius: 9px;
+            background: linear-gradient(to left, #bae6fd, #38bdf8, #0284c7, #0369a1);
+            position: relative;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .ac-marker {
+            position: absolute;
+            top: -5px;
+            width: 4px;
+            height: 28px;
+            background: white;
+            box-shadow: 0 0 6px rgba(0, 0, 0, 0.35);
+            border-radius: 2px;
+            transition: left 0.3s ease;
+        }
+
         /* Preset card hover state */
         .preset-card {
             transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -955,6 +975,29 @@
                     </div>
                 </div>
 
+                <!-- Preset: AC Control -->
+                <div onclick="selectPreset('ac-control')"
+                    class="preset-card glass-card p-8 md:p-10 border-2 border-transparent hover:border-sky-400/30 dark:hover:border-sky-500/20 group">
+                    <div
+                        class="w-14 h-14 bg-sky-50 dark:bg-sky-500/10 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                        <svg class="w-8 h-8 text-sky-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 3v18m-9-9h18M6.343 6.343l11.314 11.314M6.343 17.657l11.314-11.314" />
+                        </svg>
+                    </div>
+                    <h3 class="text-xl md:text-2xl font-bold mb-3 tracking-tight" data-i18n="preset.ac.title">IoT 노브로 에어컨 온도 제어</h3>
+                    <p class="text-sm md:text-base text-gray-500 dark:text-zinc-400 leading-relaxed"
+                        data-i18n="preset.ac.desc">노브를 돌려서 에어컨 설정 온도를 조절합니다.</p>
+                    <div
+                        class="mt-6 flex items-center text-sky-500 text-sm font-black gap-2 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-x-[-8px] group-hover:translate-x-0">
+                        <span data-i18n="preset.select">선택하기</span>
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                                d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                        </svg>
+                    </div>
+                </div>
+
             </div>
         </section>
 
@@ -1349,6 +1392,82 @@
                         0~100 사이의 값만 입력 가능하며, 최소값은 최대값보다 작아야 합니다.</p>
                     <p id="volValidationMsg" class="text-red-500 text-sm font-bold hidden"
                         data-i18n="step3vol.validationMsg">볼륨은 0 이상 100 이하로 입력하고, 최소값은 최대값보다 작아야 합니다.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== STEP 3-AC: AC TEMPERATURE RANGE SETTING ===== -->
+        <section id="step3_ac" class="step-content">
+            <div class="glass-card p-8 md:p-12 space-y-10">
+                <div class="space-y-6">
+                    <h4 class="text-lg font-bold tracking-tight" data-i18n="step3ac.rangeTitle">에어컨 온도 범위 설정</h4>
+                    <div class="flex flex-col sm:flex-row gap-6 items-end">
+                        <div class="flex-1 w-full space-y-2">
+                            <label class="text-xs font-black text-gray-400 uppercase tracking-widest"
+                                data-i18n="step3ac.minLabel">최소</label>
+                            <div class="relative">
+                                <input type="number" id="ac_min" oninput="updateAcPreview()" value="18" min="0"
+                                    max="40"
+                                    class="w-full px-5 py-4 bg-gray-100 dark:bg-white/5 rounded-2xl text-xl font-bold outline-none pr-12">
+                                <span class="absolute right-5 top-1/2 -translate-y-1/2 font-bold text-gray-400">°C</span>
+                            </div>
+                        </div>
+                        <div class="hidden sm:block pb-5 text-gray-300 text-xl">—</div>
+                        <div class="flex-1 w-full space-y-2">
+                            <label class="text-xs font-black text-gray-400 uppercase tracking-widest"
+                                data-i18n="step3ac.maxLabel">최대</label>
+                            <div class="relative">
+                                <input type="number" id="ac_max" oninput="updateAcPreview()" value="30" min="0"
+                                    max="40"
+                                    class="w-full px-5 py-4 bg-gray-100 dark:bg-white/5 rounded-2xl text-xl font-bold outline-none pr-12">
+                                <span class="absolute right-5 top-1/2 -translate-y-1/2 font-bold text-gray-400">°C</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick range presets -->
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                        <button onclick="setAcRange(16,30)"
+                            class="p-4 rounded-2xl border border-gray-200 dark:border-white/10 hover:border-sky-400/50 dark:hover:border-sky-500/40 transition-all text-left hover:bg-sky-50/50 dark:hover:bg-sky-500/5">
+                            <span class="block text-[10px] font-black text-gray-400 mb-1.5 uppercase tracking-widest"
+                                data-i18n="step3ac.preset1Name">일반 에어컨</span>
+                            <span class="block font-bold text-sm">16°C – 30°C</span>
+                        </button>
+                        <button onclick="setAcRange(18,30)"
+                            class="p-4 rounded-2xl border border-gray-200 dark:border-white/10 hover:border-sky-400/50 dark:hover:border-sky-500/40 transition-all text-left hover:bg-sky-50/50 dark:hover:bg-sky-500/5">
+                            <span class="block text-[10px] font-black text-sky-500 mb-1.5 uppercase tracking-widest font-bold"
+                                data-i18n="step3ac.preset2Name">일반 에어컨(권장)</span>
+                            <span class="block font-bold text-sm text-sky-500">18°C – 30°C</span>
+                        </button>
+                        <button onclick="setAcRange(26,30)"
+                            class="p-4 rounded-2xl border border-gray-200 dark:border-white/10 hover:border-sky-400/50 dark:hover:border-sky-500/40 transition-all text-left hover:bg-sky-50/50 dark:hover:bg-sky-50/5">
+                            <span class="block text-[10px] font-black text-gray-400 mb-1.5 uppercase tracking-widest"
+                                data-i18n="step3ac.preset3Name">에너지 절약</span>
+                            <span class="block font-bold text-sm">26°C – 30°C</span>
+                        </button>
+                        <button onclick="setAcRange(0,40)"
+                            class="p-4 rounded-2xl border border-gray-200 dark:border-white/10 hover:border-orange-400/50 dark:hover:border-orange-500/40 transition-all text-left hover:bg-orange-50/50 dark:hover:bg-orange-500/5">
+                            <span class="block text-[10px] font-black text-orange-400 mb-1.5 uppercase tracking-widest"
+                                data-i18n="step3ac.preset4Name">전체 시스템</span>
+                            <span class="block font-bold text-sm text-orange-500">0°C – 40°C</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- AC level bar -->
+                <div class="space-y-4">
+                    <div class="flex justify-between items-center">
+                        <span class="text-xs font-black text-gray-400 uppercase tracking-widest"
+                            data-i18n="step3ac.previewLabel">온도 범위 미리보기</span>
+                        <span id="ac_preview_text" class="text-sm font-bold text-sky-500">18°C → 30°C</span>
+                    </div>
+                    <div class="ac-gradient-bar">
+                        <div id="ac_marker_min" class="ac-marker" style="left:45%"></div>
+                        <div id="ac_marker_max" class="ac-marker" style="left:75%"></div>
+                    </div>
+                    <p class="text-xs text-gray-400 dark:text-gray-500 leading-relaxed" data-i18n="step3ac.note">※ 0~40 사이의 값만 입력 가능하며, 최소값은 최대값보다 작아야 합니다.</p>
+                    <p id="acValidationMsg" class="text-red-500 text-sm font-bold hidden"
+                        data-i18n="step3ac.validationMsg">온도는 0 이상 40 이하로 입력하고, 최소값은 최대값보다 작아야 합니다.</p>
                 </div>
             </div>
         </section>
@@ -1982,6 +2101,8 @@
                 "preset.volume.desc": "노브를 돌려서 오디오 볼륨을 조절합니다.",
                 "preset.blind.title": "IoT 노브로 블라인드/커튼 제어",
                 "preset.blind.desc": "노브를 돌려서 블라인드나 커튼의 열림 정도를 조절합니다.",
+                "preset.ac.title": "IoT 노브로 에어컨 온도 제어",
+                "preset.ac.desc": "노브를 돌려서 에어컨 설정 온도를 조절합니다.",
 
                 "step2.banner": "SmartThings Advanced Web App에서 기기 ID를 가져오세요.",
                 "step2.cautionTitle": "주의사항",
@@ -2003,11 +2124,15 @@
                 "step2.blindLabel": "컨트롤할 블라인드/커튼의 Device ID",
                 "step2.blindPlaceholder": "e.g. 5e6f7g8h-9i0j-...",
                 "step2.blindTip": "Advanced Web App → Devices → 해당 기기의 Device ID를 복사하세요.",
+                "step2.acLabel": "컨트롤할 에어컨의 Device ID",
+                "step2.acPlaceholder": "e.g. 5e6f7g8h-9i0j-...",
+                "step2.acTip": "Advanced Web App → Devices → 에어컨 클릭 → Device ID를 복사하세요.",
                 "step2.caution1": "반드시 SmartThings Advanced Web App에서 복사하세요.",
                 "step2.caution3": "전구가 Switch Level 및 Color Temperature 기능을 지원하는지 확인하세요.",
                 "step2.cautionFan": "선풍기가 Fan Speed 기능을 지원하는지 확인하세요. (SmartThings 앱 → 기기 상세에서 확인 가능)",
                 "step2.cautionVolume": "오디오 기기가 Audio Volume 기능을 지원하는지 확인하세요. (SmartThings 앱 → 기기 상세에서 확인 가능)",
                 "step2.cautionBlind": "기기가 Window Shade Level 기능을 지원하는지 확인하세요. (SmartThings 앱 → 기기 상세에서 확인 가능)",
+                "step2.cautionAc": "에어컨이 Thermostat Cooling Setpoint 기능을 지원하는지 확인하세요. (SmartThings 앱 → 기기 상세에서 확인 가능)",
                 "step2.validationMsg": "필수 정보를 모두 입력해야 다음으로 진행할 수 있습니다.",
                 "step2.componentLink": "이 디머에 노브가 여러 개 있거나 그룹 지정 기능이 있나요?",
                 "step2.componentTip": "⚠️ <strong>주의:</strong> SmartThings Advanced Web App에서 해당 기기의 정확한 <strong>Component ID</strong>를 확인 후 입력하세요. 대소문자를 엄격히 구분합니다. (잘못 입력 시 루틴이 등록되지 않습니다.)",
@@ -2025,6 +2150,19 @@
                 "step3vol.validationMsg": "볼륨은 0 이상 100 이하로 입력하고, 최소값은 최대값보다 작아야 합니다.",
 
                 "step.3vol.title": "볼륨 범위 설정",
+
+                "step3ac.rangeTitle": "에어컨 온도 범위 설정",
+                "step3ac.minLabel": "최소",
+                "step3ac.maxLabel": "최대",
+                "step3ac.preset1Name": "일반 에어컨",
+                "step3ac.preset2Name": "일반 에어컨(권장)",
+                "step3ac.preset3Name": "에너지 절약",
+                "step3ac.preset4Name": "전체 시스템",
+                "step3ac.previewLabel": "온도 범위 미리보기",
+                "step3ac.note": "※ 0~40 사이의 값만 입력 가능하며, 최소값은 최대값보다 작아야 합니다.",
+                "step3ac.validationMsg": "온도는 0 이상 40 이하로 입력하고, 최소값은 최대값보다 작아야 합니다.",
+
+                "step.3ac.title": "에어컨 온도 범위 설정",
 
                 "step3fan.title": "바람세기 범위",
                 "step3fan.desc": "선풍기 사양에 맞는 제어 방식을 선택하세요.",
@@ -2163,6 +2301,8 @@
                 "preset.volume.desc": "Turn the knob to smoothly change the audio volume",
                 "preset.blind.title": "Control Blinds/Curtains via IoT Knob",
                 "preset.blind.desc": "Turn the knob to adjust the opening level of your blinds or curtains.",
+                "preset.ac.title": "Control AC Temperature via IoT Knob",
+                "preset.ac.desc": "Turn the knob to adjust the AC cooling setpoint.",
 
                 "step2.banner": "Get your device IDs from SmartThings Advanced Web App.",
                 "step2.cautionTitle": "Caution",
@@ -2184,11 +2324,15 @@
                 "step2.blindLabel": "Target Blind/Curtain Device ID",
                 "step2.blindPlaceholder": "e.g. 5e6f7g8h-9i0j-...",
                 "step2.blindTip": "Advanced Web App → Devices → Copy the Device ID.",
+                "step2.acLabel": "Target AC Device ID",
+                "step2.acPlaceholder": "e.g. 5e6f7g8h-9i0j-...",
+                "step2.acTip": "Advanced Web App → Devices → Copy the Device ID.",
                 "step2.caution1": "Always copy from SmartThings Advanced Web App.",
                 "step2.caution3": "Make sure your bulb supports Switch Level and Color Temperature capabilities.",
                 "step2.cautionFan": "Make sure your fan supports the Fan Speed capability. (Check in SmartThings app → Device details)",
                 "step2.cautionVolume": "Make sure your speaker supports the Audio Volume capability. (Check in SmartThings app → Device details)",
                 "step2.cautionBlind": "Make sure your device supports the Window Shade Level capability. (Check in SmartThings app → Device details)",
+                "step2.cautionAc": "Make sure your AC supports the Thermostat Cooling Setpoint capability. (Check in SmartThings app → Device details)",
                 "step2.validationMsg": "Please fill in all required fields to continue.",
                 "step2.componentLink": "Does this dimmer have multiple knobs or grouping features?",
                 "step2.componentTip": "⚠️ <strong>Caution:</strong> Check the exact <strong>Component ID</strong> of the device in the SmartThings Advanced Web App. It is strictly case-sensitive. (If entered incorrectly, the routine will not be registered.)",
@@ -2206,6 +2350,19 @@
                 "step3vol.validationMsg": "Volume must be between 0 and 100, and minimum must be less than maximum.",
 
                 "step.3vol.title": "Volume Range",
+
+                "step3ac.rangeTitle": "AC Temperature Range",
+                "step3ac.minLabel": "Minimum",
+                "step3ac.maxLabel": "Maximum",
+                "step3ac.preset1Name": "Standard AC",
+                "step3ac.preset2Name": "Standard AC (Rec.)",
+                "step3ac.preset3Name": "Energy Saver",
+                "step3ac.preset4Name": "Full System",
+                "step3ac.previewLabel": "Temperature Range Preview",
+                "step3ac.note": "※ Values must be between 0 and 40, with the minimum lower than the maximum.",
+                "step3ac.validationMsg": "Temperature must be between 0 and 40, and minimum must be less than maximum.",
+
+                "step.3ac.title": "AC Temperature Range",
 
                 "step3fan.title": "Fan speed Range",
                 "step3fan.desc": "Choose the control method that matches your fan's specification.",
@@ -2314,6 +2471,8 @@
         // Volume template: level 1 → vol 0, levels 2~10 → vol 1, 11~20 → vol 2 … 91~100 → vol 10 (structure, values injected at runtime)
         const TEMPLATE_VOLUME_MASTER = [{ "if": { "changes": { "operand": { "device": { "devices": ["@device_dimmer"], "component": "@component_dimmer", "capability": "switchLevel", "attribute": "level" } } }, "then": "@interpolated_steps" } }];
 
+        const TEMPLATE_AC_MASTER = [{ "if": { "changes": { "operand": { "device": { "devices": ["@device_dimmer"], "component": "@component_dimmer", "capability": "switchLevel", "attribute": "level" } } }, "then": "@interpolated_steps" } }];
+
         const TEMPLATE_BLIND = [{ "if": { "changes": { "operand": { "device": { "devices": ["@device_dimmer"], "component": "@component_dimmer", "capability": "switchLevel", "attribute": "level" } } }, "then": [{ "if": { "equals": { "left": { "device": { "devices": ["@device_dimmer"], "component": "@component_dimmer", "capability": "switchLevel", "attribute": "level" } }, "right": { "integer": 1 } }, "then": [{ "command": { "devices": ["@device_shade"], "commands": [{ "component": "main", "capability": "windowShadeLevel", "command": "setShadeLevel", "arguments": [{ "integer": 0 }] }] } }], "else": [{ "command": { "devices": ["@device_shade"], "commands": [{ "component": "main", "capability": "windowShadeLevel", "command": "setShadeLevel", "arguments": [{ "device": { "devices": ["@device_dimmer"], "component": "@component_dimmer", "capability": "switchLevel", "attribute": "level" } }] }] } }] } }] } }];
 
         const TEMPLATE_BRIDGE = [{ "if": { "greaterThanOrEquals": { "left": { "device": { "devices": ["@device_dimmer"], "component": "@component_dimmer", "capability": "knob", "attribute": "rotateAmount", "trigger": "Always" } }, "right": { "integer": -100 }, "changesOnly": false }, "then": [{ "command": { "devices": ["@device_bridge"], "commands": [{ "component": "main", "capability": "statelessSwitchLevelStep", "command": "stepLevel", "arguments": [{ "device": { "devices": ["@device_dimmer"], "component": "@component_dimmer", "capability": "knob", "attribute": "rotateAmount" } }] }] } }] } }];
@@ -2341,6 +2500,7 @@
             if (preset === 'ct-control') return ['step1', 'step2', 'step3', 'step4', 'step5'];
             if (preset === 'fan-control') return ['step1', 'step2', 'step3_fan', 'step4', 'step5'];
             if (preset === 'volume-control') return ['step1', 'step2', 'step3_volume', 'step4', 'step5'];
+            if (preset === 'ac-control') return ['step1', 'step2', 'step3_ac', 'step4', 'step5'];
             if (preset === 'blind-control') return ['step1', 'step2', 'step4', 'step5'];
             return ['step1', 'step2', 'step4', 'step5']; // dimmer-control (no step3)
         }
@@ -2351,6 +2511,7 @@
             if (preset === 'ct-control') return [...base, t('step.3.title'), t('step.4.title'), t('step.5.title')];
             if (preset === 'fan-control') return [...base, t('step.3fan.title'), t('step.4.title'), t('step.5.title')];
             if (preset === 'volume-control') return [...base, t('step.3vol.title'), t('step.4.title'), t('step.5.title')];
+            if (preset === 'ac-control') return [...base, t('step.3ac.title'), t('step.4.title'), t('step.5.title')];
             return [...base, t('step.4.title'), t('step.5.title')];
         }
 
@@ -2482,6 +2643,8 @@
             if (selectedPreset === 'ct-control' && targetId === 'step3') updateCTPreview();
             // Volume preview when on step3_volume
             if (selectedPreset === 'volume-control' && targetId === 'step3_volume') updateVolPreview();
+            // AC preview when on step3_ac
+            if (selectedPreset === 'ac-control' && targetId === 'step3_ac') updateAcPreview();
         }
 
         // ========== COMPONENT SETUP LOGIC ==========
@@ -2579,6 +2742,17 @@
                 });
                 const c3 = document.getElementById('caution_line3');
                 if (c3) { c3.setAttribute('data-i18n', 'step2.cautionBlind'); c3.innerText = t('step2.cautionBlind'); }
+            } else if (selectedPreset === 'ac-control') {
+                label.setAttribute('data-i18n', 'step2.acLabel');
+                label.innerText = t('step2.acLabel');
+                tip.setAttribute('data-i18n', 'step2.acTip');
+                tip.innerText = t('step2.acTip');
+                inputs.forEach(input => {
+                    input.setAttribute('data-i18n-ph', 'step2.acPlaceholder');
+                    input.placeholder = t('step2.acPlaceholder');
+                });
+                const c3 = document.getElementById('caution_line3');
+                if (c3) { c3.setAttribute('data-i18n', 'step2.cautionAc'); c3.innerText = t('step2.cautionAc'); }
             } else {
                 label.setAttribute('data-i18n', 'step2.lightLabel');
                 label.innerText = t('step2.lightLabel');
@@ -2807,6 +2981,7 @@
             if (dir === 1 && currentStep === 2 && !validateStep2()) return;
             if (dir === 1 && getStepMap(selectedPreset)[currentStep - 1] === 'step3' && !validateCTRange()) return;
             if (dir === 1 && getStepMap(selectedPreset)[currentStep - 1] === 'step3_volume' && !validateVolRange()) return;
+            if (dir === 1 && getStepMap(selectedPreset)[currentStep - 1] === 'step3_ac' && !validateAcRange()) return;
             if (dir === 1 && currentStep === totalSteps) {
                 document.getElementById('confirmModal').classList.add('active');
                 return;
@@ -2860,6 +3035,8 @@
             hideBridgeComponentInput();
             document.getElementById('vol_min').value = '0';
             document.getElementById('vol_max').value = '20';
+            document.getElementById('ac_min').value = '18';
+            document.getElementById('ac_max').value = '30';
             document.querySelectorAll('.bridge-check').forEach(check => { check.checked = false; });
             updateBridgeCheckCards();
             document.querySelectorAll('#targetDeviceInputs .added-device-row').forEach(el => el.remove());
@@ -2979,6 +3156,63 @@
             }
 
             validateVolRange(false);
+        }
+
+        // ========== AC Logic ==========
+        const AC_MIN_LIMIT = 0;
+        const AC_MAX_LIMIT = 40;
+
+        function setAcRange(min, max) {
+            document.getElementById('ac_min').value = min;
+            document.getElementById('ac_max').value = max;
+            updateAcPreview();
+        }
+
+        function getAcRange() {
+            return {
+                min: Number.parseInt(document.getElementById('ac_min').value, 10),
+                max: Number.parseInt(document.getElementById('ac_max').value, 10)
+            };
+        }
+
+        function validateAcRange(showMessage = true) {
+            const minInput = document.getElementById('ac_min');
+            const maxInput = document.getElementById('ac_max');
+            const msg = document.getElementById('acValidationMsg');
+            const { min, max } = getAcRange();
+            const valid =
+                Number.isInteger(min) &&
+                Number.isInteger(max) &&
+                min >= AC_MIN_LIMIT &&
+                max <= AC_MAX_LIMIT &&
+                min < max;
+
+            [minInput, maxInput].forEach(input => input.classList.toggle('input-error', !valid && showMessage));
+            if (msg) msg.classList.toggle('hidden', valid || !showMessage);
+            return valid;
+        }
+
+        function updateAcPreview() {
+            const { min, max } = getAcRange();
+            const safeMin = Number.isInteger(min) ? Math.max(0, Math.min(min, 40)) : 18;
+            const safeMax = Number.isInteger(max) ? Math.max(0, Math.min(max, 40)) : 30;
+            // 0~40 maps to 0~100% on the bar (v / 40 * 100)
+            const getPos = v => Math.max(0, Math.min(100, (v / 40) * 100));
+
+            const markerMin = document.getElementById('ac_marker_min');
+            const markerMax = document.getElementById('ac_marker_max');
+            const text = document.getElementById('ac_preview_text');
+
+            if (markerMin) markerMin.style.left = getPos(safeMin) + '%';
+            if (markerMax) markerMax.style.left = getPos(safeMax) + '%';
+            if (text) {
+                text.innerText = `${safeMin}°C  →  ${safeMax}°C`;
+                text.className = (safeMin < 16 || safeMax > 30)
+                    ? 'text-sm font-bold text-orange-500'
+                    : 'text-sm font-bold text-sky-500';
+            }
+
+            validateAcRange(false);
         }
 
         // ========== Code Generation ==========
@@ -3103,6 +3337,38 @@
                     '@device_dimmer': dimmerId,
                     '@component_dimmer': componentId,
                     '@device_volume': volumeIds
+                });
+                finalJsonString = JSON.stringify(rule, null, 4);
+
+            } else if (selectedPreset === 'ac-control') {
+                const acIds = getTargetDeviceIds('@device_ac');
+                const { min: minAc, max: maxAc } = getAcRange();
+
+                const stepsArray = [];
+                const totalBands = maxAc - minAc + 1;
+
+                for (let i = 0; i < totalBands; i++) {
+                    const bandStart = i === 0 ? 1 : 1 + Math.round(i * 100 / totalBands);
+                    const bandEnd = i === totalBands - 1 ? 100 : Math.round((i + 1) * 100 / totalBands);
+                    const stepVal = minAc + i;
+
+                    stepsArray.push({
+                        "if": {
+                            "between": {
+                                "value": { "device": { "devices": ["@device_dimmer"], "component": "@component_dimmer", "capability": "switchLevel", "attribute": "level" } },
+                                "start": { "integer": bandStart }, "end": { "integer": bandEnd }
+                            },
+                            "then": [{ "command": { "devices": ["@device_ac"], "commands": [{ "component": "main", "capability": "thermostatCoolingSetpoint", "command": "setCoolingSetpoint", "arguments": [{ "integer": stepVal }] }] } }]
+                        }
+                    });
+                }
+
+                const master = cloneTemplate(TEMPLATE_AC_MASTER);
+                master[0].if.then = stepsArray;
+                const rule = replacePlaceholders(master, {
+                    '@device_dimmer': dimmerId,
+                    '@component_dimmer': componentId,
+                    '@device_ac': acIds
                 });
                 finalJsonString = JSON.stringify(rule, null, 4);
             }
