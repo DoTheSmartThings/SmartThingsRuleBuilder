@@ -540,6 +540,27 @@
             transition: left 0.3s ease;
         }
 
+        /* Color gradient bar */
+        .color-gradient-bar {
+            height: 18px;
+            border-radius: 9px;
+            background: linear-gradient(to right, 
+                hsl(0, var(--preview-sat, 80%), var(--preview-light, 60%)), 
+                hsl(36, var(--preview-sat, 80%), var(--preview-light, 60%)), 
+                hsl(72, var(--preview-sat, 80%), var(--preview-light, 60%)), 
+                hsl(108, var(--preview-sat, 80%), var(--preview-light, 60%)), 
+                hsl(144, var(--preview-sat, 80%), var(--preview-light, 60%)), 
+                hsl(180, var(--preview-sat, 80%), var(--preview-light, 60%)), 
+                hsl(216, var(--preview-sat, 80%), var(--preview-light, 60%)), 
+                hsl(252, var(--preview-sat, 80%), var(--preview-light, 60%)), 
+                hsl(288, var(--preview-sat, 80%), var(--preview-light, 60%)), 
+                hsl(324, var(--preview-sat, 80%), var(--preview-light, 60%)), 
+                hsl(360, var(--preview-sat, 80%), var(--preview-light, 60%))
+            );
+            position: relative;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
         /* Preset card hover state */
         .preset-card {
             transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -990,6 +1011,33 @@
                         data-i18n="preset.ac.desc">노브를 돌려서 에어컨 설정 온도를 조절합니다.</p>
                     <div
                         class="mt-6 flex items-center text-sky-500 text-sm font-black gap-2 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-x-[-8px] group-hover:translate-x-0">
+                        <span data-i18n="preset.select">선택하기</span>
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
+                                d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                        </svg>
+                    </div>
+                </div>
+
+                <!-- Preset: Color Control -->
+                <div onclick="selectPreset('color-control')"
+                    class="preset-card glass-card p-8 md:p-10 border-2 border-transparent hover:border-rose-400/30 dark:hover:border-rose-500/20 group">
+                    <div
+                        class="w-14 h-14 bg-rose-50 dark:bg-rose-500/10 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                        <svg class="w-8 h-8 text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.92 0 1.63-.77 1.63-1.7 0-.42-.16-.83-.44-1.14-.29-.32-.46-.74-.46-1.19 0-.93.77-1.68 1.7-1.68h1.72C19.43 16.33 22 13.8 22 10.74c0-4.83-4.49-8.74-10-8.74z" />
+                            <circle cx="13.5" cy="6.5" r=".5" fill="currentColor"/>
+                            <circle cx="17.5" cy="10.5" r=".5" fill="currentColor"/>
+                            <circle cx="8.5" cy="7.5" r=".5" fill="currentColor"/>
+                            <circle cx="6.5" cy="12.5" r=".5" fill="currentColor"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl md:text-2xl font-bold mb-3 tracking-tight" data-i18n="preset.color.title">IoT 노브로 조명 컬러 제어</h3>
+                    <p class="text-sm md:text-base text-gray-500 dark:text-zinc-400 leading-relaxed"
+                        data-i18n="preset.color.desc">노브를 돌려서 조명의 컬러를 조절합니다.</p>
+                    <div
+                        class="mt-6 flex items-center text-rose-500 text-sm font-black gap-2 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-x-[-8px] group-hover:translate-x-0">
                         <span data-i18n="preset.select">선택하기</span>
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
@@ -1468,6 +1516,60 @@
                     <p class="text-xs text-gray-400 dark:text-gray-500 leading-relaxed" data-i18n="step3ac.note">※ 0~40 사이의 값만 입력 가능하며, 최소값은 최대값보다 작아야 합니다.</p>
                     <p id="acValidationMsg" class="text-red-500 text-sm font-bold hidden"
                         data-i18n="step3ac.validationMsg">온도는 0 이상 40 이하로 입력하고, 최소값은 최대값보다 작아야 합니다.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== STEP 3-COLOR: COLOR SATURATION SETTING ===== -->
+        <section id="step3_color" class="step-content">
+            <div class="glass-card p-8 md:p-12 space-y-10">
+                <div class="space-y-6">
+                    <h4 class="text-lg font-bold tracking-tight" data-i18n="step3color.rangeTitle">컬러 톤(채도) 설정</h4>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                        <button type="button" onclick="selectSaturation('all')" id="satCard_all"
+                            class="sat-card p-5 rounded-2xl border-2 border-pink-500 bg-pink-50 dark:bg-pink-500/10 text-left hover:border-pink-500 transition-all">
+                            <span class="block font-black text-base mb-1" data-i18n="step3color.sat.all">모든 채도</span>
+                            <span class="block text-xs text-gray-500 dark:text-zinc-400" data-i18n="step3color.sat.allDesc">고정하지 않음 (Hue만 조절)</span>
+                        </button>
+                        <button type="button" onclick="selectSaturation(100)" id="satCard_100"
+                            class="sat-card p-5 rounded-2xl border-2 border-gray-200 dark:border-white/10 text-left hover:border-pink-500 transition-all">
+                            <span class="block font-black text-base mb-1" data-i18n="step3color.sat.100">선명하게</span>
+                            <span class="block text-xs text-gray-500 dark:text-zinc-400" data-i18n="step3color.sat.100Desc">채도 100% 고정</span>
+                        </button>
+                        <button type="button" onclick="selectSaturation(75)" id="satCard_75"
+                            class="sat-card p-5 rounded-2xl border-2 border-gray-200 dark:border-white/10 text-left hover:border-pink-500 transition-all">
+                            <span class="block font-black text-base mb-1" data-i18n="step3color.sat.75">세련되게</span>
+                            <span class="block text-xs text-gray-500 dark:text-zinc-400" data-i18n="step3color.sat.75Desc">채도 75% 고정</span>
+                        </button>
+                        <button type="button" onclick="selectSaturation(50)" id="satCard_50"
+                            class="sat-card p-5 rounded-2xl border-2 border-gray-200 dark:border-white/10 text-left hover:border-pink-500 transition-all">
+                            <span class="block font-black text-base mb-1" data-i18n="step3color.sat.50">파스텔</span>
+                            <span class="block text-xs text-gray-500 dark:text-zinc-400" data-i18n="step3color.sat.50Desc">채도 50% 고정</span>
+                        </button>
+                        <button type="button" onclick="selectSaturation(25)" id="satCard_25"
+                            class="sat-card p-5 rounded-2xl border-2 border-gray-200 dark:border-white/10 text-left hover:border-pink-500 transition-all">
+                            <span class="block font-black text-base mb-1" data-i18n="step3color.sat.25">베이비 파스텔</span>
+                            <span class="block text-xs text-gray-500 dark:text-zinc-400" data-i18n="step3color.sat.25Desc">채도 25% 고정</span>
+                        </button>
+                        <button type="button" onclick="selectSaturation(10)" id="satCard_10"
+                            class="sat-card p-5 rounded-2xl border-2 border-gray-200 dark:border-white/10 text-left hover:border-pink-500 transition-all">
+                            <span class="block font-black text-base mb-1" data-i18n="step3color.sat.10">은은하게</span>
+                            <span class="block text-xs text-gray-500 dark:text-zinc-400" data-i18n="step3color.sat.10Desc">채도 10% 고정</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Color preview bar -->
+                <div id="color_preview_container" class="space-y-4">
+                    <div class="flex justify-between items-center">
+                        <span class="text-xs font-black text-gray-400 uppercase tracking-widest"
+                            data-i18n="step3color.previewLabel">컬러 범위 및 채도 미리보기</span>
+                        <span id="color_preview_text" class="text-sm font-bold text-pink-500" data-i18n="step3color.sat.all">모든 채도</span>
+                    </div>
+                    <div class="color-gradient-bar" id="color_gradient_bar" style="--preview-sat: 80%;"></div>
+                    <p class="text-xs text-gray-400 dark:text-gray-500 leading-relaxed" data-i18n="step3color.note">
+                        ※ 채도를 고정하면 스마트싱스에서 유저가 컬러의 톤을 바꾸더라도 다시 원래의 톤으로 돌아갑니다. 유저가 원하는 컬러 톤을 설정하려면 모든 채도를 고르세요.
+                    </p>
                 </div>
             </div>
         </section>
@@ -2258,6 +2360,26 @@
                 "bridge.s6.cta": "확인 및 메인 루틴 만들기",
                 "bridge.checklistMsg": "체크리스트를 모두 완료해야 다음으로 진행할 수 있습니다.",
                 "bridge.prefillToast": "가상 전구의 Device ID가 자동으로 추가되었어요.",
+
+                "step.3color.title": "컬러 톤 설정",
+                "preset.color.title": "IoT 노브로 조명 컬러 제어",
+                "preset.color.desc": "노브를 돌려서 조명의 컬러를 조절합니다.",
+                "step2.cautionColor": "전구가 Switch 및 Color Control 기능을 지원하는지 확인하세요. (SmartThings 앱 → 기기 상세에서 확인 가능)",
+                "step3color.rangeTitle": "컬러 톤(채도) 설정",
+                "step3color.sat.all": "모든 컬러톤",
+                "step3color.sat.allDesc": "채도를 고정하지 않음(색조만 조절)",
+                "step3color.sat.100": "선명하게",
+                "step3color.sat.100Desc": "채도 100% 고정",
+                "step3color.sat.75": "세련되게",
+                "step3color.sat.75Desc": "채도 75% 고정",
+                "step3color.sat.50": "파스텔",
+                "step3color.sat.50Desc": "채도 50% 고정",
+                "step3color.sat.25": "베이비 파스텔",
+                "step3color.sat.25Desc": "채도 25% 고정",
+                "step3color.sat.10": "은은하게",
+                "step3color.sat.10Desc": "채도 10% 고정",
+                "step3color.previewLabel": "컬러 범위 및 채도 미리보기",
+                "step3color.note": "※ 채도를 고정하셨습니다. 이제 노브를 돌리면 스마트싱스에서 컬러 톤을 바꾸더라도 다시 원래의 톤으로 돌아갑니다. 원하는 컬러 톤을 자유롭게 커스텀하려면 모든 채도를 고르세요.",
             },
             en: {
                 "nav.more": "More",
@@ -2458,6 +2580,26 @@
                 "bridge.s6.cta": "Confirm and Build Main Routine",
                 "bridge.checklistMsg": "Complete every checklist item before continuing.",
                 "bridge.prefillToast": "The virtual bulb Device ID was added automatically.",
+
+                "step.3color.title": "Select Color Tone",
+                "preset.color.title": "IoT Knob Light Color Control",
+                "preset.color.desc": "Rotate the knob to smoothly cycle through the color spectrum.",
+                "step2.cautionColor": "Make sure the bulb supports Switch and Color Control capabilities. (Check in SmartThings app → Device details)",
+                "step3color.rangeTitle": "Color Tone (Saturation) Setting",
+                "step3color.sat.all": "All Color Tones",
+                "step3color.sat.allDesc": "Do not fix saturation (Control Hue only)",
+                "step3color.sat.100": "Vivid",
+                "step3color.sat.100Desc": "Fixed at 100% Saturation",
+                "step3color.sat.75": "Chic",
+                "step3color.sat.75Desc": "Fixed at 75% Saturation",
+                "step3color.sat.50": "Pastel",
+                "step3color.sat.50Desc": "Fixed at 50% Saturation",
+                "step3color.sat.25": "Baby Pastel",
+                "step3color.sat.25Desc": "Fixed at 25% Saturation",
+                "step3color.sat.10": "Soft",
+                "step3color.sat.10Desc": "Fixed at 10% Saturation",
+                "step3color.previewLabel": "Color Range & Saturation Preview",
+                "step3color.note": "※ Saturation is fixed. Turning the knob will return it to the fixed tone even if you change it in SmartThings. Choose 'All Color Tones' to customize any tone freely.",
             }
         };
 
@@ -2477,12 +2619,17 @@
 
         const TEMPLATE_BRIDGE = [{ "if": { "greaterThanOrEquals": { "left": { "device": { "devices": ["@device_dimmer"], "component": "@component_dimmer", "capability": "knob", "attribute": "rotateAmount", "trigger": "Always" } }, "right": { "integer": -100 }, "changesOnly": false }, "then": [{ "command": { "devices": ["@device_bridge"], "commands": [{ "component": "main", "capability": "statelessSwitchLevelStep", "command": "stepLevel", "arguments": [{ "device": { "devices": ["@device_dimmer"], "component": "@component_dimmer", "capability": "knob", "attribute": "rotateAmount" } }] }] } }] } }];
 
+        const TEMPLATE_COLOR_SAT = [{ "if": { "changes": { "operand": { "device": { "devices": ["@device_dimmer"], "component": "@component_dimmer", "capability": "switchLevel", "attribute": "level" } } }, "then": [{ "if": { "equals": { "left": { "device": { "devices": ["@device_light"], "component": "main", "capability": "switch", "attribute": "switch", "trigger": "Never" } }, "right": { "string": "on" } }, "then": [{ "command": { "devices": ["@device_light"], "commands": [{ "component": "main", "capability": "colorControl", "command": "setColor", "arguments": [{ "map": { "hue": { "device": { "devices": ["@device_dimmer"], "component": "@component_dimmer", "capability": "switchLevel", "attribute": "level" } }, "saturation": { "integer": "@saturation" } } }] }] } }, { "if": { "equals": { "left": { "device": { "devices": ["@device_dimmer"], "component": "@component_dimmer", "capability": "switchLevel", "attribute": "level" } }, "right": { "integer": 100 } }, "then": [{ "command": { "devices": ["@device_dimmer"], "commands": [{ "component": "@component_dimmer", "capability": "switchLevel", "command": "setLevel", "arguments": [{ "integer": 1 }] }] } }] } }] } }] } }];
+
+        const TEMPLATE_COLOR_HUE = [{ "if": { "changes": { "operand": { "device": { "devices": ["@device_dimmer"], "component": "@component_dimmer", "capability": "switchLevel", "attribute": "level" } } }, "then": [{ "if": { "equals": { "left": { "device": { "devices": ["@device_light"], "component": "main", "capability": "switch", "attribute": "switch", "trigger": "Never" } }, "right": { "string": "on" } }, "then": [{ "command": { "devices": ["@device_light"], "commands": [{ "component": "main", "capability": "colorControl", "command": "setHue", "arguments": [{ "device": { "devices": ["@device_dimmer"], "component": "@component_dimmer", "capability": "switchLevel", "attribute": "level" } }] }] } }, { "if": { "equals": { "left": { "device": { "devices": ["@device_dimmer"], "component": "@component_dimmer", "capability": "switchLevel", "attribute": "level" } }, "right": { "integer": 100 } }, "then": [{ "command": { "devices": ["@device_dimmer"], "commands": [{ "component": "@component_dimmer", "capability": "switchLevel", "command": "setLevel", "arguments": [{ "integer": 1 }] }] } }] } }] } }] } }];
+
         // ========== STATE ==========
         let currentStep = 1;
         let isDarkMode = false;
         let currentLang = 'ko';
         let selectedPreset = 'dimmer-control';
         let selectedFanMode = 'fixed5';
+        let selectedSaturation = 'all';
         let totalSteps = 4;
         let moreMenuOpen = false;
         let appPhase = 'main';
@@ -2501,6 +2648,7 @@
             if (preset === 'fan-control') return ['step1', 'step2', 'step3_fan', 'step4', 'step5'];
             if (preset === 'volume-control') return ['step1', 'step2', 'step3_volume', 'step4', 'step5'];
             if (preset === 'ac-control') return ['step1', 'step2', 'step3_ac', 'step4', 'step5'];
+            if (preset === 'color-control') return ['step1', 'step2', 'step3_color', 'step4', 'step5'];
             if (preset === 'blind-control') return ['step1', 'step2', 'step4', 'step5'];
             return ['step1', 'step2', 'step4', 'step5']; // dimmer-control (no step3)
         }
@@ -2512,6 +2660,7 @@
             if (preset === 'fan-control') return [...base, t('step.3fan.title'), t('step.4.title'), t('step.5.title')];
             if (preset === 'volume-control') return [...base, t('step.3vol.title'), t('step.4.title'), t('step.5.title')];
             if (preset === 'ac-control') return [...base, t('step.3ac.title'), t('step.4.title'), t('step.5.title')];
+            if (preset === 'color-control') return [...base, t('step.3color.title'), t('step.4.title'), t('step.5.title')];
             return [...base, t('step.4.title'), t('step.5.title')];
         }
 
@@ -2645,6 +2794,8 @@
             if (selectedPreset === 'volume-control' && targetId === 'step3_volume') updateVolPreview();
             // AC preview when on step3_ac
             if (selectedPreset === 'ac-control' && targetId === 'step3_ac') updateAcPreview();
+            // Color preview when on step3_color
+            if (selectedPreset === 'color-control' && targetId === 'step3_color') selectSaturation(selectedSaturation);
         }
 
         // ========== COMPONENT SETUP LOGIC ==========
@@ -2753,6 +2904,17 @@
                 });
                 const c3 = document.getElementById('caution_line3');
                 if (c3) { c3.setAttribute('data-i18n', 'step2.cautionAc'); c3.innerText = t('step2.cautionAc'); }
+            } else if (selectedPreset === 'color-control') {
+                label.setAttribute('data-i18n', 'step2.lightLabel');
+                label.innerText = t('step2.lightLabel');
+                tip.setAttribute('data-i18n', 'step2.lightTip');
+                tip.innerText = t('step2.lightTip');
+                inputs.forEach(input => {
+                    input.setAttribute('data-i18n-ph', 'step2.lightPlaceholder');
+                    input.placeholder = t('step2.lightPlaceholder');
+                });
+                const c3 = document.getElementById('caution_line3');
+                if (c3) { c3.setAttribute('data-i18n', 'step2.cautionColor'); c3.innerText = t('step2.cautionColor'); }
             } else {
                 label.setAttribute('data-i18n', 'step2.lightLabel');
                 label.innerText = t('step2.lightLabel');
@@ -2891,6 +3053,41 @@
             if (active) {
                 active.classList.remove('border-gray-200', 'dark:border-white/8');
                 active.classList.add('border-teal-400/60', 'dark:border-teal-500/40', 'bg-teal-50/30', 'dark:bg-teal-500/5');
+            }
+        }
+
+        function selectSaturation(val) {
+            selectedSaturation = val;
+            document.querySelectorAll('.sat-card').forEach(btn => {
+                btn.classList.remove('border-pink-500', 'bg-pink-50', 'dark:bg-pink-500/10');
+                btn.classList.add('border-gray-200', 'dark:border-white/10');
+            });
+            const activeBtn = document.getElementById(`satCard_${val}`);
+            if (activeBtn) {
+                activeBtn.classList.remove('border-gray-200', 'dark:border-white/10');
+                activeBtn.classList.add('border-pink-500', 'bg-pink-50', 'dark:bg-pink-500/10');
+            }
+            // Update visual bar preview
+            const satVal = val === 'all' ? 80 : val;
+            const lightVal = 100 - (satVal / 2);
+            const bar = document.getElementById('color_gradient_bar');
+            if (bar) {
+                bar.style.setProperty('--preview-sat', `${satVal}%`);
+                bar.style.setProperty('--preview-light', `${lightVal}%`);
+            }
+            const previewText = document.getElementById('color_preview_text');
+            if (previewText) {
+                previewText.innerText = val === 'all' ? t('step3color.sat.all') : `${val}%`;
+            }
+
+            // Show/Hide preview bar
+            const container = document.getElementById('color_preview_container');
+            if (container) {
+                if (val === 'all') {
+                    container.classList.add('hidden');
+                } else {
+                    container.classList.remove('hidden');
+                }
             }
         }
 
@@ -3052,6 +3249,7 @@
             document.getElementById('bridgeCodeOutput').innerHTML = '';
             selectedPreset = 'dimmer-control';
             selectedFanMode = 'fixed5';
+            selectedSaturation = 'all';
             appPhase = 'main';
             knobType = 'absolute';
             pendingPreset = null;
@@ -3245,6 +3443,69 @@
                 : value;
         }
 
+        function toSingleLineJson(val) {
+            let str = JSON.stringify(val, null, 2);
+            str = str.replace(/\s*\n\s*/g, ' ');
+            str = str.replace(/\[\s+/g, '[').replace(/\s+\]/g, ']');
+            return str;
+        }
+
+        function formatRuleJson(obj, indent = 0) {
+            const spaces = ' '.repeat(indent);
+            if (obj === null || typeof obj !== 'object') {
+                return JSON.stringify(obj);
+            }
+
+            if (Array.isArray(obj)) {
+                if (obj.length === 0) return '[]';
+                if (obj.every(x => typeof x !== 'object' || x === null)) {
+                    return `[${obj.map(x => JSON.stringify(x)).join(', ')}]`;
+                }
+                
+                if (obj.length === 1 && obj[0] && typeof obj[0] === 'object' && ('command' in obj[0]) && typeof obj[0].command === 'object') {
+                    return `[{ "command": ${toSingleLineJson(obj[0].command)} }]`;
+                }
+
+                const childIndent = indent + 2;
+                const childSpaces = ' '.repeat(childIndent);
+                const items = obj.map(x => `${childSpaces}${formatRuleJson(x, childIndent)}`).join(',\n');
+                return `[\n${items}\n${spaces}]`;
+            }
+
+            const keys = Object.keys(obj);
+            if (keys.length === 0) return '{}';
+
+            if ('value' in obj && 'start' in obj && 'end' in obj) {
+                const childIndent = indent + 2;
+                const childSpaces = ' '.repeat(childIndent);
+                const valStr = toSingleLineJson(obj.value);
+                const startStr = toSingleLineJson(obj.start);
+                const endStr = toSingleLineJson(obj.end);
+                return `{\n${childSpaces}"value": ${valStr},\n${childSpaces}"start": ${startStr}, "end": ${endStr}\n${spaces}}`;
+            }
+
+            if ('left' in obj && 'right' in obj) {
+                const childIndent = indent + 2;
+                const childSpaces = ' '.repeat(childIndent);
+                const leftStr = toSingleLineJson(obj.left);
+                const rightStr = toSingleLineJson(obj.right);
+                let extra = '';
+                if ('changesOnly' in obj) {
+                    extra = `,\n${childSpaces}"changesOnly": ${JSON.stringify(obj.changesOnly)}`;
+                }
+                return `{\n${childSpaces}"left": ${leftStr},\n${childSpaces}"right": ${rightStr}${extra}\n${spaces}}`;
+            }
+
+            const childIndent = indent + 2;
+            const childSpaces = ' '.repeat(childIndent);
+            const props = keys.map(k => {
+                const val = obj[k];
+                return `${childSpaces}${JSON.stringify(k)}: ${formatRuleJson(val, childIndent)}`;
+            }).join(',\n');
+
+            return `{\n${props}\n${spaces}}`;
+        }
+
         function generateCode() {
             const dimmerId = document.getElementById('input_dimmer').value.trim() || '@device_dimmer';
             const lightIds = getTargetDeviceIds('@device_light');
@@ -3263,7 +3524,7 @@
                     '@component_dimmer': componentId,
                     '@device_light': lightIds
                 });
-                finalJsonString = JSON.stringify(rule, null, 4);
+                finalJsonString = formatRuleJson(rule);
 
             } else if (selectedPreset === 'blind-control') {
                 const shadeIds = getTargetDeviceIds('@device_shade');
@@ -3272,7 +3533,7 @@
                     '@component_dimmer': componentId,
                     '@device_shade': shadeIds
                 });
-                finalJsonString = JSON.stringify(rule, null, 4);
+                finalJsonString = formatRuleJson(rule);
 
             } else if (selectedPreset === 'ct-control') {
                 const { min: minK, max: maxK } = getCTRange();
@@ -3289,7 +3550,7 @@
                     '@component_dimmer': componentId,
                     '@device_light': lightIds
                 });
-                finalJsonString = JSON.stringify(rule, null, 4);
+                finalJsonString = formatRuleJson(rule);
 
             } else if (selectedPreset === 'fan-control') {
                 const fanIds = getTargetDeviceIds('@device_fan');
@@ -3298,7 +3559,7 @@
                     '@component_dimmer': componentId,
                     '@device_fan': fanIds
                 });
-                finalJsonString = JSON.stringify(rule, null, 4);
+                finalJsonString = formatRuleJson(rule);
 
             } else if (selectedPreset === 'volume-control') {
                 const volumeIds = getTargetDeviceIds('@device_volume');
@@ -3346,7 +3607,7 @@
                     '@component_dimmer': componentId,
                     '@device_volume': volumeIds
                 });
-                finalJsonString = JSON.stringify(rule, null, 4);
+                finalJsonString = formatRuleJson(rule);
 
             } else if (selectedPreset === 'ac-control') {
                 const acIds = getTargetDeviceIds('@device_ac');
@@ -3378,7 +3639,26 @@
                     '@component_dimmer': componentId,
                     '@device_ac': acIds
                 });
-                finalJsonString = JSON.stringify(rule, null, 4);
+                finalJsonString = formatRuleJson(rule);
+
+            } else if (selectedPreset === 'color-control') {
+                const targetLightIds = getTargetDeviceIds('@device_light');
+                let rule;
+                if (selectedSaturation === 'all') {
+                    rule = replacePlaceholders(cloneTemplate(TEMPLATE_COLOR_HUE), {
+                        '@device_dimmer': dimmerId,
+                        '@component_dimmer': componentId,
+                        '@device_light': targetLightIds
+                    });
+                } else {
+                    rule = replacePlaceholders(cloneTemplate(TEMPLATE_COLOR_SAT), {
+                        '@device_dimmer': dimmerId,
+                        '@component_dimmer': componentId,
+                        '@device_light': targetLightIds,
+                        '@saturation': Number(selectedSaturation)
+                    });
+                }
+                finalJsonString = formatRuleJson(rule);
             }
 
             document.getElementById('codeOutput').innerHTML = syntaxHighlight(finalJsonString);
@@ -3399,7 +3679,7 @@
                 '@component_dimmer': componentId,
                 '@device_bridge': virtualId
             });
-            document.getElementById('bridgeCodeOutput').innerHTML = syntaxHighlight(JSON.stringify(rule, null, 4));
+            document.getElementById('bridgeCodeOutput').innerHTML = syntaxHighlight(formatRuleJson(rule));
         }
 
         function syntaxHighlight(json) {
