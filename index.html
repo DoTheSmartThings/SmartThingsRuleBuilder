@@ -500,6 +500,26 @@
             transition: left 0.3s ease;
         }
 
+        .brightness-step-bar {
+            height: 18px;
+            border-radius: 9px;
+            background: linear-gradient(to right, #dbeafe, #93c5fd, #38bdf8, #008DF7);
+            position: relative;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .brightness-step-marker {
+            position: absolute;
+            top: -5px;
+            width: 4px;
+            height: 28px;
+            background: white;
+            box-shadow: 0 0 6px rgba(0, 0, 0, 0.35);
+            border-radius: 2px;
+            transform: translateX(-50%);
+            transition: left 0.3s ease;
+        }
+
         /* Volume gradient bar */
         .vol-gradient-bar {
             height: 18px;
@@ -754,8 +774,9 @@
             align-items: center;
             justify-content: center;
             transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: #fff;
+            border: 1px solid rgba(226, 232, 240, 0.9);
+            box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06), 0 1px 0 rgba(255, 255, 255, 0.9) inset;
         }
 
         html.dark .cat-circle {
@@ -831,6 +852,57 @@
 
         .category-btn.active .cat-label {
             color: #008DF7;
+        }
+
+        .preset-card {
+            transition: opacity 0.28s ease, transform 0.28s ease, filter 0.28s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+        }
+
+        .preset-card.is-filtered-out {
+            opacity: 0;
+            transform: translateY(14px) scale(0.98);
+            filter: blur(2px);
+            pointer-events: none;
+        }
+
+        .disabled-setting {
+            opacity: 0.5;
+            filter: grayscale(18%);
+        }
+
+        .switch-track {
+            width: 3.5rem;
+            height: 1.75rem;
+            border-radius: 999px;
+            background: #e5e7eb;
+            position: relative;
+            transition: background-color 0.25s ease;
+        }
+
+        html.dark .switch-track {
+            background: #374151;
+        }
+
+        .switch-track::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 1.5rem;
+            height: 1.5rem;
+            border-radius: 999px;
+            background: #fff;
+            border: 1px solid #d1d5db;
+            transition: transform 0.25s ease, border-color 0.25s ease;
+        }
+
+        input:checked + .switch-track {
+            background: #008DF7;
+        }
+
+        input:checked + .switch-track::after {
+            transform: translateX(1.75rem);
+            border-color: #fff;
         }
     </style>
 </head>
@@ -1335,8 +1407,7 @@
                         <li class="flex items-start gap-2.5">
                             <span class="mt-1.5 w-1.5 h-1.5 rounded-full bg-amber-400 flex-shrink-0"></span>
                             <p id="caution_line3" class="text-sm text-amber-800 dark:text-amber-300 leading-relaxed"
-                                data-i18n="step2.caution3">조명이 <span class="font-bold">Switch Level</span> 및 <span
-                                    class="font-bold">Color Temperature</span> 기능을 지원하는지 확인하세요.</p>
+                                data-i18n="step2.caution3">조명이 <span class="font-bold">Switch Level</span> 기능을 지원하는지 확인하세요.</p>
                         </li>
                     </ul>
                 </div>
@@ -1845,25 +1916,51 @@
             <div class="glass-card p-8 md:p-12 space-y-10">
                 <div class="space-y-6">
                     <h4 class="text-lg font-bold tracking-tight" data-i18n="step4.stepAmountTitle">한 번 누를 때마다 바뀌는 밝기 레벨</h4>
-                    <div class="flex gap-4 mb-4">
-                        <button onclick="setButtonStepAmount(50, event)" class="btn-preset-step px-4 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 dark:bg-white/10 dark:hover:bg-white/20 text-sm font-bold">50%</button>
-                        <button onclick="setButtonStepAmount(25, event)" class="btn-preset-step px-4 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 dark:bg-white/10 dark:hover:bg-white/20 text-sm font-bold">25%</button>
-                        <button onclick="setButtonStepAmount(20, event)" class="btn-preset-step px-4 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 dark:bg-white/10 dark:hover:bg-white/20 text-sm font-bold">20%</button>
-                        <button onclick="setButtonStepAmount(10, event)" class="btn-preset-step px-4 py-2 rounded-lg bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-300 text-sm font-bold ring-2 ring-blue-500">10%</button>
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4">
+                        <button onclick="setButtonStepAmount(50, event)" class="btn-preset-step p-4 rounded-2xl border border-gray-200 dark:border-white/10 hover:border-[#008DF7]/50 dark:hover:border-[#008DF7]/40 transition-all text-left group hover:bg-blue-50/50 dark:hover:bg-blue-500/5">
+                            <span class="block text-[10px] font-black text-gray-400 mb-1.5 uppercase tracking-widest" data-i18n="step4.stepPresetFast">빠르게</span>
+                            <span class="block font-bold text-sm">50%</span>
+                        </button>
+                        <button onclick="setButtonStepAmount(25, event)" class="btn-preset-step p-4 rounded-2xl border border-[#008DF7]/50 bg-blue-50/50 dark:bg-blue-500/10 dark:border-[#008DF7]/40 transition-all text-left group">
+                            <span class="block text-[10px] font-black text-[#008DF7] mb-1.5 uppercase tracking-widest" data-i18n="step4.stepPresetRecommended">추천</span>
+                            <span class="block font-bold text-sm text-[#008DF7]">25%</span>
+                        </button>
+                        <button onclick="setButtonStepAmount(20, event)" class="btn-preset-step p-4 rounded-2xl border border-gray-200 dark:border-white/10 hover:border-[#008DF7]/50 dark:hover:border-[#008DF7]/40 transition-all text-left group hover:bg-blue-50/50 dark:hover:bg-blue-500/5">
+                            <span class="block text-[10px] font-black text-gray-400 mb-1.5 uppercase tracking-widest" data-i18n="step4.stepPresetBalanced">세밀하게</span>
+                            <span class="block font-bold text-sm">20%</span>
+                        </button>
+                        <button onclick="setButtonStepAmount(10, event)" class="btn-preset-step p-4 rounded-2xl border border-gray-200 dark:border-white/10 hover:border-[#008DF7]/50 dark:hover:border-[#008DF7]/40 transition-all text-left group hover:bg-blue-50/50 dark:hover:bg-blue-500/5">
+                            <span class="block text-[10px] font-black text-gray-400 mb-1.5 uppercase tracking-widest" data-i18n="step4.stepPresetFine">가장 세밀하게</span>
+                            <span class="block font-bold text-sm">10%</span>
+                        </button>
                     </div>
-                    <div class="relative max-w-xs">
-                        <input type="number" id="input_button_step" value="10" min="1" max="50" oninput="updateButtonStepAmount()" class="w-full px-5 py-4 bg-gray-100 dark:bg-white/5 rounded-2xl text-xl font-bold outline-none pr-12">
+                    <div class="relative w-full">
+                        <input type="number" id="input_button_step" value="25" min="1" max="50" oninput="updateButtonStepAmount()" class="w-full px-5 py-4 bg-gray-100 dark:bg-white/5 rounded-2xl text-xl font-bold outline-none pr-12">
                         <span class="absolute right-5 top-1/2 -translate-y-1/2 font-bold text-gray-400">%</span>
+                    </div>
+                    <div class="space-y-4 pt-2">
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs font-black text-gray-400 uppercase tracking-widest" data-i18n="step4.stepPreviewLabel">밝기 스텝 미리보기</span>
+                            <span id="button_step_preview_text" class="text-sm font-bold text-blue-500">10%</span>
+                        </div>
+                        <div id="button_step_bar" class="brightness-step-bar"></div>
+                        <p class="text-xs text-gray-400 dark:text-gray-500 leading-relaxed" data-i18n="step4.stepPreviewNote">밝기 스텝의 퍼센트가 작을수록 더 많은 밝기 단계를 표현할 수 있지만, 원하는 밝기까지 버튼을 더 많이 눌러야 합니다.</p>
                     </div>
                 </div>
 
-                <div class="space-y-6">
-                    <h4 class="text-lg font-bold tracking-tight" data-i18n="step4.buttonRangeTitle">밝기 범위</h4>
+                <div class="space-y-6 disabled-setting" aria-disabled="true">
+                    <div class="flex items-center justify-between gap-4">
+                        <h4 class="text-lg font-bold tracking-tight" data-i18n="step4.buttonRangeTitle">밝기 범위</h4>
+                        <label class="relative inline-flex items-center cursor-not-allowed flex-shrink-0" title="Disabled">
+                            <input type="checkbox" class="sr-only" disabled>
+                            <span class="switch-track"></span>
+                        </label>
+                    </div>
                     <div class="flex flex-col sm:flex-row gap-6 items-end">
                         <div class="flex-1 w-full space-y-2">
                             <label class="text-xs font-black text-gray-400 uppercase tracking-widest" data-i18n="step3.minLabel">최소</label>
                             <div class="relative">
-                                <input type="number" id="btn_min" value="1" min="1" max="99" class="w-full px-5 py-4 bg-gray-100 dark:bg-white/5 rounded-2xl text-xl font-bold outline-none pr-12">
+                                <input type="number" id="btn_min" value="1" min="1" max="99" disabled class="w-full px-5 py-4 bg-gray-100 dark:bg-white/5 rounded-2xl text-xl font-bold outline-none pr-12 cursor-not-allowed">
                                 <span class="absolute right-5 top-1/2 -translate-y-1/2 font-bold text-gray-400">%</span>
                             </div>
                         </div>
@@ -1871,7 +1968,7 @@
                         <div class="flex-1 w-full space-y-2">
                             <label class="text-xs font-black text-gray-400 uppercase tracking-widest" data-i18n="step3.maxLabel">최대</label>
                             <div class="relative">
-                                <input type="number" id="btn_max" value="100" min="2" max="100" class="w-full px-5 py-4 bg-gray-100 dark:bg-white/5 rounded-2xl text-xl font-bold outline-none pr-12">
+                                <input type="number" id="btn_max" value="100" min="2" max="100" disabled class="w-full px-5 py-4 bg-gray-100 dark:bg-white/5 rounded-2xl text-xl font-bold outline-none pr-12 cursor-not-allowed">
                                 <span class="absolute right-5 top-1/2 -translate-y-1/2 font-bold text-gray-400">%</span>
                             </div>
                         </div>
@@ -1885,8 +1982,8 @@
                             <p class="text-sm text-gray-500 dark:text-zinc-400 mt-1" data-i18n="step4.loopModeDesc">밝기가 끝까지 바뀌었을 때 한 번 더 누르면 반대쪽의 밝기로 돌아갑니다.</p>
                         </div>
                         <label class="relative inline-flex items-center cursor-pointer ml-4">
-                            <input type="checkbox" id="btn_loop_toggle" class="sr-only peer" onchange="toggleButtonLoop()">
-                            <div class="w-14 h-7 bg-gray-200 peer-focus:outline-none rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-[#008DF7]"></div>
+                            <input type="checkbox" id="btn_loop_toggle" class="sr-only" onchange="toggleButtonLoop()">
+                            <span class="switch-track"></span>
                         </label>
                     </div>
                 </div>
@@ -2564,7 +2661,7 @@
                 "step2.acPlaceholder": "e.g. 5e6f7g8h-9i0j-...",
                 "step2.acTip": "Advanced Web App → Devices → 에어컨의 Device ID를 복사하세요.",
                 "step2.caution1": "반드시 SmartThings Advanced Web App에서 복사하세요.",
-                "step2.caution3": "조명이 Switch Level 및 Color Temperature 기능을 지원하는지 확인하세요.",
+                "step2.caution3": "조명이 Switch Level 기능을 지원하는지 확인하세요.",
                 "step2.cautionFan": "선풍기가 Fan Speed 기능을 지원하는지 확인하세요. (SmartThings 앱 → 기기 상세에서 확인 가능)",
                 "step2.cautionVolume": "오디오 기기가 Audio Volume 기능을 지원하는지 확인하세요. (SmartThings 앱 → 기기 상세에서 확인 가능)",
                 "step2.cautionBlind": "기기가 Window Shade Level 기능을 지원하는지 확인하세요. (SmartThings 앱 → 기기 상세에서 확인 가능)",
@@ -2636,6 +2733,12 @@
                 "step3.modeMultiB": "눌러서 밝기 내리기",
                 "step3.modeMultiBDesc": "버튼을 한 번 누를 때마다 밝기가 내려갑니다",
                 "step4.stepAmountTitle": "한 번 누를 때마다 바뀌는 밝기 레벨",
+                "step4.stepPreviewLabel": "밝기 스텝 미리보기",
+                "step4.stepPreviewNote": "밝기 스텝의 퍼센트가 작을수록 더 많은 밝기 레벨을 표현할 수 있지만, 원하는 밝기까지 버튼을 더 많이 눌러야 합니다.",
+                "step4.stepPresetFast": "빠르게",
+                "step4.stepPresetRecommended": "추천",
+                "step4.stepPresetBalanced": "촘촘하게",
+                "step4.stepPresetFine": "가장 촘촘하게",
                 "step4.buttonRangeTitle": "밝기 범위",
                 "step4.loopModeTitle": "루프 모드",
                 "step4.loopModeDesc": "밝기가 끝까지 바뀌었을 때 한 번 더 누르면 반대쪽의 밝기로 돌아갑니다.",
@@ -2808,7 +2911,7 @@
                 "step2.acPlaceholder": "e.g. 5e6f7g8h-9i0j-...",
                 "step2.acTip": "Advanced Web App → Devices → Copy the Device ID.",
                 "step2.caution1": "Always copy from SmartThings Advanced Web App.",
-                "step2.caution3": "Make sure your light supports Switch Level and Color Temperature capabilities.",
+                "step2.caution3": "Make sure your light supports the Switch Level capability.",
                 "step2.cautionFan": "Make sure your fan supports the Fan Speed capability. (Check in SmartThings app → Device details)",
                 "step2.cautionVolume": "Make sure your speaker supports the Audio Volume capability. (Check in SmartThings app → Device details)",
                 "step2.cautionBlind": "Make sure your device supports the Window Shade Level capability. (Check in SmartThings app → Device details)",
@@ -2880,6 +2983,12 @@
                 "step3.modeMultiB": "Press to lower brightness",
                 "step3.modeMultiBDesc": "Brightness goes down each time you press the button",
                 "step4.stepAmountTitle": "Change amount per press",
+                "step4.stepPreviewLabel": "Brightness Step Preview",
+                "step4.stepPreviewNote": "A smaller brightness step can express more brightness levels, but you will need to press the button more times to reach the brightness you want.",
+                "step4.stepPresetFast": "Fast",
+                "step4.stepPresetRecommended": "Recommended",
+                "step4.stepPresetBalanced": "Detailed",
+                "step4.stepPresetFine": "Finest",
                 "step4.buttonRangeTitle": "Brightness Range",
                 "step4.loopModeTitle": "Loop Mode",
                 "step4.loopModeDesc": "When brightness reaches the end, pressing once more returns it to the opposite brightness.",
@@ -3177,6 +3286,7 @@
             if (selectedPreset === 'ac-control' && targetId === 'step3_ac') updateAcPreview();
             // Color preview when on step3_color
             if (selectedPreset === 'color-control' && targetId === 'step3_color') selectSaturation(selectedSaturation);
+            if (selectedPreset === 'button-light-control' && targetId === 'step4_button') updateButtonStepPreview();
         }
 
         // ========== COMPONENT SETUP LOGIC ==========
@@ -3644,10 +3754,19 @@
             const cards = document.querySelectorAll('#presetContainer [data-device-category]');
             cards.forEach(card => {
                 const cardCat = card.getAttribute('data-device-category');
-                if (category === 'all' || cardCat === category) {
+                const shouldShow = category === 'all' || cardCat === category;
+                card.dataset.filterToken = String(Date.now());
+                const token = card.dataset.filterToken;
+                if (shouldShow) {
                     card.style.display = '';
+                    requestAnimationFrame(() => {
+                        if (card.dataset.filterToken === token) card.classList.remove('is-filtered-out');
+                    });
                 } else {
-                    card.style.display = 'none';
+                    card.classList.add('is-filtered-out');
+                    setTimeout(() => {
+                        if (card.dataset.filterToken === token) card.style.display = 'none';
+                    }, 280);
                 }
             });
         }
@@ -3662,7 +3781,7 @@
         }
 
         let buttonMode = 'one_button';
-        let buttonStepAmount = 10;
+        let buttonStepAmount = 25;
         let buttonLoopMode = false;
 
         function startButtonLightPreset() {
@@ -3696,23 +3815,47 @@
             buttonStepAmount = val;
             document.getElementById('input_button_step').value = val;
             document.querySelectorAll('.btn-preset-step').forEach(b => {
-                b.classList.remove('bg-blue-100', 'text-blue-700', 'dark:bg-blue-500/20', 'dark:text-blue-300', 'ring-2', 'ring-blue-500');
-                b.classList.add('bg-gray-100', 'dark:bg-white/10');
+                b.classList.remove('border-[#008DF7]/50', 'bg-blue-50/50', 'dark:bg-blue-500/10', 'dark:border-[#008DF7]/40');
+                b.classList.add('border-gray-200', 'dark:border-white/10');
+                b.querySelectorAll('span').forEach(span => span.classList.remove('text-[#008DF7]'));
             });
             if (event && event.currentTarget) {
-                event.currentTarget.classList.remove('bg-gray-100', 'dark:bg-white/10');
-                event.currentTarget.classList.add('bg-blue-100', 'text-blue-700', 'dark:bg-blue-500/20', 'dark:text-blue-300', 'ring-2', 'ring-blue-500');
+                event.currentTarget.classList.remove('border-gray-200', 'dark:border-white/10');
+                event.currentTarget.classList.add('border-[#008DF7]/50', 'bg-blue-50/50', 'dark:bg-blue-500/10', 'dark:border-[#008DF7]/40');
+                event.currentTarget.querySelectorAll('span').forEach(span => span.classList.add('text-[#008DF7]'));
             }
+            updateButtonStepPreview();
         }
 
         function updateButtonStepAmount() {
             let val = parseInt(document.getElementById('input_button_step').value);
             if(isNaN(val)) val = 10;
+            val = Math.max(1, Math.min(50, val));
             buttonStepAmount = val;
             document.querySelectorAll('.btn-preset-step').forEach(b => {
-                b.classList.remove('bg-blue-100', 'text-blue-700', 'dark:bg-blue-500/20', 'dark:text-blue-300', 'ring-2', 'ring-blue-500');
-                b.classList.add('bg-gray-100', 'dark:bg-white/10');
+                b.classList.remove('border-[#008DF7]/50', 'bg-blue-50/50', 'dark:bg-blue-500/10', 'dark:border-[#008DF7]/40');
+                b.classList.add('border-gray-200', 'dark:border-white/10');
+                b.querySelectorAll('span').forEach(span => span.classList.remove('text-[#008DF7]'));
+                const valueLabel = b.querySelector('span:last-child');
+                if (valueLabel && valueLabel.textContent.trim() === `${val}%`) {
+                    b.classList.remove('border-gray-200', 'dark:border-white/10');
+                    b.classList.add('border-[#008DF7]/50', 'bg-blue-50/50', 'dark:bg-blue-500/10', 'dark:border-[#008DF7]/40');
+                    b.querySelectorAll('span').forEach(span => span.classList.add('text-[#008DF7]'));
+                }
             });
+            updateButtonStepPreview();
+        }
+
+        function updateButtonStepPreview() {
+            const bar = document.getElementById('button_step_bar');
+            const text = document.getElementById('button_step_preview_text');
+            if (!bar) return;
+            const step = Math.max(1, Math.min(50, parseInt(document.getElementById('input_button_step')?.value, 10) || buttonStepAmount || 10));
+            const positions = [0];
+            for (let pos = step; pos < 100; pos += step) positions.push(pos);
+            if (positions[positions.length - 1] !== 100) positions.push(100);
+            bar.innerHTML = positions.map(pos => `<span class="brightness-step-marker" style="left:${pos}%"></span>`).join('');
+            if (text) text.innerText = `${step}%`;
         }
 
         function toggleButtonLoop() {
