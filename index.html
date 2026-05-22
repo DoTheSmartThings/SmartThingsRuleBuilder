@@ -28,7 +28,7 @@
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#008DF7">
 
-    <meta name="google-site-verification" content="poXhQ9g3FBET2HV0ubn37fqn1bZfaXrNxFFRLtVhSio" />    
+    <meta name="google-site-verification" content="poXhQ9g3FBET2HV0ubn37fqn1bZfaXrNxFFRLtVhSio" />
     <!-- Search Engine Verification
     //<meta name="naver-site-verification" content="" /> -->
 
@@ -2108,6 +2108,53 @@
             </div>
         </section>
 
+        <!-- ===== BRIDGE SETUP 3: TURN OFF ON OFF MODE ===== -->
+        <section id="bridge_setup3_mode" class="step-content">
+            <div class="glass-card p-8 md:p-12 space-y-8">
+                <div
+                    class="md:border-b border-gray-100 dark:border-white/5 flex flex-col sm:flex-row justify-between items-left gap-4">
+                    <div>
+                        <h3 class="text-xl md:text-2xl font-bold tracking-tight mb-2" data-i18n="bridge.s3mode.title">On Off Mode를 끄세요</h3>
+                        <p class="text-sm text-gray-500 dark:text-zinc-400 leading-relaxed" data-i18n="bridge.s3mode.desc">
+                            스마트싱스 앱에서 생성된 브릿지 가상 전구의 설정 메뉴에서 On Off Mode 옵션을 반드시 꺼주세요.</p>
+                    </div>
+                    <a href="https://www.smartthings.com/applink" target="_blank"
+                        class="inline-flex w-full sm:w-auto justify-center px-6 py-3 btn-primary text-white text-sm font-black rounded-xl shadow-md"
+                        data-i18n="bridge.s3mode.link">SmartThings 앱 열기</a>
+                </div>
+
+                <div class="p-6 bg-amber-50 dark:bg-amber-500/5 rounded-2xl border border-amber-200 dark:border-amber-500/15 space-y-3">
+                    <div class="flex items-center gap-2 mb-1">
+                        <svg class="w-4 h-4 text-amber-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                        </svg>
+                        <span class="text-xs font-black text-amber-700 dark:text-amber-400 uppercase tracking-widest" data-i18n="bridge.s3mode.warningTitle">필수 설정</span>
+                    </div>
+                    <p class="text-sm text-amber-800 dark:text-amber-300 leading-relaxed" data-i18n="bridge.s3mode.warning">
+                        이 옵션이 꺼져 있어야 하나의 노브에 여러 루틴을 연결하더라도 다른 루틴의 간섭 없이 독립 제어가 가능해집니다.</p>
+                </div>
+
+                <div class="space-y-3">
+                    <label
+                        class="bridge-check-card flex items-start gap-3 p-4 bg-gray-100 dark:bg-white/5 rounded-2xl border-2 border-gray-200 dark:border-white/10">
+                        <input type="checkbox" class="bridge-check mt-0.5" onchange="updateBridgeCheckCards()"
+                            data-bridge-group="mode">
+                        <span class="text-sm font-bold text-gray-700 dark:text-gray-300"
+                            data-i18n="bridge.s3mode.check1">스마트싱스에서 브릿지 가상 전구의 설정 메뉴에 들어갔습니다.</span>
+                    </label>
+                    <label
+                        class="bridge-check-card flex items-start gap-3 p-4 bg-gray-100 dark:bg-white/5 rounded-2xl border-2 border-gray-200 dark:border-white/10">
+                        <input type="checkbox" class="bridge-check mt-0.5" onchange="updateBridgeCheckCards()"
+                            data-bridge-group="mode">
+                        <span class="text-sm font-bold text-gray-700 dark:text-gray-300"
+                            data-i18n="bridge.s3mode.check2">On Off Mode 옵션을 껐습니다.</span>
+                    </label>
+                </div>
+                <p id="bridgeModeMsg" class="text-red-500 text-sm font-bold hidden" data-i18n="bridge.checklistMsg">
+                    체크리스트를 모두 완료해야 다음으로 진행할 수 있습니다.</p>
+            </div>
+        </section>
+
         <!-- ===== BRIDGE SETUP 3: DEVICE MAPPING ===== -->
         <section id="bridge_setup3" class="step-content">
             <div class="glass-card p-8 md:p-12 space-y-10">
@@ -2335,6 +2382,16 @@
                     </h3>
                     <p class="text-sm text-gray-500 dark:text-zinc-400 leading-relaxed" data-i18n="bridge.s6.desc">브릿지
                         루틴 등록을 마쳤다면 노브를 돌렸을 때 가상 전구의 값이 0~100으로 움직여야 합니다.</p>
+                </div>
+                <div class="p-6 bg-blue-50 dark:bg-blue-500/5 rounded-2xl border border-blue-100 dark:border-blue-500/20 text-left space-y-2">
+                    <div class="flex items-center gap-2">
+                        <svg class="w-4 h-4 text-[#008DF7] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 16h-1v-4h-1m1-4h.01M12 18a6 6 0 100-12 6 6 0 000 12z" />
+                        </svg>
+                        <span class="text-xs font-black text-blue-700 dark:text-blue-300 uppercase tracking-widest" data-i18n="bridge.s6.tipTitle">하나의 노브로 여러 기기를 따로 제어하세요</span>
+                    </div>
+                    <p class="text-sm text-blue-800 dark:text-blue-200 leading-relaxed" data-i18n="bridge.s6.tipDesc">
+                        브릿지용 가상 전구는 이 루틴의 온 오프 스위치입니다. 가상 전구의 전원을 끄면 노브를 돌려도 이 루틴이 켜지지 않습니다.</p>
                 </div>
                 <button onclick="finishBridgeSetup()"
                     class="w-full sm:w-auto px-7 py-4 btn-primary text-white font-black rounded-2xl text-sm shadow-xl"
@@ -2800,6 +2857,13 @@
                 "bridge.fast.desc": "이미 브릿지 드라이버를 써 본 적이 있다면 기존 가상 전구에서 새 기기를 바로 만들 수 있습니다.",
                 "bridge.fast.check1": "기존 virtual-dimmer-levelstep 기기 상세 화면을 열었습니다.",
                 "bridge.fast.check2": "Create New Device 버튼으로 새 가상 전구를 만들었습니다.",
+                "bridge.s3mode.title": "On Off Mode를 끄세요",
+                "bridge.s3mode.desc": "스마트싱스 앱에서 생성된 브릿지 가상 전구의 설정 메뉴에서 On Off Mode 옵션을 반드시 꺼주세요.",
+                "bridge.s3mode.link": "SmartThings 앱 열기",
+                "bridge.s3mode.warningTitle": "필수 설정",
+                "bridge.s3mode.warning": "이 옵션이 꺼져 있어야 하나의 노브에 여러 루틴을 연결하더라도 다른 루틴의 간섭 없이 독립 제어가 가능해집니다.",
+                "bridge.s3mode.check1": "스마트싱스에서 브릿지 가상 전구의 설정 메뉴에 들어갔습니다.",
+                "bridge.s3mode.check2": "On Off Mode 옵션을 껐습니다.",
                 "bridge.s3.banner": "브릿지 루틴에 사용할 상대값 노브와 가상 전구의 Device ID를 입력하세요.",
                 "bridge.s3.knobLabel": "상대값 노브의 Device ID",
                 "bridge.s3.knobTip": "Advanced Web App → Devices → 상대값 노브 기기의 Device ID를 복사하세요.",
@@ -2814,6 +2878,8 @@
                 "bridge.s5.step3": "Add 버튼을 눌러 Enabled 상태로 등록합니다.",
                 "bridge.s6.title": "브릿지 연결 확인",
                 "bridge.s6.desc": "브릿지 루틴 등록을 마쳤다면 노브를 돌렸을 때 가상 전구의 값이 0~100으로 움직여야 합니다.",
+                "bridge.s6.tipTitle": "하나의 노브로 여러 기기를 따로 제어하세요",
+                "bridge.s6.tipDesc": "브릿지용 가상 전구는 이 루틴의 온 오프 스위치입니다. 브릿지용 가상 전구의 전원을 끄면 노브를 돌려도 이 루틴이 켜지지 않습니다. 하나의 노브에 여러 브릿지를 켜고 끄면서 루틴을 편리하게 스위칭하는 멀티매핑이 가능해집니다.",
                 "bridge.s6.cta": "확인 및 메인 루틴 만들기",
                 "bridge.checklistMsg": "체크리스트를 모두 완료해야 다음으로 진행할 수 있습니다.",
                 "bridge.prefillToast": "가상 전구의 Device ID가 자동으로 추가되었어요.",
@@ -3050,6 +3116,13 @@
                 "bridge.fast.desc": "If you already use the bridge driver, create a new device from an existing virtual bulb.",
                 "bridge.fast.check1": "I opened an existing virtual-dimmer-levelstep device detail page.",
                 "bridge.fast.check2": "I created a new virtual bulb with Create New Device.",
+                "bridge.s3mode.title": "Turn Off On Off Mode",
+                "bridge.s3mode.desc": "In the SmartThings app, turn off the On Off Mode option in the bridge virtual bulb settings.",
+                "bridge.s3mode.link": "Open SmartThings App",
+                "bridge.s3mode.warningTitle": "Required Setting",
+                "bridge.s3mode.warning": "This option must be off so multiple routines connected to one knob can be controlled independently without interfering with each other.",
+                "bridge.s3mode.check1": "I opened the bridge virtual bulb settings menu in SmartThings.",
+                "bridge.s3mode.check2": "I turned off On Off Mode.",
                 "bridge.s3.banner": "Enter the relative knob ID and bridge virtual bulb Device ID.",
                 "bridge.s3.knobLabel": "Relative knob ID",
                 "bridge.s3.knobTip": "Advanced Web App → Devices → Copy the Device ID of your relative knob.",
@@ -3064,6 +3137,8 @@
                 "bridge.s5.step3": "Click Add and keep it Enabled.",
                 "bridge.s6.title": "Confirm Bridge Connection",
                 "bridge.s6.desc": "After registering the bridge routine, turning the knob should move the virtual bulb between 0 and 100.",
+                "bridge.s6.tipTitle": "Control multiple devices separately with one knob",
+                "bridge.s6.tipDesc": "The bridge virtual bulb is the on/off switch for this routine. If you turn off the bridge virtual bulb, this routine will not run when you rotate the knob. You can switch routines conveniently by turning multiple bridges on or off.",
                 "bridge.s6.cta": "Confirm and Build Main Routine",
                 "bridge.checklistMsg": "Complete every checklist item before continuing.",
                 "bridge.prefillToast": "The virtual bulb Device ID was added automatically.",
@@ -3107,7 +3182,7 @@
 
         const TEMPLATE_BLIND = [{ "if": { "changes": { "operand": { "device": { "devices": ["@device_dimmer"], "component": "@component_dimmer", "capability": "switchLevel", "attribute": "level" } } }, "then": [{ "if": { "equals": { "left": { "device": { "devices": ["@device_dimmer"], "component": "@component_dimmer", "capability": "switchLevel", "attribute": "level" } }, "right": { "integer": 1 } }, "then": [{ "command": { "devices": ["@device_shade"], "commands": [{ "component": "main", "capability": "windowShadeLevel", "command": "setShadeLevel", "arguments": [{ "integer": 0 }] }] } }], "else": [{ "command": { "devices": ["@device_shade"], "commands": [{ "component": "main", "capability": "windowShadeLevel", "command": "setShadeLevel", "arguments": [{ "device": { "devices": ["@device_dimmer"], "component": "@component_dimmer", "capability": "switchLevel", "attribute": "level" } }] }] } }] } }] } }];
 
-        const TEMPLATE_BRIDGE = [{ "if": { "greaterThanOrEquals": { "left": { "device": { "devices": ["@device_dimmer"], "component": "@component_dimmer", "capability": "knob", "attribute": "rotateAmount", "trigger": "Always" } }, "right": { "integer": -100 }, "changesOnly": false }, "then": [{ "command": { "devices": ["@device_bridge"], "commands": [{ "component": "main", "capability": "statelessSwitchLevelStep", "command": "stepLevel", "arguments": [{ "device": { "devices": ["@device_dimmer"], "component": "@component_dimmer", "capability": "knob", "attribute": "rotateAmount" } }] }] } }] } }];
+        const TEMPLATE_BRIDGE = [{ "if": { "and": [{ "greaterThanOrEquals": { "left": { "device": { "devices": ["@device_dimmer"], "component": "@component_dimmer", "capability": "knob", "attribute": "rotateAmount", "trigger": "Always" } }, "right": { "integer": -100 }, "changesOnly": false } }, { "equals": { "left": { "device": { "devices": ["@device_bridge"], "component": "main", "capability": "switch", "attribute": "switch" } }, "right": { "string": "on" } } }], "then": [{ "command": { "devices": ["@device_bridge"], "commands": [{ "component": "main", "capability": "statelessSwitchLevelStep", "command": "stepLevel", "arguments": [{ "device": { "devices": ["@device_dimmer"], "component": "@component_dimmer", "capability": "knob", "attribute": "rotateAmount" } }] }] } }] } }];
 
         const TEMPLATE_COLOR_SAT = [{ "if": { "changes": { "operand": { "device": { "devices": ["@device_dimmer"], "component": "@component_dimmer", "capability": "switchLevel", "attribute": "level" } } }, "then": [{ "if": { "equals": { "left": { "device": { "devices": ["@device_light"], "component": "main", "capability": "switch", "attribute": "switch", "trigger": "Never" } }, "right": { "string": "on" } }, "then": [{ "command": { "devices": ["@device_light"], "commands": [{ "component": "main", "capability": "colorControl", "command": "setColor", "arguments": [{ "map": { "hue": { "device": { "devices": ["@device_dimmer"], "component": "@component_dimmer", "capability": "switchLevel", "attribute": "level" } }, "saturation": { "integer": "@saturation" } } }] }] } }, { "if": { "equals": { "left": { "device": { "devices": ["@device_dimmer"], "component": "@component_dimmer", "capability": "switchLevel", "attribute": "level" } }, "right": { "integer": 100 } }, "then": [{ "command": { "devices": ["@device_dimmer"], "commands": [{ "component": "@component_dimmer", "capability": "switchLevel", "command": "setLevel", "arguments": [{ "integer": 1 }] }] } }] } }] } }] } }];
 
@@ -3160,14 +3235,14 @@
 
         function getBridgeStepMap() {
             return bridgePath === 'existing'
-                ? ['bridge_setup2_fast', 'bridge_setup3', 'bridge_setup4', 'bridge_setup5', 'bridge_setup6']
-                : ['bridge_setup1', 'bridge_setup2', 'bridge_setup3', 'bridge_setup4', 'bridge_setup5', 'bridge_setup6'];
+                ? ['bridge_setup2_fast', 'bridge_setup3_mode', 'bridge_setup3', 'bridge_setup4', 'bridge_setup5', 'bridge_setup6']
+                : ['bridge_setup1', 'bridge_setup2', 'bridge_setup3_mode', 'bridge_setup3', 'bridge_setup4', 'bridge_setup5', 'bridge_setup6'];
         }
 
         function getBridgeStepTitles() {
             return bridgePath === 'existing'
-                ? [t('bridge.fast.title'), t('step.2.title'), t('bridge.s4.title'), t('bridge.s5.title'), t('bridge.s6.title')]
-                : [t('bridge.s1.title'), t('bridge.s2.title'), t('step.2.title'), t('bridge.s4.title'), t('bridge.s5.title'), t('bridge.s6.title')];
+                ? [t('bridge.fast.title'), t('bridge.s3mode.title'), t('step.2.title'), t('bridge.s4.title'), t('bridge.s5.title'), t('bridge.s6.title')]
+                : [t('bridge.s1.title'), t('bridge.s2.title'), t('bridge.s3mode.title'), t('step.2.title'), t('bridge.s4.title'), t('bridge.s5.title'), t('bridge.s6.title')];
         }
 
         // ========== i18n ==========
@@ -3697,6 +3772,7 @@
             if (targetId === 'bridge_setup1') return validateBridgeChecklist('driver', 'bridgeChecklistMsg');
             if (targetId === 'bridge_setup2') return validateBridgeChecklist('create', 'bridgeCreateMsg');
             if (targetId === 'bridge_setup2_fast') return validateBridgeChecklist('fast', 'bridgeFastMsg');
+            if (targetId === 'bridge_setup3_mode') return validateBridgeChecklist('mode', 'bridgeModeMsg');
             if (targetId === 'bridge_setup3') return validateBridgeMapping();
             return true;
         }
@@ -4115,6 +4191,10 @@
                 : value;
         }
 
+        function applyRelativeKnobGate(rule, dimmerId, componentId) {
+            return rule;
+        }
+
         function toSingleLineJson(val) {
             let str = JSON.stringify(val, null, 2);
             str = str.replace(/\s*\n\s*/g, ' ');
@@ -4305,7 +4385,7 @@
                     '@component_dimmer': componentId,
                     '@device_light': lightIds
                 });
-                finalJsonString = formatRuleJson(rule);
+                finalJsonString = formatRuleJson(applyRelativeKnobGate(rule, dimmerId, componentId));
 
             } else if (selectedPreset === 'blind-control') {
                 const shadeIds = getTargetDeviceIds('@device_shade');
@@ -4314,7 +4394,7 @@
                     '@component_dimmer': componentId,
                     '@device_shade': shadeIds
                 });
-                finalJsonString = formatRuleJson(rule);
+                finalJsonString = formatRuleJson(applyRelativeKnobGate(rule, dimmerId, componentId));
 
             } else if (selectedPreset === 'ct-control') {
                 const { min: minK, max: maxK } = getCTRange();
@@ -4331,7 +4411,7 @@
                     '@component_dimmer': componentId,
                     '@device_light': lightIds
                 });
-                finalJsonString = formatRuleJson(rule);
+                finalJsonString = formatRuleJson(applyRelativeKnobGate(rule, dimmerId, componentId));
 
             } else if (selectedPreset === 'fan-control') {
                 const fanIds = getTargetDeviceIds('@device_fan');
@@ -4340,7 +4420,7 @@
                     '@component_dimmer': componentId,
                     '@device_fan': fanIds
                 });
-                finalJsonString = formatRuleJson(rule);
+                finalJsonString = formatRuleJson(applyRelativeKnobGate(rule, dimmerId, componentId));
 
             } else if (selectedPreset === 'volume-control') {
                 const volumeIds = getTargetDeviceIds('@device_volume');
@@ -4388,7 +4468,7 @@
                     '@component_dimmer': componentId,
                     '@device_volume': volumeIds
                 });
-                finalJsonString = formatRuleJson(rule);
+                finalJsonString = formatRuleJson(applyRelativeKnobGate(rule, dimmerId, componentId));
 
             } else if (selectedPreset === 'ac-control') {
                 const acIds = getTargetDeviceIds('@device_ac');
@@ -4420,7 +4500,7 @@
                     '@component_dimmer': componentId,
                     '@device_ac': acIds
                 });
-                finalJsonString = formatRuleJson(rule);
+                finalJsonString = formatRuleJson(applyRelativeKnobGate(rule, dimmerId, componentId));
 
             } else if (selectedPreset === 'color-control') {
                 const targetLightIds = getTargetDeviceIds('@device_light');
@@ -4439,7 +4519,7 @@
                         '@saturation': Number(selectedSaturation)
                     });
                 }
-                finalJsonString = formatRuleJson(rule);
+                finalJsonString = formatRuleJson(applyRelativeKnobGate(rule, dimmerId, componentId));
             }
 
             document.getElementById('codeOutput').innerHTML = syntaxHighlight(finalJsonString);
