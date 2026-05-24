@@ -1119,18 +1119,17 @@
         <section id="step1" class="step-content active">
             <!-- Device Categories Grid -->
             
-         <h2>이동했습니다</h2><br><h2>We Moved</h2>
+         <h1>이동했습니다</h1><br><h1>We Moved</h1><br>
 
             <div
                     class="md:border-b border-gray-100 dark:border-white/5 flex flex-col sm:flex-row justify-between items-left gap-4">
                     <div>
-                        <h3 class="text-xl md:text-2xl font-bold tracking-tight mb-2" data-i18n="bridge.s2.title">바뀐 룰빌더 주소로 바로가기</h3>
-                        <p class="text-sm text-gray-500 dark:text-zinc-400 leading-relaxed" data-i18n="bridge.s2.desc">
+                        <h3 class="text-xl md:text-2xl font-bold tracking-tight mb-2">바뀐 룰빌더 주소로 바로가기</h3>
+                        <p class="text-sm text-gray-500 dark:text-zinc-400 leading-relaxed">
                             룰빌더 주소가 바뀌었습니다. https://rulebuilder.github.io/ 로 이동해주세요.</p>
                     </div>
                     <a href="https://rulebuilder.github.io/" target="_blank"
-                        class="inline-flex w-full sm:w-auto justify-center px-6 py-3 btn-primary text-white text-sm font-black rounded-xl shadow-md"
-                        data-i18n="bridge.s2.link">Rule Builder 열기</a>
+                        class="inline-flex w-full sm:w-auto justify-center px-6 py-3 btn-primary text-white text-sm font-black rounded-xl shadow-md">Rule Builder 열기</a>
                 </div>
         </section>
 
@@ -1162,55 +1161,6 @@
                 <button onclick="resetApp()"
                     class="flex-1 py-3.5 px-5 bg-red-500 text-white rounded-2xl font-black text-sm shadow-lg shadow-red-500/20"
                     data-i18n="modal.confirm">돌아가기</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- ==================== KNOB TYPE MODAL ==================== -->
-    <div id="knobTypeModal" class="modal-overlay">
-        <div
-            class="glass-card p-8 md:p-10 max-w-2xl w-full mx-5 shadow-2xl bg-white dark:bg-[#0c1424] border-transparent">
-            <h3 class="text-xl font-bold mb-3 tracking-tight mb-6" data-i18n="knobModal.title">어떤 종류의 노브를 가지고 계신가요?</h3>
-            <div id="knobTypeChoices" class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                <button type="button" onclick="selectKnobChoice('absolute')" id="knobChoiceAbsolute"
-                    class="p-5 rounded-2xl border-2 border-gray-200 dark:border-white/10 text-left hover:border-[#008DF7]/50 dark:hover:border-[#008DF7]/40 transition-all">
-                    <span class="block font-black text-base mb-2" data-i18n="knobModal.absoluteTitle">절대값 노브</span>
-                    <span class="block text-sm text-gray-500 dark:text-zinc-400 leading-relaxed"
-                        data-i18n="knobModal.absoluteDesc">밝기 수치가 표시되거나 슬라이더처럼 0~100 값을 직접 내보냅니다.</span>
-                </button>
-                <button type="button" onclick="selectKnobChoice('relative')" id="knobChoiceRelative"
-                    class="p-5 rounded-2xl border-2 border-gray-200 dark:border-white/10 text-left hover:border-[#008DF7]/50 dark:hover:border-[#008DF7]/40 transition-all">
-                    <span class="block font-black text-base mb-2" data-i18n="knobModal.relativeTitle">상대값 노브</span>
-                    <span class="block text-sm text-gray-500 dark:text-zinc-400 leading-relaxed"
-                        data-i18n="knobModal.relativeDesc">밝기 수치가 표시되지 않으며 회전량을 상대값으로 내보냅니다.</span>
-                </button>
-            </div>
-            <div id="bridgeExperienceChoices" class="hidden space-y-4 mb-6">
-                <p class="text-sm font-bold text-gray-600 dark:text-zinc-300" data-i18n="knobModal.bridgeQuestion">브릿지
-                    드라이버를 설치하거나 가상 전구를 만들어 본 적이 있나요?</p>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <button type="button" onclick="selectBridgeExperience('new')" id="bridgeExpNew"
-                        class="p-4 rounded-2xl border-2 border-gray-200 dark:border-white/10 text-left hover:border-[#008DF7]/50 transition-all">
-                        <span class="block font-black text-sm mb-1" data-i18n="knobModal.bridgeNew">처음입니다</span>
-                        <span class="block text-xs text-gray-500 dark:text-zinc-400"
-                            data-i18n="knobModal.bridgeNewDesc">드라이버 설치부터 차근차근 진행합니다.</span>
-                    </button>
-                    <button type="button" onclick="selectBridgeExperience('existing')" id="bridgeExpExisting"
-                        class="p-4 rounded-2xl border-2 border-gray-200 dark:border-white/10 text-left hover:border-[#008DF7]/50 transition-all">
-                        <span class="block font-black text-sm mb-1" data-i18n="knobModal.bridgeExisting">사용해 본 적이
-                            있습니다</span>
-                        <span class="block text-xs text-gray-500 dark:text-zinc-400"
-                            data-i18n="knobModal.bridgeExistingDesc">새 가상 전구 생성부터 빠르게 시작합니다.</span>
-                    </button>
-                </div>
-            </div>
-            <div class="flex gap-3">
-                <button onclick="closeKnobTypeModal()"
-                    class="flex-1 py-3.5 px-5 border border-gray-200 dark:border-white/10 rounded-2xl font-black text-sm text-gray-600 dark:text-white"
-                    data-i18n="modal.cancel">취소</button>
-                <button onclick="confirmKnobType()" id="knobTypeCta" disabled
-                    class="flex-[1.5] py-3.5 px-5 btn-primary text-white rounded-2xl font-black text-sm disabled:opacity-40 disabled:cursor-not-allowed"
-                    data-i18n="knobModal.choose">노브 타입을 고르세요</button>
             </div>
         </div>
     </div>
