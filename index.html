@@ -2993,8 +2993,8 @@
                 "step3fan.optA.title": "5단계 고정 레벨",
                 "step3fan.optA.desc": "대부분의 스마트 선풍기에서 지원하는 표준 5단계 매핑 방식입니다.",
                 "step3fan.optB.title": "1~100 슬라이더",
-                "step3fan.optB.desc": "스마트싱스의 최신 업데이트 기능을 지원할 예정입니다. 1% 단위로 정밀 제어가 가능합니다.",
-                "step3fan.comingSoon": "BETA",
+                "step3fan.optB.desc": "1~100% 바람세기(fanSpeedPercent)를 지원하는 스마트 선풍기용 정밀 제어 방식입니다.",
+                "step3fan.comingSoon": "신규",
                 "step3fan.level.off": "꺼짐",
                 "step3fan.level.low": "느림",
                 "step3fan.level.med": "보통",
@@ -3153,10 +3153,15 @@
                 "step4.buttonFan.stepAmountTitle": "한 번 누를 때마다 바뀌는 바람세기 레벨",
                 "step4.buttonFan.stepPreviewLabel": "바람세기 스텝 미리보기",
                 "step4.buttonFan.stepPreviewNote": "이 프리셋은 5단계 팬 속도에 맞춰 한 번 누를 때마다 1단계씩 이동합니다.",
+                "step4.buttonFan.sliderStepPreviewNote": "바람세기 스텝의 퍼센트가 작을수록 더 많은 바람세기 단계를 표현할 수 있지만, 원하는 세기까지 버튼을 더 많이 눌러야 합니다.",
                 "step4.buttonFan.loopModeDesc": "바람세기가 끝까지 바뀌었을 때 한 번 더 누르면 반대쪽의 바람세기로 돌아갑니다.",
                 "step4.buttonFan.caution": "버튼을 너무 빠르게 누르면 선풍기가 명령을 놓칠 수 있으므로 0.5초~1초의 간격을 두고 눌러주세요.",
                 "step4.unitStep": "스텝",
                 "step4.unitPercent": "퍼센트",
+                "step4.fanPercentPreset50": "2단계",
+                "step4.fanPercentPreset25": "4단계",
+                "step4.fanPercentPreset20": "5단계",
+                "step4.fanPercentPreset10": "10단계",
                 "category.button": "IoT 버튼",
             },
             en: {
@@ -3282,8 +3287,8 @@
                 "step3fan.optA.title": "5-Step Fixed Level",
                 "step3fan.optA.desc": "Standard 5-step mapping supported by most smart fans.",
                 "step3fan.optB.title": "1~100 Slider",
-                "step3fan.optB.desc": "Precision 1% control — coming with a future SmartThings update.",
-                "step3fan.comingSoon": "BETA",
+                "step3fan.optB.desc": "Precision control for smart fans supporting 1~100% wind speed (fanSpeedPercent).",
+                "step3fan.comingSoon": "NEW",
                 "step3fan.level.off": "Off",
                 "step3fan.level.low": "Low",
                 "step3fan.level.med": "Medium",
@@ -3442,10 +3447,15 @@
                 "step4.buttonFan.stepAmountTitle": "Fan speed level per press",
                 "step4.buttonFan.stepPreviewLabel": "Fan Speed Step Preview",
                 "step4.buttonFan.stepPreviewNote": "This preset is fixed to 1-level movement for 5-step fan speed control.",
+                "step4.buttonFan.sliderStepPreviewNote": "Smaller fan speed steps allow for more precise control, but require more button presses to reach your desired speed.",
                 "step4.buttonFan.loopModeDesc": "When fan speed reaches the end, one more press jumps to the opposite fan speed.",
                 "step4.buttonFan.caution": "If you press too quickly, the fan may miss commands. Leave about 0.5 to 1 second between presses.",
                 "step4.unitStep": "Step",
                 "step4.unitPercent": "Percent",
+                "step4.fanPercentPreset50": "2 Steps",
+                "step4.fanPercentPreset25": "4 Steps",
+                "step4.fanPercentPreset20": "5 Steps",
+                "step4.fanPercentPreset10": "10 Steps",
                 "category.button": "Button",
             }
         };
@@ -3868,37 +3878,56 @@
         function updateButtonStepCopy() {
             const isVolumeButton = selectedPreset === 'button-volume-control';
             const isFanButton = selectedPreset === 'button-fan-control';
+            const isFanFixed5 = isFanButton && selectedFanMode === 'fixed5';
+            const fanPreviewNoteKey = (isFanButton && selectedFanMode === 'slider100') ? 'step4.buttonFan.sliderStepPreviewNote' : 'step4.buttonFan.stepPreviewNote';
+            
             const copyMap = [
                 ['step4.stepAmountTitle', 'step4.buttonVolume.stepAmountTitle', 'step4.buttonFan.stepAmountTitle', isFanButton ? 'step4.buttonFan.stepAmountTitle' : (isVolumeButton ? 'step4.buttonVolume.stepAmountTitle' : 'step4.stepAmountTitle')],
                 ['step4.stepPreviewLabel', 'step4.buttonVolume.stepPreviewLabel', 'step4.buttonFan.stepPreviewLabel', isFanButton ? 'step4.buttonFan.stepPreviewLabel' : (isVolumeButton ? 'step4.buttonVolume.stepPreviewLabel' : 'step4.stepPreviewLabel')],
-                ['step4.stepPreviewNote', 'step4.buttonVolume.stepPreviewNote', 'step4.buttonFan.stepPreviewNote', isFanButton ? 'step4.buttonFan.stepPreviewNote' : (isVolumeButton ? 'step4.buttonVolume.stepPreviewNote' : 'step4.stepPreviewNote')],
+                ['step4.stepPreviewNote', 'step4.buttonVolume.stepPreviewNote', 'step4.buttonFan.stepPreviewNote', isFanButton ? fanPreviewNoteKey : (isVolumeButton ? 'step4.buttonVolume.stepPreviewNote' : 'step4.stepPreviewNote')],
                 ['step4.loopModeDesc', 'step4.buttonVolume.loopModeDesc', 'step4.buttonFan.loopModeDesc', isFanButton ? 'step4.buttonFan.loopModeDesc' : (isVolumeButton ? 'step4.buttonVolume.loopModeDesc' : 'step4.loopModeDesc')],
                 ['step4.buttonCaution', 'step4.buttonVolume.caution', 'step4.buttonFan.caution', isFanButton ? 'step4.buttonFan.caution' : (isVolumeButton ? 'step4.buttonVolume.caution' : 'step4.buttonCaution')]
             ];
             copyMap.forEach(([baseKey, volumeKey, fanKey, nextKey]) => {
-                const el = document.querySelector(`#step4_button [data-i18n="${baseKey}"], #step4_button [data-i18n="${volumeKey}"], #step4_button [data-i18n="${fanKey}"]`);
+                const el = document.querySelector(`#step4_button [data-i18n="${baseKey}"], #step4_button [data-i18n="${volumeKey}"], #step4_button [data-i18n="${fanKey}"], #step4_button [data-i18n="step4.buttonFan.sliderStepPreviewNote"]`);
                 if (!el) return;
                 el.setAttribute('data-i18n', nextKey);
                 el.innerText = t(nextKey);
             });
             const disabledRange = document.querySelector('#step4_button .disabled-setting');
             if (disabledRange) disabledRange.classList.toggle('hidden', isVolumeButton || isFanButton);
+            const isFanSlider100 = isFanButton && selectedFanMode === 'slider100';
             const unitSwitch = document.getElementById('button_step_unit_switch');
             const stepUi = document.getElementById('button_step_ui');
             const percentUi = document.getElementById('button_percent_step_ui');
             const stepInput = document.getElementById('input_button_step');
-            if (unitSwitch) unitSwitch.classList.toggle('hidden', isFanButton);
-            if (stepUi) stepUi.classList.toggle('hidden', isFanButton || buttonStepUnit !== 'step');
-            if (percentUi) percentUi.classList.toggle('hidden', isFanButton || buttonStepUnit !== 'percent');
+            // slider100 mode: hide unit switch (always percent), show percent preset buttons
+            if (unitSwitch) unitSwitch.classList.toggle('hidden', isFanFixed5 || isFanSlider100);
+            if (stepUi) stepUi.classList.toggle('hidden', isFanFixed5 || isFanSlider100 || buttonStepUnit !== 'step');
+            if (percentUi) percentUi.classList.toggle('hidden', isFanFixed5 || (!isFanSlider100 && buttonStepUnit !== 'percent'));
             if (stepInput) {
-                stepInput.disabled = isFanButton;
-                stepInput.classList.toggle('cursor-not-allowed', isFanButton);
-                if (isFanButton) stepInput.value = '1';
+                stepInput.disabled = isFanFixed5;
+                stepInput.classList.toggle('cursor-not-allowed', isFanFixed5);
+                if (isFanFixed5) stepInput.value = '1';
             }
-            if (isFanButton) {
+            if (isFanFixed5) {
                 buttonStepUnit = 'step';
                 buttonStepAmount = 1;
+            } else if (isFanSlider100) {
+                buttonStepUnit = 'percent';
             }
+            // Swap percent preset button labels for fan slider100 mode
+            const percentPresetBtns = document.querySelectorAll('#button_percent_step_ui .btn-preset-step');
+            const fanPercentLabelKeys = ['step4.fanPercentPreset50', 'step4.fanPercentPreset25', 'step4.fanPercentPreset20', 'step4.fanPercentPreset10'];
+            const defaultPercentLabelKeys = ['step4.stepPresetFast', 'step4.stepPresetRecommended', 'step4.stepPresetBalanced', 'step4.stepPresetFine'];
+            const labelKeys = isFanSlider100 ? fanPercentLabelKeys : defaultPercentLabelKeys;
+            percentPresetBtns.forEach((btn, i) => {
+                const labelEl = btn.querySelector('span:first-child');
+                if (labelEl && labelKeys[i]) {
+                    labelEl.setAttribute('data-i18n', labelKeys[i]);
+                    labelEl.innerText = t(labelKeys[i]);
+                }
+            });
             syncButtonStepUnitUI();
             updateButtonStepAmount();
         }
@@ -4081,6 +4110,12 @@
                 const titleB = cardSlider100 ? cardSlider100.querySelector('[data-i18n="step3fan.optB.title"]') : null;
                 if (titleA) titleA.className = "font-bold text-base mb-1 text-teal-800 dark:text-teal-300";
                 if (titleB) titleB.className = "font-bold text-base mb-1 text-gray-500 dark:text-gray-400";
+                
+                if (selectedPreset === 'button-fan-control') {
+                    buttonStepAmount = 1;
+                    const stepInput = document.getElementById('input_button_step');
+                    if (stepInput) stepInput.value = '1';
+                }
             } else {
                 if (cardSlider100) {
                     cardSlider100.classList.remove('border-gray-200', 'dark:border-white/8');
@@ -4093,6 +4128,17 @@
                 const titleB = cardSlider100 ? cardSlider100.querySelector('[data-i18n="step3fan.optB.title"]') : null;
                 if (titleA) titleA.className = "font-bold text-base mb-1 text-gray-500 dark:text-gray-400";
                 if (titleB) titleB.className = "font-bold text-base mb-1 text-teal-800 dark:text-teal-300";
+                
+                if (selectedPreset === 'button-fan-control') {
+                    buttonStepUnit = 'percent';
+                    buttonStepAmount = 10;
+                    const stepInput = document.getElementById('input_button_step');
+                    if (stepInput) stepInput.value = '10';
+                }
+            }
+            // Refresh Step 4 UI when fan mode changes (updates quick preset labels, unit switch, etc.)
+            if (selectedPreset === 'button-fan-control') {
+                updateButtonStepCopy();
             }
         }
 
@@ -4312,7 +4358,12 @@
             currentStep = 2;
             setButtonMode('one_button');
             setButtonStepUnit('step');
-            setButtonStepAmount(id === 'button-light-control' ? 25 : 1);
+            if (id === 'button-fan-control') {
+                selectedFanMode = 'fixed5';
+                setButtonStepAmount(1);
+            } else {
+                setButtonStepAmount(id === 'button-light-control' ? 25 : 1);
+            }
             document.getElementById('btn_loop_toggle').checked = false;
             buttonLoopMode = false;
             updateButtonTargetCopy();
@@ -4344,6 +4395,9 @@
                 if (Number.isInteger(min) && Number.isInteger(max) && min < max) return { min, max };
             }
             if (selectedPreset === 'button-fan-control') {
+                if (selectedFanMode === 'slider100') {
+                    return { min: 1, max: 100 };
+                }
                 return { min: 0, max: 4 };
             }
             return {
@@ -4353,7 +4407,12 @@
         }
 
         function getMaxButtonStepAmount() {
-            if (selectedPreset === 'button-fan-control') return 1;
+            if (selectedPreset === 'button-fan-control') {
+                if (selectedFanMode === 'slider100') {
+                    return 50;
+                }
+                return 1;
+            }
             if (buttonStepUnit === 'percent') return 50;
             const { min, max } = getButtonStepRange();
             return Math.max(1, Math.floor((max - min + 1) / 2));
@@ -4392,8 +4451,9 @@
                 btn.classList.toggle('dark:text-zinc-400', !active);
             });
             const isFanButton = selectedPreset === 'button-fan-control';
+            const isFanSlider100 = isFanButton && selectedFanMode === 'slider100';
             if (stepUi) stepUi.classList.toggle('hidden', isFanButton || buttonStepUnit !== 'step');
-            if (percentUi) percentUi.classList.toggle('hidden', isFanButton || buttonStepUnit !== 'percent');
+            if (percentUi) percentUi.classList.toggle('hidden', isFanButton && !isFanSlider100 || (!isFanSlider100 && buttonStepUnit !== 'percent'));
             if (suffix) suffix.innerText = buttonStepUnit === 'percent' ? '%' : 'step';
             if (input) input.max = String(getMaxButtonStepAmount());
             document.querySelectorAll('#button_step_ui [data-step-preset-percent]').forEach(btn => {
@@ -4830,88 +4890,204 @@
                 const targetFanIds = getButtonTargetDeviceIds('@device_fan');
                 const loop = buttonLoopMode;
 
-                function fanSpeedOperand() {
-                    return { "device": { "devices": targetFanIds, "component": "main", "capability": "fanSpeed", "attribute": "fanSpeed", "trigger": "Never" } };
-                }
-
-                function createFanCommand(targetVal, turnOnPositive = true) {
-                    const commands = [];
-                    if (targetVal === 0) {
-                        commands.push({ "component": "main", "capability": "switch", "command": "off" });
-                    } else if (turnOnPositive) {
-                        commands.push({ "component": "main", "capability": "switch", "command": "on" });
-                    }
-                    commands.push({ "component": "main", "capability": "fanSpeed", "command": "setFanSpeed", "arguments": [{ "integer": targetVal }] });
-                    return [{ "command": { "devices": targetFanIds, "commands": commands } }];
-                }
-
-                function createFanBetweenBlock(sourceVal, targetVal, turnOnPositive = true) {
-                    return {
-                        "if": {
-                            "between": {
-                                "value": fanSpeedOperand(),
-                                "start": { "integer": sourceVal },
-                                "end": { "integer": sourceVal }
-                            },
-                            "then": createFanCommand(targetVal, turnOnPositive)
+                if (selectedFanMode === 'slider100') {
+                    function getFanPercentPoints(step) {
+                        const points = [1];
+                        for (let v = step; v < 100; v += step) {
+                            if (v > 1) {
+                                points.push(v);
+                            }
                         }
-                    };
-                }
-
-                function createFanBoundaryBlock(type, boundaryVal, targetVal, turnOnPositive = true) {
-                    return {
-                        "if": {
-                            [type]: {
-                                "left": fanSpeedOperand(),
-                                "right": { "integer": boundaryVal }
-                            },
-                            "then": createFanCommand(targetVal, turnOnPositive)
+                        if (points[points.length - 1] !== 100) {
+                            points.push(100);
                         }
-                    };
-                }
-
-                function buildFanUpBlocks() {
-                    const thenBlocks = [];
-                    for (let speed = 0; speed < 4; speed++) {
-                        thenBlocks.push(createFanBetweenBlock(speed, speed + 1));
+                        return points;
                     }
-                    if (loop) thenBlocks.push(createFanBoundaryBlock("greaterThanOrEquals", 4, 0));
-                    return thenBlocks;
-                }
 
-                function buildFanDownBlocks() {
-                    const thenBlocks = [];
-                    for (let speed = 4; speed > 0; speed--) {
-                        thenBlocks.push(createFanBetweenBlock(speed, speed - 1, false));
+                    const step = getEffectiveButtonStepAmount(1, 100);
+                    const points = getFanPercentPoints(step);
+
+                    function fanPercentOperand() {
+                        return { "device": { "devices": targetFanIds, "component": "main", "capability": "fanSpeedPercent", "attribute": "percent", "trigger": "Never" } };
                     }
-                    if (loop) thenBlocks.push(createFanBoundaryBlock("lessThanOrEquals", 0, 4));
-                    return thenBlocks;
-                }
 
-                function createRootBlock(eventStr, blocks) {
-                    return {
-                        "if": {
-                            "equals": {
-                                "left": { "string": eventStr },
-                                "right": {
-                                    "device": { "devices": [btnId], "component": btnCompId, "capability": "button", "attribute": "button", "trigger": "Always" }
-                                }
-                            },
-                            "then": blocks
+                    function createFanPercentCommand(targetVal, turnOnPositive = true) {
+                        const commands = [];
+                        if (targetVal === 1) {
+                            commands.push({ "component": "main", "capability": "switch", "command": "off" });
+                        } else if (turnOnPositive) {
+                            commands.push({ "component": "main", "capability": "switch", "command": "on" });
                         }
-                    };
-                }
+                        commands.push({ "component": "main", "capability": "fanSpeedPercent", "command": "setPercent", "arguments": [{ "integer": targetVal }] });
+                        return [{ "command": { "devices": targetFanIds, "commands": commands } }];
+                    }
 
-                let ruleArray = [];
-                if (buttonMode === 'one_button') {
-                    ruleArray.push(createRootBlock("pushed", buildFanUpBlocks()));
-                    ruleArray.push(createRootBlock("double", buildFanDownBlocks()));
-                } else if (buttonMode === 'multi_up') {
-                    ruleArray.push(createRootBlock("pushed", buildFanUpBlocks()));
-                } else if (buttonMode === 'multi_down') {
-                    ruleArray.push(createRootBlock("pushed", buildFanDownBlocks()));
+                    // startVal, endVal, targetVal
+                    function createFanPercentBetweenBlock(startVal, endVal, targetVal, turnOnPositive = true) {
+                        return {
+                            "if": {
+                                "between": {
+                                    "value": fanPercentOperand(),
+                                    "start": { "integer": startVal },
+                                    "end": { "integer": endVal }
+                                },
+                                "then": createFanPercentCommand(targetVal, turnOnPositive)
+                            }
+                        };
+                    }
+
+                    function createFanPercentBoundaryBlock(type, boundaryVal, targetVal, turnOnPositive = true) {
+                        return {
+                            "if": {
+                                [type]: {
+                                    "left": fanPercentOperand(),
+                                    "right": { "integer": boundaryVal }
+                                },
+                                "then": createFanPercentCommand(targetVal, turnOnPositive)
+                            }
+                        };
+                    }
+
+                    function buildFanPercentUpBlocks() {
+                        const thenBlocks = [];
+                        thenBlocks.push(createFanPercentBetweenBlock(1, 1, points[1]));
+                        for (let i = 1; i < points.length - 1; i++) {
+                            const startVal = points[i - 1] + 1;
+                            const endVal = points[i];
+                            thenBlocks.push(createFanPercentBetweenBlock(startVal, endVal, points[i + 1]));
+                        }
+                        if (loop) {
+                            const boundaryVal = points[points.length - 2] + 1;
+                            thenBlocks.push(createFanPercentBoundaryBlock("greaterThanOrEquals", boundaryVal, 1));
+                        }
+                        return thenBlocks;
+                    }
+
+                    // down
+                    function buildFanPercentDownBlocks() {
+                        const thenBlocks = [];
+                        for (let i = points.length - 1; i >= 2; i--) {
+                            const startVal = points[i - 1] + 1;
+                            const endVal = points[i];
+                            thenBlocks.push(createFanPercentBetweenBlock(startVal, endVal, points[i - 1]));
+                        }
+                        const startVal = loop ? 2 : 1;
+                        thenBlocks.push(createFanPercentBetweenBlock(startVal, points[1], 1, false));
+                        if (loop) {
+                            thenBlocks.push(createFanPercentBoundaryBlock("lessThanOrEquals", 1, 100));
+                        }
+                        return thenBlocks;
+                    }
+
+                    function createRootBlock(eventStr, blocks) {
+                        return {
+                            "if": {
+                                "equals": {
+                                    "left": { "string": eventStr },
+                                    "right": {
+                                        "device": { "devices": [btnId], "component": btnCompId, "capability": "button", "attribute": "button", "trigger": "Always" }
+                                    }
+                                },
+                                "then": blocks
+                            }
+                        };
+                    }
+
+                    let ruleArray = [];
+                    if (buttonMode === 'one_button') {
+                        ruleArray.push(createRootBlock("pushed", buildFanPercentUpBlocks()));
+                        ruleArray.push(createRootBlock("double", buildFanPercentDownBlocks()));
+                    } else if (buttonMode === 'multi_up') {
+                        ruleArray.push(createRootBlock("pushed", buildFanPercentUpBlocks()));
+                    } else if (buttonMode === 'multi_down') {
+                        ruleArray.push(createRootBlock("pushed", buildFanPercentDownBlocks()));
+                    }
+                    finalJsonString = formatRuleJson(ruleArray);
+
+                } else {
+                    function fanSpeedOperand() {
+                        return { "device": { "devices": targetFanIds, "component": "main", "capability": "fanSpeed", "attribute": "fanSpeed", "trigger": "Never" } };
+                    }
+
+                    function createFanCommand(targetVal, turnOnPositive = true) {
+                        const commands = [];
+                        if (targetVal === 0) {
+                            commands.push({ "component": "main", "capability": "switch", "command": "off" });
+                        } else if (turnOnPositive) {
+                            commands.push({ "component": "main", "capability": "switch", "command": "on" });
+                        }
+                        commands.push({ "component": "main", "capability": "fanSpeed", "command": "setFanSpeed", "arguments": [{ "integer": targetVal }] });
+                        return [{ "command": { "devices": targetFanIds, "commands": commands } }];
+                    }
+
+                    function createFanBetweenBlock(sourceVal, targetVal, turnOnPositive = true) {
+                        return {
+                            "if": {
+                                "between": {
+                                    "value": fanSpeedOperand(),
+                                    "start": { "integer": sourceVal },
+                                    "end": { "integer": sourceVal }
+                                },
+                                "then": createFanCommand(targetVal, turnOnPositive)
+                            }
+                        };
+                    }
+
+                    function createFanBoundaryBlock(type, boundaryVal, targetVal, turnOnPositive = true) {
+                        return {
+                            "if": {
+                                [type]: {
+                                    "left": fanSpeedOperand(),
+                                    "right": { "integer": boundaryVal }
+                                },
+                                "then": createFanCommand(targetVal, turnOnPositive)
+                            }
+                        };
+                    }
+
+                    function buildFanUpBlocks() {
+                        const thenBlocks = [];
+                        for (let speed = 0; speed < 4; speed++) {
+                            thenBlocks.push(createFanBetweenBlock(speed, speed + 1));
+                        }
+                        if (loop) thenBlocks.push(createFanBoundaryBlock("greaterThanOrEquals", 4, 0));
+                        return thenBlocks;
+                    }
+
+                    function buildFanDownBlocks() {
+                        const thenBlocks = [];
+                        for (let speed = 4; speed > 0; speed--) {
+                            thenBlocks.push(createFanBetweenBlock(speed, speed - 1, false));
+                        }
+                        if (loop) thenBlocks.push(createFanBoundaryBlock("lessThanOrEquals", 0, 4));
+                        return thenBlocks;
+                    }
+
+                    function createRootBlock(eventStr, blocks) {
+                        return {
+                            "if": {
+                                "equals": {
+                                    "left": { "string": eventStr },
+                                    "right": {
+                                        "device": { "devices": [btnId], "component": btnCompId, "capability": "button", "attribute": "button", "trigger": "Always" }
+                                    }
+                                },
+                                "then": blocks
+                            }
+                        };
+                    }
+
+                    let ruleArray = [];
+                    if (buttonMode === 'one_button') {
+                        ruleArray.push(createRootBlock("pushed", buildFanUpBlocks()));
+                        ruleArray.push(createRootBlock("double", buildFanDownBlocks()));
+                    } else if (buttonMode === 'multi_up') {
+                        ruleArray.push(createRootBlock("pushed", buildFanUpBlocks()));
+                    } else if (buttonMode === 'multi_down') {
+                        ruleArray.push(createRootBlock("pushed", buildFanDownBlocks()));
+                    }
+                    finalJsonString = formatRuleJson(ruleArray);
                 }
-                finalJsonString = formatRuleJson(ruleArray);
 
             } else if (selectedPreset === 'button-volume-control') {
                 const btnId = document.getElementById('input_button').value.trim() || '@device_button';
