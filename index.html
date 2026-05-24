@@ -2950,7 +2950,7 @@
                 "step2.acTip": "Advanced Web App → Devices → 에어컨의 Device ID를 복사하세요.",
                 "step2.caution1": "반드시 SmartThings Advanced Web App에서 복사하세요.",
                 "step2.caution3": "조명이 Switch Level 기능을 지원하는지 확인하세요.",
-                "step2.cautionFan": "선풍기가 Fan Speed 기능을 지원하는지 확인하세요. (SmartThings 앱 → 기기 상세에서 확인 가능)",
+                "step2.cautionFan": "선풍기가 Fan Speed(또는 fanSpeedPercent) 기능을 지원하는지 확인하세요. (SmartThings 앱 → 기기 상세에서 확인 가능)",
                 "step2.cautionVolume": "오디오 기기가 Audio Volume 기능을 지원하는지 확인하세요. (SmartThings 앱 → 기기 상세에서 확인 가능)",
                 "step2.cautionBlind": "기기가 Window Shade Level 기능을 지원하는지 확인하세요. (SmartThings 앱 → 기기 상세에서 확인 가능)",
                 "step2.cautionAc": "에어컨이 Thermostat Cooling Setpoint 기능을 지원하는지 확인하세요. (SmartThings 앱 → 기기 상세에서 확인 가능)",
@@ -3158,10 +3158,10 @@
                 "step4.buttonFan.caution": "버튼을 너무 빠르게 누르면 선풍기가 명령을 놓칠 수 있으므로 0.5초~1초의 간격을 두고 눌러주세요.",
                 "step4.unitStep": "스텝",
                 "step4.unitPercent": "퍼센트",
-                "step4.fanPercentPreset50": "2단계",
-                "step4.fanPercentPreset25": "4단계",
-                "step4.fanPercentPreset20": "5단계",
-                "step4.fanPercentPreset10": "10단계",
+                "step4.fanPercentPreset50": "빠르게",
+                "step4.fanPercentPreset25": "기본",
+                "step4.fanPercentPreset20": "촘촘하게",
+                "step4.fanPercentPreset10": "가장 촘촘하게",
                 "category.button": "IoT 버튼",
             },
             en: {
@@ -3901,10 +3901,9 @@
             const stepUi = document.getElementById('button_step_ui');
             const percentUi = document.getElementById('button_percent_step_ui');
             const stepInput = document.getElementById('input_button_step');
-            // slider100 mode: hide unit switch (always percent), show percent preset buttons
-            if (unitSwitch) unitSwitch.classList.toggle('hidden', isFanFixed5 || isFanSlider100);
-            if (stepUi) stepUi.classList.toggle('hidden', isFanFixed5 || isFanSlider100 || buttonStepUnit !== 'step');
-            if (percentUi) percentUi.classList.toggle('hidden', isFanFixed5 || (!isFanSlider100 && buttonStepUnit !== 'percent'));
+            if (unitSwitch) unitSwitch.classList.toggle('hidden', isFanFixed5);
+            if (stepUi) stepUi.classList.toggle('hidden', isFanFixed5 || buttonStepUnit !== 'step');
+            if (percentUi) percentUi.classList.toggle('hidden', isFanFixed5 || buttonStepUnit !== 'percent');
             if (stepInput) {
                 stepInput.disabled = isFanFixed5;
                 stepInput.classList.toggle('cursor-not-allowed', isFanFixed5);
@@ -3913,8 +3912,6 @@
             if (isFanFixed5) {
                 buttonStepUnit = 'step';
                 buttonStepAmount = 1;
-            } else if (isFanSlider100) {
-                buttonStepUnit = 'percent';
             }
             // Swap percent preset button labels for fan slider100 mode
             const percentPresetBtns = document.querySelectorAll('#button_percent_step_ui .btn-preset-step');
@@ -4130,7 +4127,7 @@
                 if (titleB) titleB.className = "font-bold text-base mb-1 text-teal-800 dark:text-teal-300";
                 
                 if (selectedPreset === 'button-fan-control') {
-                    buttonStepUnit = 'percent';
+                    buttonStepUnit = 'step';
                     buttonStepAmount = 10;
                     const stepInput = document.getElementById('input_button_step');
                     if (stepInput) stepInput.value = '10';
@@ -4451,9 +4448,9 @@
                 btn.classList.toggle('dark:text-zinc-400', !active);
             });
             const isFanButton = selectedPreset === 'button-fan-control';
-            const isFanSlider100 = isFanButton && selectedFanMode === 'slider100';
-            if (stepUi) stepUi.classList.toggle('hidden', isFanButton || buttonStepUnit !== 'step');
-            if (percentUi) percentUi.classList.toggle('hidden', isFanButton && !isFanSlider100 || (!isFanSlider100 && buttonStepUnit !== 'percent'));
+            const isFanFixed5 = isFanButton && selectedFanMode === 'fixed5';
+            if (stepUi) stepUi.classList.toggle('hidden', isFanFixed5 || buttonStepUnit !== 'step');
+            if (percentUi) percentUi.classList.toggle('hidden', isFanFixed5 || buttonStepUnit !== 'percent');
             if (suffix) suffix.innerText = buttonStepUnit === 'percent' ? '%' : 'step';
             if (input) input.max = String(getMaxButtonStepAmount());
             document.querySelectorAll('#button_step_ui [data-step-preset-percent]').forEach(btn => {
